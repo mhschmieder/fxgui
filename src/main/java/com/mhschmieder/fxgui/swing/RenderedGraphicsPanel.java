@@ -30,8 +30,8 @@
  */
 package com.mhschmieder.fxgui.swing;
 
+import com.marineacoustics.jgui.component.TitledVectorizationXPanel;
 import com.mhschmieder.fxgraphics.io.RenderedGraphicsExportOptions;
-import com.mhschmieder.jcontrols.component.TitledVectorizationXPanel;
 
 /**
  * This is an abstract parent class for Swing panels that form the main content
