@@ -30,11 +30,11 @@
  */
 package com.mhschmieder.fxgui.stage;
 
-import com.mhschmieder.fxcontrols.GuiUtilities;
+import com.mhschmieder.fxcontrols.control.ControlUtilities;
 import com.mhschmieder.fxcontrols.control.LabeledControlFactory;
-import com.mhschmieder.fxcontrols.layout.RenderedGraphicsExportPreviewPane;
-import com.mhschmieder.fxcontrols.swing.RenderedGraphicsPanel;
 import com.mhschmieder.fxgraphics.io.RenderedGraphicsExportOptions;
+import com.mhschmieder.fxgui.layout.RenderedGraphicsExportPreviewPane;
+import com.mhschmieder.fxgui.swing.RenderedGraphicsPanel;
 import com.mhschmieder.jcommons.branding.ProductBranding;
 import com.mhschmieder.jcommons.io.FileMode;
 import com.mhschmieder.jcommons.io.FileStatus;
@@ -69,7 +69,7 @@ public final class RenderedGraphicsExportPreview extends ExportPreview {
             = "Rendered Graphics Export Preview";
 
     // Declare the main content pane.
-    public RenderedGraphicsExportPreviewPane       _renderedGraphicsExportPreviewPane;
+    public RenderedGraphicsExportPreviewPane _renderedGraphicsExportPreviewPane;
 
     // Cache the Rendered Graphics Export Options.
     protected RenderedGraphicsExportOptions         _renderedGraphicsExportOptions;
@@ -80,7 +80,7 @@ public final class RenderedGraphicsExportPreview extends ExportPreview {
     protected String                                _optionalItemLabel;
 
     // Maintain a Swing Component reference for Rendered Graphics Export actions.
-    protected RenderedGraphicsPanel                 _renderedGraphicsExportSource;
+    protected RenderedGraphicsPanel _renderedGraphicsExportSource;
 
     @SuppressWarnings("nls")
     public RenderedGraphicsExportPreview( final String auxiliaryLabel,
@@ -239,13 +239,13 @@ public final class RenderedGraphicsExportPreview extends ExportPreview {
 
     @Override
     protected VBox getExportOptionsBox() {
-        final CheckBox auxiliaryCheckBox = GuiUtilities
+        final CheckBox auxiliaryCheckBox = ControlUtilities
                 .getCheckBox( _auxiliaryLabel,
                               _renderedGraphicsExportOptions.isExportAuxiliaryPanel() );
-        final CheckBox informationTablesCheckBox = GuiUtilities
+        final CheckBox informationTablesCheckBox = ControlUtilities
                 .getCheckBox( _informationTablesLabel,
                               _renderedGraphicsExportOptions.isExportInformationTables() );
-        final CheckBox optionalItemCheckBox = GuiUtilities
+        final CheckBox optionalItemCheckBox = ControlUtilities
                 .getCheckBox( _optionalItemLabel,
                               _renderedGraphicsExportOptions.isExportOptionalItem() );
 

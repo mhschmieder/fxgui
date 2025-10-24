@@ -31,6 +31,7 @@
 package com.mhschmieder.fxgui.util;
 
 import com.mhschmieder.fxcontrols.control.ControlUtilities;
+import com.mhschmieder.fxcontrols.util.IconContext;
 import javafx.scene.Group;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
@@ -54,9 +55,9 @@ public final class GroupUtilities {
 
         // First, get the icon size and insets for the menu context.
         final int inset = ControlUtilities.getIconInset( IconContext.MENU );
-        final int boxSideLength = GuiUtilities.MENU_ICON_SIZE - ( inset * 2 );
+        final int boxSideLength = ControlUtilities.MENU_ICON_SIZE - ( inset * 2 );
         final int startX = inset;
-        final int startY = GuiUtilities.MENU_ICON_SIZE - inset;
+        final int startY = ControlUtilities.MENU_ICON_SIZE - inset;
 
         // Fill the icon with the specified background color.
         final Rectangle box = new Rectangle( startX, startY, boxSideLength, boxSideLength );

@@ -30,8 +30,8 @@
  */
 package com.mhschmieder.fxgui.stage;
 
-import com.mhschmieder.fxcontrols.dialog.DialogUtilities;
 import com.mhschmieder.fxcontrols.util.MessageFactory;
+import com.mhschmieder.fxgui.dialog.DialogUtilities;
 import com.mhschmieder.jcommons.io.FileAction;
 import javafx.scene.control.ButtonBar;
 import javafx.scene.control.ButtonType;

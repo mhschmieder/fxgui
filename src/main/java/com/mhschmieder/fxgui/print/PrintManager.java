@@ -30,8 +30,8 @@
  */
 package com.mhschmieder.fxgui.print;
 
-import com.mhschmieder.fxcontrols.dialog.DialogUtilities;
 import com.mhschmieder.fxcontrols.util.MessageFactory;
+import com.mhschmieder.fxgui.dialog.DialogUtilities;
 import com.mhschmieder.jcommons.util.SystemType;
 import javafx.print.PrinterJob;
 import javafx.scene.Node;
@@ -222,7 +222,7 @@ public class PrintManager {
             final String noPrinterAvailableErrorMessage = MessageFactory
                     .getNoPrinterAvailableMessage();
             final String masthead = MessageFactory.getPrintServicesProblemMasthead();
-            DialogUtilities.showErrorAlert( noPrinterAvailableErrorMessage, 
+            DialogUtilities.showErrorAlert( noPrinterAvailableErrorMessage,
                                             masthead, 
                                             printCategory );
 

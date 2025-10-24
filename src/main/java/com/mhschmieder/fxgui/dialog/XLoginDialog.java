@@ -30,7 +30,7 @@
  */
 package com.mhschmieder.fxgui.dialog;
 
-import com.mhschmieder.fxcontrols.layout.LayoutFactory;
+import com.mhschmieder.fxcontrols.util.RegionUtilities;
 import com.mhschmieder.fxgraphics.paint.ColorConstants;
 import impl.org.controlsfx.i18n.Localization;
 import javafx.application.Platform;
@@ -203,7 +203,7 @@ public final class XLoginDialog extends Dialog< Pair< String, String > > {
 
         // TODO: Pull in this missing image resource after deciding where it
         // goes in the file system such that it works in IntelliJ and Eclipse.
-        final Background background = LayoutFactory.makeRegionBackground( ColorConstants.GRAY86 );
+        final Background background = RegionUtilities.makeRegionBackground( ColorConstants.GRAY86 );
         final ImageView loginIcon = new ImageView( XLoginDialog.class
                 .getResource( "/icons/everaldo/Password48.png" ).toExternalForm() );
 

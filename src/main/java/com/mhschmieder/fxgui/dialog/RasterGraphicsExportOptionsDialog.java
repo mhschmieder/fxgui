@@ -31,9 +31,9 @@
 package com.mhschmieder.fxgui.dialog;
 
 import com.mhschmieder.fxcontrols.control.GraphicsExportOptionsToggleGroup;
-import com.mhschmieder.fxcontrols.layout.ImageSizePane;
 import com.mhschmieder.fxgraphics.image.ImageSize;
 import com.mhschmieder.fxgraphics.io.RasterGraphicsExportOptions;
+import com.mhschmieder.fxgui.layout.ImageSizePane;
 import com.mhschmieder.jcommons.util.ClientProperties;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;

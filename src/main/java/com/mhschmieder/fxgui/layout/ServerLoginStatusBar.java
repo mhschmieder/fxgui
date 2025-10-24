@@ -30,10 +30,10 @@
  */
 package com.mhschmieder.fxgui.layout;
 
-import com.mhschmieder.fxcontrols.GuiUtilities;
 import com.mhschmieder.fxcontrols.util.RegionUtilities;
 import com.mhschmieder.fxgraphics.image.ImageUtilities;
 import com.mhschmieder.fxgraphics.paint.ColorUtilities;
+import com.mhschmieder.fxgui.util.GuiUtilities;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.Label;

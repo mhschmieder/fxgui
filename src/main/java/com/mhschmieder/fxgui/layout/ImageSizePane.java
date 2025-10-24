@@ -30,9 +30,10 @@
  */
 package com.mhschmieder.fxgui.layout;
 
-import com.mhschmieder.fxcontrols.GuiUtilities;
+import com.mhschmieder.fxcontrols.control.ControlUtilities;
 import com.mhschmieder.fxcontrols.control.TextSelector;
 import com.mhschmieder.fxgraphics.image.ImageSize;
+import com.mhschmieder.fxgui.util.GuiUtilities;
 import com.mhschmieder.jcommons.util.ClientProperties;
 import javafx.application.Platform;
 import javafx.geometry.Insets;
@@ -74,10 +75,10 @@ public final class ImageSizePane extends VBox {
 
     private void initPane( final ClientProperties clientProperties,
                            final boolean initialAutoSize ) {
-        _autoSizeCheckBox = GuiUtilities.getCheckBox( "Use On-Screen Image Size", //$NON-NLS-1$
+        _autoSizeCheckBox = ControlUtilities.getCheckBox( "Use On-Screen Image Size", //$NON-NLS-1$
                                                       initialAutoSize );
 
-        final Label pixelWidthLabel = GuiUtilities.getControlLabel( "Width" ); //$NON-NLS-1$
+        final Label pixelWidthLabel = ControlUtilities.getControlLabel( "Width" ); //$NON-NLS-1$
 
         // Gather the list of pixel width presets.
         // TODO: Derive a special class from DoubleSelector, and add unit?
@@ -93,7 +94,7 @@ public final class ImageSizePane extends VBox {
                                                 pixelWidthDefault,
                                                 pixelWidths );
 
-        final Label pixelHeightLabel = GuiUtilities.getControlLabel( "Height" ); //$NON-NLS-1$
+        final Label pixelHeightLabel = ControlUtilities.getControlLabel( "Height" ); //$NON-NLS-1$
 
         // Gather the list of pixel height presets.
         // TODO: Derive a special class from DoubleSelector, and add unit?

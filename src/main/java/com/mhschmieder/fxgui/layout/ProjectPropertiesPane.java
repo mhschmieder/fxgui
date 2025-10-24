@@ -30,10 +30,11 @@
  */
 package com.mhschmieder.fxgui.layout;
 
-import com.mhschmieder.fxcontrols.GuiUtilities;
+import com.mhschmieder.fxcontrols.control.ControlUtilities;
 import com.mhschmieder.fxcontrols.control.TextEditor;
-import com.mhschmieder.fxcontrols.model.ProjectProperties;
 import com.mhschmieder.fxcontrols.util.RegionUtilities;
+import com.mhschmieder.fxgui.model.ProjectProperties;
+import com.mhschmieder.fxgui.util.GuiUtilities;
 import com.mhschmieder.jcommons.util.ClientProperties;
 import javafx.geometry.HPos;
 import javafx.geometry.Insets;
@@ -187,7 +188,7 @@ public final class ProjectPropertiesPane extends VBox {
                         + projectCategory
                         + "Was Created or Edited" ) );
 
-        projectNotes = GuiUtilities.getNotesEditor( 12 );
+        projectNotes = ControlUtilities.getNotesEditor( 12 );
     }
     
     private Label makePropertySheetLabel( final String pProperty ) {

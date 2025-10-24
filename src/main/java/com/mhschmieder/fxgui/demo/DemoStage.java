@@ -30,7 +30,7 @@
  */
 package com.mhschmieder.fxgui.demo;
 
-import com.mhschmieder.fxcontrols.stage.MainApplicationStage;
+import com.mhschmieder.fxgui.stage.MainApplicationStage;
 import com.mhschmieder.jcommons.branding.ProductBranding;
 import com.mhschmieder.jcommons.util.ClientProperties;
 import javafx.scene.Node;

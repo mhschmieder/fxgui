@@ -1,7 +1,7 @@
-/**
+/*
  * MIT License
  *
- * Copyright (c) 2020, 2024 Mark Schmieder
+ * Copyright (c) 2020, 2025, Mark Schmieder. All rights reserved.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -30,10 +30,10 @@
  */
 package com.mhschmieder.fxgui.application;
 
-import com.mhschmieder.fxcontrols.GuiUtilities;
-import com.mhschmieder.fxcontrols.layout.LayoutFactory;
-import com.mhschmieder.fxcontrols.stage.MainApplicationLoadTask;
+import com.mhschmieder.fxcontrols.util.RegionUtilities;
 import com.mhschmieder.fxgraphics.image.ImageUtilities;
+import com.mhschmieder.fxgui.stage.MainApplicationLoadTask;
+import com.mhschmieder.fxgui.util.GuiUtilities;
 import com.mhschmieder.jcommons.branding.ProductBranding;
 import javafx.animation.FadeTransition;
 import javafx.concurrent.Task;
@@ -118,7 +118,7 @@ public class SplashScreenManager {
 
         // Set border and colors to make the Splash Screen easier to see.
         // NOTE: This mimics the custom CSS tag #status-box for the About Box.
-        final Background background = LayoutFactory.makeRegionBackground( Color.ALICEBLUE );
+        final Background background = RegionUtilities.makeRegionBackground( Color.ALICEBLUE );
         splashScreenLayout.setBackground( background );
         splashScreenLayout.setPadding( new Insets( 3.0d ) );
         final BorderStroke borderStroke = new BorderStroke( Color.LIGHTSTEELBLUE,

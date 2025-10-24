@@ -30,8 +30,9 @@
  */
 package com.mhschmieder.fxgui.stage;
 
-import com.mhschmieder.fxcontrols.GuiUtilities;
+import com.mhschmieder.fxcontrols.control.ControlUtilities;
 import com.mhschmieder.fxgraphics.image.ImageUtilities;
+import com.mhschmieder.fxgui.util.GuiUtilities;
 import com.mhschmieder.jcommons.branding.ProductBranding;
 import com.mhschmieder.jcommons.util.SystemType;
 import javafx.collections.ObservableList;
@@ -113,7 +114,7 @@ public final class AboutBox extends Popup {
         if ( useAppInfo ) {
             root.getStyleClass().add( "status-box" ); //$NON-NLS-1$
 
-            GuiUtilities.applyDropShadowEffect( root );
+            ControlUtilities.applyDropShadowEffect( root );
         }
 
         // Pop-ups add content vs. setting a scene (hidden in implementation).

@@ -30,13 +30,13 @@
  */
 package com.mhschmieder.fxgui.stage;
 
-import com.mhschmieder.fxcontrols.dialog.DialogUtilities;
 import com.mhschmieder.fxcontrols.util.MessageFactory;
 import com.mhschmieder.fxgraphics.image.ImageSize;
 import com.mhschmieder.fxgraphics.image.ImageUtilities;
 import com.mhschmieder.fxgraphics.io.RasterGraphicsExportOptions;
 import com.mhschmieder.fxgraphics.io.RenderedGraphicsExportOptions;
 import com.mhschmieder.fxgraphics.io.VectorGraphicsExportOptions;
+import com.mhschmieder.fxgui.dialog.DialogUtilities;
 import com.mhschmieder.jcommons.io.CsvUtilities;
 import com.mhschmieder.jcommons.io.FileMode;
 import com.mhschmieder.jcommons.io.FileMover;

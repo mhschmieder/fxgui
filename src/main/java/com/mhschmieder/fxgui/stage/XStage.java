@@ -30,17 +30,17 @@
  */
 package com.mhschmieder.fxgui.stage;
 
-import com.mhschmieder.fxcontrols.GuiUtilities;
 import com.mhschmieder.fxcontrols.action.BackgroundColorChoices;
 import com.mhschmieder.fxcontrols.action.MruFileActions;
 import com.mhschmieder.fxcontrols.action.WindowSizeActions;
 import com.mhschmieder.fxcontrols.action.XAction;
-import com.mhschmieder.fxcontrols.layout.LayoutFactory;
-import com.mhschmieder.fxcontrols.print.PrintManager;
+import com.mhschmieder.fxcontrols.util.RegionUtilities;
 import com.mhschmieder.fxgraphics.image.ImageUtilities;
 import com.mhschmieder.fxgraphics.io.RasterGraphicsExportOptions;
 import com.mhschmieder.fxgraphics.io.VectorGraphicsExportOptions;
 import com.mhschmieder.fxgraphics.paint.ColorConstants;
+import com.mhschmieder.fxgui.print.PrintManager;
+import com.mhschmieder.fxgui.util.GuiUtilities;
 import com.mhschmieder.jcommons.branding.ProductBranding;
 import com.mhschmieder.jcommons.io.IoUtilities;
 import com.mhschmieder.jcommons.util.ClientProperties;
@@ -1365,7 +1365,7 @@ public abstract class XStage extends Stage implements ForegroundManager,
         //  background property change and/or Java API calls happen, that step on
         //  our own custom CSS settings, due to Java taking precedence over CSS,
         //  or the CSS being on a deferred thread that executes after this one.
-        final Background background = LayoutFactory.makeRegionBackground( backColor );
+        final Background background = RegionUtilities.makeRegionBackground( backColor );
         _root.setBackground( background );
 
         // Try to globally change the foreground theme for elements not exposed

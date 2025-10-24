@@ -32,8 +32,8 @@ package com.mhschmieder.fxgui.stage;
 
 import com.mhschmieder.fxcontrols.action.ProjectPropertiesActions;
 import com.mhschmieder.fxcontrols.control.ProjectPropertiesToolBar;
-import com.mhschmieder.fxcontrols.layout.ProjectPropertiesPane;
-import com.mhschmieder.fxcontrols.model.ProjectProperties;
+import com.mhschmieder.fxgui.layout.ProjectPropertiesPane;
+import com.mhschmieder.fxgui.model.ProjectProperties;
 import com.mhschmieder.jcommons.branding.ProductBranding;
 import com.mhschmieder.jcommons.util.ClientProperties;
 import javafx.scene.Node;

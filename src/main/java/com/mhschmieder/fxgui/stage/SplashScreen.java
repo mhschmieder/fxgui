@@ -30,8 +30,8 @@
  */
 package com.mhschmieder.fxgui.stage;
 
-import com.mhschmieder.fxcontrols.GuiUtilities;
 import com.mhschmieder.fxgraphics.image.ImageUtilities;
+import com.mhschmieder.fxgui.util.GuiUtilities;
 import com.mhschmieder.jcommons.branding.ProductBranding;
 import com.mhschmieder.jcommons.util.SystemType;
 import javafx.scene.Scene;

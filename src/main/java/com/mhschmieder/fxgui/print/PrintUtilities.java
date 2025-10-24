@@ -30,8 +30,8 @@
  */
 package com.mhschmieder.fxgui.print;
 
-import com.mhschmieder.fxcontrols.dialog.DialogUtilities;
 import com.mhschmieder.fxcontrols.util.MessageFactory;
+import com.mhschmieder.fxgui.dialog.DialogUtilities;
 import javafx.geometry.Bounds;
 import javafx.print.JobSettings;
 import javafx.print.PageLayout;

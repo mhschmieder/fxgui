@@ -30,8 +30,8 @@
  */
 package com.mhschmieder.fxgui.layout;
 
-import com.mhschmieder.fxcontrols.GuiUtilities;
-import com.mhschmieder.fxcontrols.model.ProjectProperties;
+import com.mhschmieder.fxgui.model.ProjectProperties;
+import com.mhschmieder.fxgui.util.GuiUtilities;
 import com.mhschmieder.jcommons.util.ClientProperties;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;

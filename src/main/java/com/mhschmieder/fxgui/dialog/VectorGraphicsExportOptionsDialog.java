@@ -30,10 +30,10 @@
  */
 package com.mhschmieder.fxgui.dialog;
 
-import com.mhschmieder.fxcontrols.GuiUtilities;
 import com.mhschmieder.fxcontrols.control.GraphicsExportOptionsToggleGroup;
 import com.mhschmieder.fxcontrols.control.TextEditor;
 import com.mhschmieder.fxgraphics.io.VectorGraphicsExportOptions;
+import com.mhschmieder.fxgui.util.GuiUtilities;
 import com.mhschmieder.jcommons.util.ClientProperties;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;

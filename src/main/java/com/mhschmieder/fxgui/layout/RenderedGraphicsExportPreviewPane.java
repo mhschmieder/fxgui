@@ -30,11 +30,11 @@
  */
 package com.mhschmieder.fxgui.layout;
 
-import com.mhschmieder.fxcontrols.GuiUtilities;
 import com.mhschmieder.fxcontrols.control.TextEditor;
-import com.mhschmieder.fxcontrols.swing.RenderedGraphicsPanel;
 import com.mhschmieder.fxcontrols.util.RegionUtilities;
 import com.mhschmieder.fxgraphics.io.RenderedGraphicsExportOptions;
+import com.mhschmieder.fxgui.swing.RenderedGraphicsPanel;
+import com.mhschmieder.fxgui.util.GuiUtilities;
 import com.mhschmieder.jcommons.util.ClientProperties;
 import javafx.embed.swing.SwingNode;
 import javafx.geometry.Insets;
@@ -65,7 +65,7 @@ public final class RenderedGraphicsExportPreviewPane extends BorderPane {
     private SwingNode                            _graphicsPreviewNode;
 
     // Maintain a Swing Component reference for Graphics Export actions.
-    private RenderedGraphicsPanel                _renderedGraphicsExportSource;
+    private RenderedGraphicsPanel _renderedGraphicsExportSource;
 
     // Cache the Client Properties (System Type, Locale, Client Type, etc.).
     public ClientProperties                        _clientProperties;

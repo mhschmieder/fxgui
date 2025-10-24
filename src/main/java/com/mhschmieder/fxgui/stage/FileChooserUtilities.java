@@ -31,6 +31,7 @@
 package com.mhschmieder.fxgui.stage;
 
 import com.mhschmieder.fxcontrols.util.MessageFactory;
+import com.mhschmieder.fxgui.dialog.DialogUtilities;
 import com.mhschmieder.jcommons.lang.StringUtilities;
 import javafx.collections.ObservableList;
 import javafx.scene.control.ButtonType;
@@ -293,18 +294,17 @@ public final class FileChooserUtilities {
                 final String message = MessageFactory.getContinueWithFileSaveMessage();
                 final String masthead = MessageFactory.getAutoAppendExtensionMayOverwriteMasthead();
                 final String title = MessageFactory.getFileNameConflictTitle();
-                final Optional< ButtonType > response =
-                                                      com.mhschmieder.fxcontrols.dialog.DialogUtilities
-                                                              .showConfirmationAlert( message,
-                                                                                      masthead,
-                                                                                      title,
-                                                                                      false );
+                final Optional< ButtonType > response = DialogUtilities
+                        .showConfirmationAlert(
+                                message,
+                                masthead,
+                                title,
+                                false );
 
                 // Unless the user dismissed due to possible overwrite,
                 // construct the file object from the corrected path.
                 if ( !ButtonType.NO.equals( response.get() ) ) {
-                    final File nameCorrectedFile = nameCorrectedPath.toFile();
-                    return nameCorrectedFile;
+                    return nameCorrectedPath.toFile();
                 }
             }
         }
@@ -358,8 +358,7 @@ public final class FileChooserUtilities {
         finally {
             if ( tempFile == null ) {
                 // Alert the user that a file save error occurred.
-                com.mhschmieder.fxcontrols.dialog.DialogUtilities
-                        .showFileSaveErrorAlert( errorMessage );
+                DialogUtilities.showFileSaveErrorAlert( errorMessage );
             }
         }
 

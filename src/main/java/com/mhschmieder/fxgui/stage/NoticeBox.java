@@ -30,8 +30,8 @@
  */
 package com.mhschmieder.fxgui.stage;
 
-import com.mhschmieder.fxcontrols.GuiUtilities;
-import com.mhschmieder.fxcontrols.layout.NoticePane;
+import com.mhschmieder.fxcontrols.control.ControlUtilities;
+import com.mhschmieder.fxgui.layout.NoticePane;
 import com.mhschmieder.jcommons.util.SystemType;
 import javafx.beans.property.StringProperty;
 import javafx.scene.Node;
@@ -141,7 +141,7 @@ public class NoticeBox extends Popup {
 
         root.getStyleClass().add( "notice-box" );
 
-        GuiUtilities.applyDropShadowEffect( root );
+        ControlUtilities.applyDropShadowEffect( root );
 
         // Pop-ups add content vs. setting a scene (hidden in implementation).
         getContent().add( root );

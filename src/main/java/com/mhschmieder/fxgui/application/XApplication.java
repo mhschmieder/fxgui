@@ -30,9 +30,9 @@
  */
 package com.mhschmieder.fxgui.application;
 
-import com.mhschmieder.fxcontrols.demo.DemoStage;
-import com.mhschmieder.fxcontrols.stage.MainApplicationLoadTask;
-import com.mhschmieder.fxcontrols.stage.MainApplicationStage;
+import com.mhschmieder.fxgui.demo.DemoStage;
+import com.mhschmieder.fxgui.stage.MainApplicationLoadTask;
+import com.mhschmieder.fxgui.stage.MainApplicationStage;
 import com.mhschmieder.jcommons.branding.ProductBranding;
 import com.mhschmieder.jcommons.branding.ProductVersion;
 import com.mhschmieder.jcommons.io.IoUtilities;

@@ -30,8 +30,8 @@
  */
 package com.mhschmieder.fxgui.dialog;
 
-import com.mhschmieder.fxcontrols.layout.LayoutFactory;
 import com.mhschmieder.fxcontrols.util.MessageFactory;
+import com.mhschmieder.fxcontrols.util.RegionUtilities;
 import com.mhschmieder.fxgraphics.io.RasterGraphicsExportOptions;
 import com.mhschmieder.fxgraphics.io.VectorGraphicsExportOptions;
 import com.mhschmieder.jcommons.lang.CharConstants;
@@ -104,7 +104,7 @@ public final class DialogUtilities {
      * @return A @Background object targeted to setBackground()
      */
     public static Background makeDialogBackground( final Insets insets ) {
-        final Background background = LayoutFactory.makeRegionBackground( WINDOW_BACKGROUND_COLOR,
+        final Background background = RegionUtilities.makeRegionBackground( WINDOW_BACKGROUND_COLOR,
                                                                           insets );
 
         return background;

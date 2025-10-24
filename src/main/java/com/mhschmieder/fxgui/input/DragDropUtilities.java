@@ -30,7 +30,7 @@
  */
 package com.mhschmieder.fxgui.input;
 
-import com.mhschmieder.fxcontrols.stage.FileActionHandler;
+import com.mhschmieder.fxgui.stage.FileActionHandler;
 import com.mhschmieder.jcommons.io.FileMode;
 import com.mhschmieder.jcommons.io.FilenameUtilities;
 import javafx.event.EventHandler;

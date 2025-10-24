@@ -30,7 +30,7 @@
  */
 package com.mhschmieder.fxgui.layout;
 
-import com.mhschmieder.fxcontrols.GuiUtilities;
+import com.mhschmieder.fxcontrols.control.ControlUtilities;
 import com.mhschmieder.fxcontrols.control.DoubleEditor;
 import com.mhschmieder.jcommons.util.ClientProperties;
 import javafx.geometry.Insets;
@@ -98,11 +98,11 @@ public class UnitlessPositionPane extends BorderPane {
         gridPane.setHgap( 10.0d );
         gridPane.setVgap( 10.0d );
 
-        final Label xPositionLabel = GuiUtilities.getControlLabel( xPositionLabelText );
+        final Label xPositionLabel = ControlUtilities.getControlLabel( xPositionLabelText );
         gridPane.add( xPositionLabel, 0, 0 );
         gridPane.add( _xPositionEditor, 1, 0 );
 
-        final Label yPositionLabel = GuiUtilities.getControlLabel( yPositionLabelText );
+        final Label yPositionLabel = ControlUtilities.getControlLabel( yPositionLabelText );
         gridPane.add( yPositionLabel, 0, 1 );
         gridPane.add( _yPositionEditor, 1, 1 );
 

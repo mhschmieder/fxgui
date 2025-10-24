@@ -30,10 +30,11 @@
  */
 package com.mhschmieder.fxgui.stage;
 
-import com.mhschmieder.fxcontrols.GuiUtilities;
-import com.mhschmieder.fxcontrols.layout.LayoutFactory;
+import com.mhschmieder.fxcontrols.control.ControlUtilities;
+import com.mhschmieder.fxcontrols.util.RegionUtilities;
 import com.mhschmieder.fxgraphics.image.ImageUtilities;
 import com.mhschmieder.fxgraphics.paint.ColorConstants;
+import com.mhschmieder.fxgui.util.GuiUtilities;
 import com.mhschmieder.jcommons.text.NumberFormatUtilities;
 import com.mhschmieder.jcommons.util.SystemType;
 import com.mhschmieder.jmath.MathUtilities;
@@ -169,7 +170,7 @@ public class ProgressMonitor extends Stage {
         final ButtonBar actionButtonBar = new ButtonBar();
         actionButtonBar.setPadding( new Insets(
                 6.0d, 12.0d, 6.0d, 12.0d ) );
-        cancelButton = GuiUtilities.getLabeledButton( 
+        cancelButton = ControlUtilities.getLabeledButton(
                 cancelText, null, "cancel-button" );
         ButtonBar.setButtonData( cancelButton, ButtonData.CANCEL_CLOSE );
         cancelButton.setPrefWidth( 160.0d );
@@ -190,7 +191,7 @@ public class ProgressMonitor extends Stage {
                 jarRelativeStylesheetFilenames );
         
         final Color backColor = ColorConstants.WINDOW_BACKGROUND_COLOR;
-        final Background background = LayoutFactory.makeRegionBackground( 
+        final Background background = RegionUtilities.makeRegionBackground(
                 backColor );
         borderPane.setBackground( background );
         GuiUtilities.setStylesheetForTheme( scene, 

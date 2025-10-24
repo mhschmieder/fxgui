@@ -30,7 +30,7 @@
  */
 package com.mhschmieder.fxgui.layout;
 
-import com.mhschmieder.fxcontrols.GuiUtilities;
+import com.mhschmieder.fxcontrols.control.ControlUtilities;
 import com.mhschmieder.fxgraphics.geometry.Orientation;
 import com.mhschmieder.jcommons.util.ClientProperties;
 import javafx.application.Platform;
@@ -73,16 +73,16 @@ public class OrientationPane extends BorderPane {
     private final void initPane( final ClientProperties clientProperties,
                                  final boolean useInvertedbutton ) {
         _orientationToggleGroup = new ToggleGroup();
-        _orientationHzRadioButton = GuiUtilities.getRadioButton(
+        _orientationHzRadioButton = ControlUtilities.getRadioButton(
                 Orientation.HORIZONTAL.label(),
                 _orientationToggleGroup,
                 true );
-        _orientationVtRadioButton = GuiUtilities.getRadioButton(
+        _orientationVtRadioButton = ControlUtilities.getRadioButton(
                 Orientation.VERTICAL.label(),
                 _orientationToggleGroup,
                 false );
 
-        _orientationInvertedCheckBox = GuiUtilities.getCheckBox(
+        _orientationInvertedCheckBox = ControlUtilities.getCheckBox(
                 "Inverted", false );
 
         final GridPane gridPane = new GridPane();

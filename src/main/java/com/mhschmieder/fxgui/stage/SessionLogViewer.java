@@ -30,7 +30,7 @@
  */
 package com.mhschmieder.fxgui.stage;
 
-import com.mhschmieder.fxcontrols.GuiUtilities;
+import com.mhschmieder.fxcontrols.control.ControlUtilities;
 import com.mhschmieder.fxcontrols.control.SessionLogViewerToolBar;
 import com.mhschmieder.jcommons.branding.ProductBranding;
 import com.mhschmieder.jcommons.io.LogUtilities;
@@ -274,7 +274,7 @@ public class SessionLogViewer extends XStage {
         _sessionLogTextArea.setPrefHeight( 320d );
         _sessionLogTextArea.autosize();
 
-        GuiUtilities.setTextAreaProperties( _sessionLogTextArea, "log-viewer-text-area" );
+        ControlUtilities.setTextAreaProperties( _sessionLogTextArea, "log-viewer-text-area" );
 
         // Make the Session Log just translucent enough to see what's behind it.
         // NOTE: Translucency throws exceptions on Linux and Windows 8.1, but

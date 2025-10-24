@@ -30,8 +30,8 @@
  */
 package com.mhschmieder.fxgui.stage;
 
-import com.mhschmieder.fxcontrols.layout.OpacityPane;
 import com.mhschmieder.fxgraphics.input.ScrollingSensitivity;
+import com.mhschmieder.fxgui.layout.OpacityPane;
 import com.mhschmieder.jcommons.branding.ProductBranding;
 import com.mhschmieder.jcommons.util.ClientProperties;
 import javafx.beans.property.DoubleProperty;
@@ -43,7 +43,7 @@ import javafx.scene.Node;
 public final class OpacityStage extends XStage {
 
     // Declare the main content pane.
-    public OpacityPane  _opacityPane;
+    public OpacityPane _opacityPane;
 
     // Cache the Opacity Editor Label so we can use it at layout manager
     // construction time.
