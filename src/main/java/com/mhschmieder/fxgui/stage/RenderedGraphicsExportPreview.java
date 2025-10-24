@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (c) 2020, 2025 Mark Schmieder
+ * Copyright (c) 2020, 2025, Mark Schmieder. All rights reserved.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -21,12 +21,12 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  *
- * This file is part of the FxGuiToolkit Library
+ * This file is part of the fxgui Library
  *
- * You should have received a copy of the MIT License along with the
- * FxGuiToolkit Library. If not, see <https://opensource.org/licenses/MIT>.
+ * You should have received a copy of the MIT License along with the fxgui
+ * Library. If not, see <https://opensource.org/licenses/MIT>.
  *
- * Project: https://github.com/mhschmieder/fxguitoolkit
+ * Project: https://github.com/mhschmieder/fxgui
  */
 package com.mhschmieder.fxgui.stage;
 
@@ -40,6 +40,7 @@ import com.mhschmieder.jcommons.io.FileMode;
 import com.mhschmieder.jcommons.io.FileStatus;
 import com.mhschmieder.jcommons.util.ClientProperties;
 import com.mhschmieder.jvectorexport.eps.EpsExportUtilities;
+import com.mhschmieder.jvectorexport.pdf.PdfReportUtilities;
 import com.mhschmieder.jvectorexport.svg.SvgExportUtilities;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -183,7 +184,7 @@ public final class RenderedGraphicsExportPreview extends ExportPreview {
         //  specify North American Letter paper size and then convert.
         //
         // TODO: Expose the Color Mode as a user choice in the Export Options?
-        final boolean fileSaved = PdfExportUtilities
+        final boolean fileSaved = PdfReportUtilities
                 .createDocument( tempFile,
                                  _renderedGraphicsExportSource,
                                  _renderedGraphicsExportSource.getTitle(),
