@@ -40,7 +40,6 @@ import com.mhschmieder.jcommons.io.FileMode;
 import com.mhschmieder.jcommons.io.FileStatus;
 import com.mhschmieder.jcommons.util.ClientProperties;
 import com.mhschmieder.jvectorexport.eps.EpsExportUtilities;
-import com.mhschmieder.jvectorexport.pdf.PdfExportUtilities;
 import com.mhschmieder.jvectorexport.svg.SvgExportUtilities;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
