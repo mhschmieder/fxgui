@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (c) 2024, 2025 Mark Schmieder
+ * Copyright (c) 2024, 2025, Mark Schmieder. All rights reserved.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -21,12 +21,12 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  *
- * This file is part of the FxGuiToolkit Library
+ * This file is part of the fxgui Library.
  *
- * You should have received a copy of the MIT License along with the
- * FxGuiToolkit Library. If not, see <https://opensource.org/licenses/MIT>.
+ * You should have received a copy of the MIT License along with the fxgui
+ * Library. If not, see <https://opensource.org/licenses/MIT>.
  *
- * Project: https://github.com/mhschmieder/fxguitoolkit
+ * Project: https://github.com/mhschmieder/fxgui
  */
 package com.mhschmieder.fxgui.stage;
 
@@ -75,6 +75,9 @@ import java.util.List;
  * A typical use case is to watch a Task or VirtualThread, especially for
  * current step, to update the percentage of steps performed.
  * <p>
+ * We will likely add Task bindings soon, but in a derived class that will be
+ * hosted by the fxconcurrent library, as not everyone will want to use Tasks.
+ * <p>
  * Register "setOnAction()" on the Cancel Button in your application code,
  * to use this Progress Monitor to support cancellation of a task or thread.
  */
@@ -89,9 +92,14 @@ public class ProgressMonitor extends Stage {
     
     private long numberOfSteps;
 
+    private int numberOfDecimalPlaces;
+
     /**
-     * Makes a ProgressMonitor custom Stage with all parameters specified.
-     * 
+     * Makes a ProgressMonitor custom Stage with most parameters specified.
+     * <p>
+     * Use this constructor when you don't care about the default precision for
+     * displaying percentage during progress updates.
+     *
      * @param title The title to use in the title bar of the Stage
      * @param jarRelativeIconFilename JAR-relative path for title bar icon
      * @param bannerText The text to use for the banner atop the controls
@@ -109,22 +117,61 @@ public class ProgressMonitor extends Stage {
                             final double preferredWidth,
                             final double preferredHeight,
                             final SystemType systemType ) {
+        this(
+                title,
+                jarRelativeIconFilename,
+                bannerText,
+                cancelText,
+                pNumberOfSteps,
+                2,
+                preferredWidth,
+                preferredHeight,
+                systemType );
+    }
+
+    /**
+     * Makes a ProgressMonitor custom Stage with all parameters specified.
+     * <p>
+     * Use this constructor when you need to override the default precision for
+     * displaying percentage during progress updates, such as for longer tasks.
+     *
+     * @param title The title to use in the title bar of the Stage
+     * @param jarRelativeIconFilename JAR-relative path for title bar icon
+     * @param bannerText The text to use for the banner atop the controls
+     * @param cancelText The text to use for the Cancel Button
+     * @param pNumberOfSteps The total number of steps to monitor progress
+     * @param pNumberOfDecimalPlaces The number of decimal places for percent
+     * @param preferredWidth The preferred width of this window
+     * @param preferredHeight The preferred height of this window
+     * @param systemType The OS system type for the client
+     */
+    public ProgressMonitor( final String title,
+                            final String jarRelativeIconFilename,
+                            final String bannerText,
+                            final String cancelText,
+                            final long pNumberOfSteps,
+                            final int pNumberOfDecimalPlaces,
+                            final double preferredWidth,
+                            final double preferredHeight,
+                            final SystemType systemType ) {
         // Always call the superclass constructor first!
         super( StageStyle.DECORATED );
 
         // Initialize the Modality as soon as possible (API contract).
         initModality( Modality.NONE );
-        
+
         numberOfSteps = pNumberOfSteps;
 
+        numberOfDecimalPlaces = pNumberOfDecimalPlaces;
+
         try {
-            initStage( title, 
-                       jarRelativeIconFilename, 
-                       bannerText, 
-                       cancelText, 
-                       preferredWidth, 
-                       preferredHeight, 
-                       systemType );
+            initStage( title,
+                    jarRelativeIconFilename,
+                    bannerText,
+                    cancelText,
+                    preferredWidth,
+                    preferredHeight,
+                    systemType );
         }
         catch ( final Exception ex ) {
             ex.printStackTrace();
@@ -249,7 +296,6 @@ public class ProgressMonitor extends Stage {
     public void updateProgress( final long currentStep ) {
         // NOTE: Progress is percentile based but represented as { 0, 1 }, so we
         //  round down and clamp to avoid exceeding 100% (represented as 1.0).
-        final int numberOfDecimalPlaces = 2;
         final double progressRatio = ( double ) currentStep / numberOfSteps;
         final double progressRatioClamped = FastMath.min( MathUtilities
                         .roundDownDecimal( progressRatio,
