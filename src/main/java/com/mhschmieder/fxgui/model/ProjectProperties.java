@@ -1,7 +1,7 @@
-/**
+/*
  * MIT License
  *
- * Copyright (c) 2020, 2025 Mark Schmieder
+ * Copyright (c) 2020, 2025, Mark Schmieder. All rights reserved.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -21,12 +21,12 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  *
- * This file is part of the FxGuiToolkit Library
+ * This file is part of the fxgui Library
  *
- * You should have received a copy of the MIT License along with the
- * FxGuiToolkit Library. If not, see <https://opensource.org/licenses/MIT>.
+ * You should have received a copy of the MIT License along with the fxgui
+ * Library. If not, see <https://opensource.org/licenses/MIT>.
  *
- * Project: https://github.com/mhschmieder/fxguitoolkit
+ * Project: https://github.com/mhschmieder/fxgui
  */
 package com.mhschmieder.fxgui.model;
 
@@ -43,14 +43,6 @@ import java.time.LocalDate;
  * Observable data model for GUI elements associated with Project Properties.
  */
 public class ProjectProperties {
-
-    // Declare default constants, where appropriate, for all fields.
-    private static final String  DEFAULT_PROJECT_NAME = "";
-    private static final String  DEFAULT_PROJECT_TYPE = "";
-    private static final String  DEFAULT_PROJECT_LOCATION = "";
-    private static final String  DEFAULT_PROJECT_AUTHOR = "";
-    private static final LocalDate  DEFAULT_PROJECT_DATE = LocalDate.now();
-    private static final String  DEFAULT_PROJECT_NOTES = "";
 
     private final StringProperty projectName;
     private final StringProperty projectType;
@@ -69,12 +61,19 @@ public class ProjectProperties {
      * default values, initializing anything that requires memory allocation.
      */
     public ProjectProperties() {
-        this( DEFAULT_PROJECT_NAME,
-              DEFAULT_PROJECT_TYPE,
-              DEFAULT_PROJECT_LOCATION,
-              DEFAULT_PROJECT_AUTHOR,
-              DEFAULT_PROJECT_DATE,
-              DEFAULT_PROJECT_NOTES );
+        this(
+                com.mhschmieder.jcommons.util.ProjectProperties
+                        .DEFAULT_PROJECT_NAME,
+                com.mhschmieder.jcommons.util.ProjectProperties
+                        .DEFAULT_PROJECT_TYPE,
+                com.mhschmieder.jcommons.util.ProjectProperties
+                        .DEFAULT_PROJECT_LOCATION,
+                com.mhschmieder.jcommons.util.ProjectProperties
+                        .DEFAULT_PROJECT_AUTHOR,
+                com.mhschmieder.jcommons.util.ProjectProperties
+                        .DEFAULT_PROJECT_DATE,
+                com.mhschmieder.jcommons.util.ProjectProperties
+                        .DEFAULT_PROJECT_NOTES );
     }
 
     /*
@@ -93,7 +92,7 @@ public class ProjectProperties {
         projectDate = new SimpleObjectProperty<>( pProjectDate );
         projectNotes = new SimpleStringProperty( pProjectNotes );
 
-        // Bind all of the properties to the associated dirty flag.
+        // Bind all the properties to the associated dirty flag.
         // NOTE: This is done during initialization, as it is best to make
         //  singleton objects and just update their values vs. reconstructing.
         projectPropertiesChanged = BeanFactory.makeBooleanBinding(
@@ -116,12 +115,13 @@ public class ProjectProperties {
      *            The Project Properties reference for the copy
      */
     public ProjectProperties( final ProjectProperties pProjectProperties ) {
-        this( pProjectProperties.getProjectName(),
-              pProjectProperties.getProjectType(),
-              pProjectProperties.getProjectLocation(),
-              pProjectProperties.getProjectAuthor(),
-              pProjectProperties.getProjectDate(),
-              pProjectProperties.getProjectNotes() );
+        this(
+                pProjectProperties.getProjectName(),
+                pProjectProperties.getProjectType(),
+                pProjectProperties.getProjectLocation(),
+                pProjectProperties.getProjectAuthor(),
+                pProjectProperties.getProjectDate(),
+                pProjectProperties.getProjectNotes() );
     }
 
     // NOTE: Cloning is disabled as it is dangerous; use the copy constructor
@@ -133,16 +133,23 @@ public class ProjectProperties {
 
     /**
      * Resets all fields to their default values, which are blank.
-     * 
+     * <p>
      * Serves as a default pseudo-constructor. 
      */
     public void reset() {
-        setProjectProperties( DEFAULT_PROJECT_NAME,
-                              DEFAULT_PROJECT_TYPE,
-                              DEFAULT_PROJECT_LOCATION,
-                              DEFAULT_PROJECT_AUTHOR,
-                              DEFAULT_PROJECT_DATE,
-                              DEFAULT_PROJECT_NOTES );
+        setProjectProperties(
+                com.mhschmieder.jcommons.util.ProjectProperties
+                        .DEFAULT_PROJECT_NAME,
+                com.mhschmieder.jcommons.util.ProjectProperties
+                        .DEFAULT_PROJECT_TYPE,
+                com.mhschmieder.jcommons.util.ProjectProperties
+                        .DEFAULT_PROJECT_LOCATION,
+                com.mhschmieder.jcommons.util.ProjectProperties
+                        .DEFAULT_PROJECT_AUTHOR,
+                com.mhschmieder.jcommons.util.ProjectProperties
+                        .DEFAULT_PROJECT_DATE,
+                com.mhschmieder.jcommons.util.ProjectProperties
+                        .DEFAULT_PROJECT_NOTES );
     }
 
     /*
@@ -173,13 +180,15 @@ public class ProjectProperties {
      * @param pProjectProperties
      *            The Project Properties reference for the copy
      */
-    public void setProjectProperties( final ProjectProperties pProjectProperties ) {
-        setProjectProperties( pProjectProperties.getProjectName(),
-                              pProjectProperties.getProjectType(),
-                              pProjectProperties.getProjectLocation(),
-                              pProjectProperties.getProjectAuthor(),
-                              pProjectProperties.getProjectDate(),
-                              pProjectProperties.getProjectNotes() );
+    public void setProjectProperties(
+            final ProjectProperties pProjectProperties ) {
+        setProjectProperties(
+                pProjectProperties.getProjectName(),
+                pProjectProperties.getProjectType(),
+                pProjectProperties.getProjectLocation(),
+                pProjectProperties.getProjectAuthor(),
+                pProjectProperties.getProjectDate(),
+                pProjectProperties.getProjectNotes() );
     }
 
     public StringProperty projectNameProperty() {
