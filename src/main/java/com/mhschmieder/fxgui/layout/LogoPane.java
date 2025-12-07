@@ -21,19 +21,20 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  *
- * This file is part of the FxGuiToolkit Library
+ * This file is part of the FxGui Library
  *
- * You should have received a copy of the MIT License along with the
- * FxGuiToolkit Library. If not, see <https://opensource.org/licenses/MIT>.
+ * You should have received a copy of the MIT License along with the FxGui
+ * Library. If not, see <https://opensource.org/licenses/MIT>.
  *
- * Project: https://github.com/mhschmieder/fxguitoolkit
+ * Project: https://github.com/mhschmieder/fxgui
  */
 package com.mhschmieder.fxgui.layout;
 
 import com.mhschmieder.fxcontrols.util.RegionUtilities;
+import com.mhschmieder.fxgraphics.image.ImageUtilities;
 import com.mhschmieder.fxgraphics.image.LogoUtilities;
 import com.mhschmieder.fxgraphics.paint.ColorUtilities;
-import com.mhschmieder.fxpdfreport.FxPdfTools;
+import com.mhschmieder.jpdfreport.PdfTools;
 import com.pdfjet.Image;
 import com.pdfjet.PDF;
 import com.pdfjet.Page;
@@ -45,6 +46,8 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.Background;
 import javafx.scene.layout.HBox;
 import javafx.scene.paint.Color;
+
+import java.awt.image.BufferedImage;
 
 /**
  * This is a container used to provide more control over Logo positioning,
@@ -79,7 +82,12 @@ public final class LogoPane extends HBox {
                              final double scaleFactor )
             throws Exception {
         // As PDF is a "white" paper-oriented export format, use a dark logo.
-        final Image logoImage = FxPdfTools.getImageSnapshot( document, _logoDark );
+        final BufferedImage bufferedImage = ImageUtilities
+                .getBufferedImageSnapshot( _logoDark );
+
+        // Convert the AWT BufferedImage snapshot to a PdfJet Image.
+        final Image logoImage = PdfTools.getImageSnapshot(
+                document, bufferedImage );
         if ( logoImage != null ) {
             logoImage.setPosition( xOffset, yOffset );
             logoImage.scaleBy( scaleFactor );
