@@ -34,10 +34,6 @@ import com.mhschmieder.fxcontrols.util.RegionUtilities;
 import com.mhschmieder.fxgraphics.image.ImageUtilities;
 import com.mhschmieder.fxgraphics.image.LogoUtilities;
 import com.mhschmieder.fxgraphics.paint.ColorUtilities;
-import com.mhschmieder.jpdfreport.PdfTools;
-import com.pdfjet.Image;
-import com.pdfjet.PDF;
-import com.pdfjet.Page;
 import javafx.application.Platform;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -75,24 +71,9 @@ public final class LogoPane extends HBox {
         }
     }
 
-    public void exportToPdf( final PDF document,
-                             final Page visualizationPage,
-                             final double xOffset,
-                             final double yOffset,
-                             final double scaleFactor )
-            throws Exception {
-        // As PDF is a "white" paper-oriented export format, use a dark logo.
-        final BufferedImage bufferedImage = ImageUtilities
-                .getBufferedImageSnapshot( _logoDark );
-
-        // Convert the AWT BufferedImage snapshot to a PdfJet Image.
-        final Image logoImage = PdfTools.getImageSnapshot(
-                document, bufferedImage );
-        if ( logoImage != null ) {
-            logoImage.setPosition( xOffset, yOffset );
-            logoImage.scaleBy( scaleFactor );
-            logoImage.drawOn( visualizationPage );
-        }
+    public BufferedImage getLogoForReport() {
+        // As reports are "white" paper-oriented export formats, use a dark logo.
+        return ImageUtilities.getBufferedImageSnapshot( _logoDark );
     }
 
     public double getLogoLeftMargin() {
@@ -102,13 +83,13 @@ public final class LogoPane extends HBox {
 
     private void initPane( final String jarRelativeLightLogoUrl,
                            final String jarRelativeDarkLogoUrl ) {
-        // Load the logos for dark and light backgrounds so that we can switch 
+        // Load the logos for dark and light backgrounds so that we can switch
         // between them when the host's background changes.
         _logoLight = LogoUtilities.getLogoImageView( Color.BLACK,
-                                                       jarRelativeLightLogoUrl, 
+                                                       jarRelativeLightLogoUrl,
                                                        jarRelativeDarkLogoUrl );
         _logoDark = LogoUtilities.getLogoImageView( Color.WHITE,
-                                                      jarRelativeLightLogoUrl, 
+                                                      jarRelativeLightLogoUrl,
                                                       jarRelativeDarkLogoUrl );
 
         // Make a Label to host the Logo Image Icon, to control sizing etc.
