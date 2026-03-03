@@ -59,6 +59,27 @@
             <version>3.6.1</version>
             <scope>compile</scope>
         </dependency>
+        <!-- Source: https://mvnrepository.com/artifact/org.apache.commons/commons-rng-client-api -->
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-rng-client-api</artifactId>
+            <version>1.6</version>
+            <scope>compile</scope>
+        </dependency>
+        <!-- Source: https://mvnrepository.com/artifact/org.apache.commons/commons-rng-simple -->
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-rng-simple</artifactId>
+            <version>1.6</version>
+            <scope>compile</scope>
+        </dependency>
+        <!-- Source: https://mvnrepository.com/artifact/org.apache.commons/commons-rng-sampling -->
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-rng-sampling</artifactId>
+            <version>1.6</version>
+            <scope>compile</scope>
+        </dependency>
         <dependency>
             <groupId>com.mhschmieder</groupId>
             <artifactId>fxcontrols</artifactId>

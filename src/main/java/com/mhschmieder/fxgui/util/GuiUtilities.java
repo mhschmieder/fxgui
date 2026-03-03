@@ -21,12 +21,12 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  *
- * This file is part of the FxGuiToolkit Library
+ * This file is part of the fxgui library
  *
- * You should have received a copy of the MIT License along with the
- * FxGuiToolkit Library. If not, see <https://opensource.org/licenses/MIT>.
+ * You should have received a copy of the MIT License along with the fxgui
+ * library. If not, see <https://opensource.org/licenses/MIT>.
  *
- * Project: https://github.com/mhschmieder/fxguitoolkit
+ * Project: https://github.com/mhschmieder/fxgui
  */
 package com.mhschmieder.fxgui.util;
 
@@ -99,6 +99,8 @@ import javafx.stage.Screen;
 import javafx.stage.Stage;
 import javafx.stage.Window;
 import org.apache.commons.math3.util.FastMath;
+import org.apache.commons.rng.UniformRandomProvider;
+import org.apache.commons.rng.core.source32.Well44497b;
 import org.controlsfx.tools.Borders;
 
 import java.net.URI;
@@ -106,7 +108,6 @@ import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Random;
 
 /**
  * {@code GuiUtilities} is a utility class for methods related to top-level
@@ -167,6 +168,22 @@ public final class GuiUtilities {
                                                                             "/css/theme-dark.css";
     @SuppressWarnings("nls") public static final String LIGHT_BACKGROUND_CSS            =
                                                                              "/css/theme-light.css";
+
+    /**
+     * Random seed array to use for consistent results on repeat uses of any
+     * available distribution model. Reset if repeatable sequence isn't wanted.
+     */
+    public static int[] randomSeeds;
+
+    /**
+     * Reference for random number provider, to make sure there is only one
+     * instance each time an application that uses this class is invoked.
+     * Otherwise, successive calls would use the same root and generally find
+     * the same first random number, defeating the purpose altogether.
+     * <p>
+     * NOTE: We use the lazy-init approach, waiting until needed to construct.
+     */
+    private static UniformRandomProvider randomProvider = null;
 
     public static void addStylesheetAsJarResource( final ObservableList< String > stylesheetFilenames,
                                                    final String jarRelativeStylesheetFilename ) {
@@ -359,10 +376,16 @@ public final class GuiUtilities {
      * @return A random Color with full opacity
      */
     public static Paint randomColor() {
-        final Random random = new Random();
-        final int r = random.nextInt( 255 );
-        final int g = random.nextInt( 255 );
-        final int b = random.nextInt( 255 );
+        // NOTE: Switch to Well19937c as provider if Well44497b is too slow.
+        if ( randomProvider == null ) {
+            randomProvider = new Well44497b( randomSeeds );
+        }
+
+        // Use the simplest version of Apache Commons RNG as we don't need a
+        // specialized sampler for something as trivial as random RGB values.
+        final int r = randomProvider.nextInt( 255 );
+        final int g = randomProvider.nextInt( 255 );
+        final int b = randomProvider.nextInt( 255 );
 
         return Color.rgb( r, g, b );
     }
