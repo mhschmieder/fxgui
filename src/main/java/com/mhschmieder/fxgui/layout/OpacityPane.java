@@ -34,7 +34,7 @@ import com.mhschmieder.fxcontrols.control.ControlFactory;
 import com.mhschmieder.fxcontrols.control.ControlUtilities;
 import com.mhschmieder.fxcontrols.control.DoubleEditor;
 import com.mhschmieder.fxcontrols.control.OpacitySlider;
-import com.mhschmieder.fxgraphics.input.ScrollingSensitivity;
+import com.mhschmieder.jgraphics.input.ScrollingSensitivity;
 import com.mhschmieder.jcommons.util.ClientProperties;
 import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.SimpleDoubleProperty;
