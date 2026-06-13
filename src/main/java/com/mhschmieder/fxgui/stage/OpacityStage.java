@@ -30,10 +30,10 @@
  */
 package com.mhschmieder.fxgui.stage;
 
-import com.mhschmieder.jgraphics.input.ScrollingSensitivity;
 import com.mhschmieder.fxgui.layout.OpacityPane;
 import com.mhschmieder.jcommons.branding.ProductBranding;
 import com.mhschmieder.jcommons.util.ClientProperties;
+import com.mhschmieder.jgraphics.input.ScrollingSensitivity;
 import javafx.beans.property.DoubleProperty;
 import javafx.scene.Node;
 
