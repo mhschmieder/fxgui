@@ -31,13 +31,14 @@
 package com.mhschmieder.fxgui.swing;
 
 import com.mhschmieder.fxgraphics.io.RenderedGraphicsExportOptions;
-import com.mhschmieder.jgui.component.TitledVectorizationXPanel;
+import com.mhschmieder.jgui.layout.JxTitledVectorizationPanel;
 
 /**
  * This is an abstract parent class for Swing panels that form the main content
  * layout region for a legacy Java 2D API Rendered Graphics presentation wrapper.
  */
-public abstract class RenderedGraphicsPanel extends TitledVectorizationXPanel {
+public abstract class RenderedGraphicsTitledVectorizationPanel
+        extends JxTitledVectorizationPanel {
     /**
      *
      */
@@ -46,7 +47,7 @@ public abstract class RenderedGraphicsPanel extends TitledVectorizationXPanel {
     // Cache the most recent Rendered Graphics Export Options.
     protected RenderedGraphicsExportOptions _renderedGraphicsExportOptions;
 
-    protected RenderedGraphicsPanel() {
+    protected RenderedGraphicsTitledVectorizationPanel() {
         // Always call the superclass constructor first!
         super();
 

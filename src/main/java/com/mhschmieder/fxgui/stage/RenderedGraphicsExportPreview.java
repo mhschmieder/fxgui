@@ -34,7 +34,7 @@ import com.mhschmieder.fxcontrols.control.ControlUtilities;
 import com.mhschmieder.fxcontrols.control.LabeledControlFactory;
 import com.mhschmieder.fxgraphics.io.RenderedGraphicsExportOptions;
 import com.mhschmieder.fxgui.layout.RenderedGraphicsExportPreviewPane;
-import com.mhschmieder.fxgui.swing.RenderedGraphicsPanel;
+import com.mhschmieder.fxgui.swing.RenderedGraphicsTitledVectorizationPanel;
 import com.mhschmieder.jcommons.branding.ProductBranding;
 import com.mhschmieder.jcommons.io.FileMode;
 import com.mhschmieder.jcommons.io.FileStatus;
@@ -80,7 +80,7 @@ public final class RenderedGraphicsExportPreview extends ExportPreview {
     protected String                                _optionalItemLabel;
 
     // Maintain a Swing Component reference for Rendered Graphics Export actions.
-    protected RenderedGraphicsPanel _renderedGraphicsExportSource;
+    protected RenderedGraphicsTitledVectorizationPanel _renderedGraphicsExportSource;
 
     @SuppressWarnings("nls")
     public RenderedGraphicsExportPreview( final String auxiliaryLabel,
@@ -342,7 +342,7 @@ public final class RenderedGraphicsExportPreview extends ExportPreview {
      *            The Swing container for the layout group to be exported
      */
     public void setRenderedGraphicsExportSource( 
-            final RenderedGraphicsPanel renderedGraphicsExportSource ) {
+            final RenderedGraphicsTitledVectorizationPanel renderedGraphicsExportSource ) {
         // Cache the Graphics Export Source locally, for reference by file
         // actions.
         _renderedGraphicsExportSource = renderedGraphicsExportSource;
