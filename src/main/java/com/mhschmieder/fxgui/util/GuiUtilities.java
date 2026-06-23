@@ -36,6 +36,7 @@ import com.mhschmieder.fxcontrols.util.RegionUtilities;
 import com.mhschmieder.fxgraphics.paint.ColorUtilities;
 import com.mhschmieder.fxgui.dialog.DialogUtilities;
 import com.mhschmieder.fxgui.layout.LayoutFactory;
+import com.mhschmieder.fxgui.stage.XStage;
 import com.mhschmieder.jcommons.util.ClientProperties;
 import com.mhschmieder.jcommons.util.SystemType;
 import javafx.application.HostServices;
@@ -1459,5 +1460,18 @@ public final class GuiUtilities {
         grid.add( textArea, 0, 1 );
 
         return grid;
+    }
+
+    public static void toggleStageVisible( final XStage stage ) {
+        // NOTE: If the stage visibility is set to false while iconified, then
+        //  the stage enters a bad state that cannot be shown when visibility
+        //  is set to true. Setting iconified to false prior to visibility to
+        //  false prevents this issue from occurring.
+        if ( stage.isShowing() ) {
+            stage.setIconified( false );
+        }
+        stage.setVisible( !stage.isShowing(),
+                true );
+
     }
 }
