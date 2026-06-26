@@ -28,7 +28,7 @@
  *
  * Project: https://github.com/mhschmieder/fxguitoolkit
  */
-package com.mhschmieder.fxgui.task;
+package com.mhschmieder.fxgui.concurrent.task;
 
 import com.mhschmieder.fxgui.application.MainApplicationWindowHandler;
 import javafx.application.Platform;

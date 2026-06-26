@@ -32,7 +32,7 @@ package com.mhschmieder.fxgui.application;
 
 import com.mhschmieder.fxcontrols.util.RegionUtilities;
 import com.mhschmieder.fxgraphics.image.ImageUtilities;
-import com.mhschmieder.fxgui.task.MainApplicationLoadTask;
+import com.mhschmieder.fxgui.concurrent.task.MainApplicationLoadTask;
 import com.mhschmieder.fxgui.util.GuiUtilities;
 import com.mhschmieder.jcommons.branding.ProductBranding;
 import javafx.animation.FadeTransition;

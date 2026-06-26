@@ -28,7 +28,7 @@
  *
  * Project: https://github.com/mhschmieder/fxgui
  */
-package com.mhschmieder.fxgui.service;
+package com.mhschmieder.fxgui.concurrent.service;
 
 import com.mhschmieder.jcommons.net.HttpServletRequestProperties;
 import com.mhschmieder.jcommons.util.ClientProperties;

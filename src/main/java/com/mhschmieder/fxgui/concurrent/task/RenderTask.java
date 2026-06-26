@@ -28,7 +28,7 @@
  *
  * Project: https://github.com/mhschmieder/fxgui
  */
-package com.mhschmieder.fxgui.task;
+package com.mhschmieder.fxgui.concurrent.task;
 
 import javafx.concurrent.Task;
 import javafx.geometry.Point2D;

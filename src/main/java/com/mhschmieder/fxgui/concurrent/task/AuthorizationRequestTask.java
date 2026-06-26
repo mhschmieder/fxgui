@@ -28,7 +28,7 @@
  *
  * Project: https://github.com/mhschmieder/fxgui
  */
-package com.mhschmieder.fxgui.task;
+package com.mhschmieder.fxgui.concurrent.task;
 
 import com.mhschmieder.jcommons.net.AuthorizationServerResponse;
 import com.mhschmieder.jcommons.net.HttpServletRequestProperties;

@@ -28,10 +28,10 @@
  *
  * Project: https://github.com/mhschmieder/fxgui
  */
-package com.mhschmieder.fxgui.service;
+package com.mhschmieder.fxgui.concurrent.service;
 
 import com.mhschmieder.fxgui.stage.DataRequestStatusViewer;
-import com.mhschmieder.fxgui.task.DataRequestTask;
+import com.mhschmieder.fxgui.concurrent.task.DataRequestTask;
 import com.mhschmieder.fxgui.dialog.DialogUtilities;
 import com.mhschmieder.jcommons.net.DataServerResponse;
 import com.mhschmieder.jcommons.net.HttpServletRequestProperties;
