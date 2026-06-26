@@ -32,7 +32,7 @@ package com.mhschmieder.fxgui.stage;
 
 import com.mhschmieder.fxcontrols.control.SvgViewerToolBar;
 import com.mhschmieder.fxcontrols.control.ZoomPane;
-import com.mhschmieder.fxgraphics.shape.SvgUtilities;
+import com.mhschmieder.fxgraphics.svg.SvgUtilities;
 import com.mhschmieder.jcommons.branding.ProductBranding;
 import com.mhschmieder.jcommons.util.ClientProperties;
 import javafx.geometry.Insets;
