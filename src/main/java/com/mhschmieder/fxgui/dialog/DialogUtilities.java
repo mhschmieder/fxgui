@@ -37,6 +37,7 @@ import com.mhschmieder.fxgraphics.io.VectorGraphicsExportOptions;
 import com.mhschmieder.jcommons.lang.CharConstants;
 import com.mhschmieder.jcommons.lang.StringUtilities;
 import com.mhschmieder.jcommons.util.ClientProperties;
+import com.mhschmieder.jphysics.measure.DistanceUnit;
 import javafx.geometry.Insets;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
@@ -538,5 +539,71 @@ public final class DialogUtilities {
         final String title = "Space in Directory Name Warning";
 
         showWarningAlert( message, masthead, title );
+    }
+
+    // NOTE: Point2D is immutable, so this method must return the confirmed
+    // coordinates vs. a status. This isn't a problem though, as the default
+    // choice is passed in, so a Cancel action simply returns the initial
+    // coordinates unchanged.
+    public static Point2D showConfirmCoordinatesDialog( final String title,
+                                                        final ClientProperties clientProperties,
+                                                        final Point2D coordinatesCandidate,
+                                                        final DistanceUnit distanceUnit ) {
+        final String masthead = MessageFactory.getConfirmCoordinatesMasthead();
+        final com.mhschmieder.fxgui.dialog.ConfirmCoordinatesDialog confirmCoordinatesDialog =
+                new com.mhschmieder.fxgui.dialog.ConfirmCoordinatesDialog( title,
+                        masthead,
+                        clientProperties,
+                        coordinatesCandidate );
+        confirmCoordinatesDialog.setDistanceUnit( distanceUnit );
+        final Optional< ButtonType > response = confirmCoordinatesDialog.showModalDialog();
+
+        // Get the Button Type that was pressed, but use standard
+        // object-oriented comparisons as Lambda Expressions do not give us
+        // the flexibility of exiting this method directly or of sharing
+        // common code after initial special-case handling of the three user
+        // options ("Yes", "No", and "Cancel") and their variants.
+        final ButtonType buttonType = response.get();
+
+        // Handle the full enumeration of potential responses.
+        Point2D coordinates = coordinatesCandidate;
+
+        switch ( buttonType.getButtonData() ) {
+            case HELP:
+            case HELP_2:
+            case BACK_PREVIOUS:
+            case CANCEL_CLOSE:
+                // These options equate to cancellation.
+                // If the user cancels, return the initial coordinates.
+                break;
+            case NO:
+                // This case is currently unsupported, but would be like a
+                // Cancel.
+                break;
+            case APPLY:
+            case FINISH:
+            case NEXT_FORWARD:
+            case OK_DONE:
+            case YES:
+                // Sync the data model to the final edits before querying them.
+                confirmCoordinatesDialog.updateModel();
+
+                // Return the newly confirmed coordinates.
+                coordinates = confirmCoordinatesDialog.getCoordinatesCandidate();
+
+                break;
+            case BIG_GAP:
+            case SMALL_GAP:
+            case LEFT:
+            case RIGHT:
+            case OTHER:
+                // It is unlikely that these cases will ever be called, but it
+                // is safest to treat them like a Cancel.
+                break;
+            default:
+                break;
+        }
+
+        return coordinates;
     }
 }
