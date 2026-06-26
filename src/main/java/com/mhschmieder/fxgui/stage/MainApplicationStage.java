@@ -31,6 +31,7 @@
 package com.mhschmieder.fxgui.stage;
 
 import com.mhschmieder.fxgraphics.image.ImageUtilities;
+import com.mhschmieder.fxgui.application.MainApplicationWindowHandler;
 import com.mhschmieder.jcommons.branding.ProductBranding;
 import com.mhschmieder.jcommons.util.ClientProperties;
 import javafx.application.HostServices;

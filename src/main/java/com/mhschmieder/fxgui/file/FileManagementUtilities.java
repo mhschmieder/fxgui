@@ -28,9 +28,10 @@
  *
  * Project: https://github.com/mhschmieder/jgui
  */
-package com.mhschmieder.fxgui.stage;
+package com.mhschmieder.fxgui.file;
 
 import com.mhschmieder.fxgui.dialog.DialogUtilities;
+import com.mhschmieder.fxgui.stage.XStage;
 import com.mhschmieder.jcommons.io.FileDiagnostics;
 import com.mhschmieder.jcommons.io.FileUtilities;
 import com.mhschmieder.jcommons.lang.StringUtilities;
@@ -50,7 +51,7 @@ import java.nio.file.Paths;
  */
 public final class FileManagementUtilities {
 
-    private static final System.Logger LOGGER = System.getLogger(
+    private static final Logger LOGGER = System.getLogger(
             FileManagementUtilities.class.getName() );
 
     /**
@@ -146,7 +147,7 @@ public final class FileManagementUtilities {
      * various issues that can come up when trying to make a directory that may
      * or may not already exist and that may or may not already have contents.
      *
-     * @param directory The directory to create
+     * @param directoryFile The directory to create
      * @param replaceIfExists {@code true} if the directory and its contents
      *                               should be deleted if already exists vs.
      *                               retained and returned for additions;
@@ -154,20 +155,86 @@ public final class FileManagementUtilities {
      * @param headlessMode {@code true} if no confirmation dialogs are wanted
      * @return The {@link File} handle for the directory requested
      */
-    public static File makeDirectory( final File directory,
+    public static File makeDirectory( final File directoryFile,
+                                      final boolean replaceIfExists,
+                                      final boolean headlessMode ) {
+        try {
+            return makeDirectory(
+                    Path.of( directoryFile.getPath() ),
+                    directoryFile,
+                    replaceIfExists,
+                    headlessMode );
+        }
+        catch ( final Exception e ) {
+            LOGGER.log( Level.ERROR, e.getMessage(), e );
+            return null;
+        }
+    }
+
+    /**
+     * Returns the {@link File} handle for the directory requested.
+     * <p>
+     * This serves as a "safety" wrapper to cover most usage contexts, to avoid
+     * copy/paste code and inconsistent or incomplete logic when dealing with
+     * various issues that can come up when trying to make a directory that may
+     * or may not already exist and that may or may not already have contents.
+     *
+     * @param directoryPath The {@link Path} encapsulation of the directory
+     * @param replaceIfExists {@code true} if the directory and its contents
+     *                               should be deleted if already exists vs.
+     *                               retained and returned for additions;
+     *                               {@code false} to leave the directory as-is
+     * @param headlessMode {@code true} if no confirmation dialogs are wanted
+     * @return The {@link File} handle for the directory requested
+     */
+    public static File makeDirectory( final Path directoryPath,
+                                      final boolean replaceIfExists,
+                                      final boolean headlessMode ) {
+        try {
+            return makeDirectory(
+                    directoryPath,
+                    directoryPath.toFile(),
+                    replaceIfExists,
+                    headlessMode );
+        }
+        catch ( final Exception e ) {
+            LOGGER.log( Level.ERROR, e.getMessage(), e );
+            return null;
+        }
+    }
+
+    /**
+     * Returns the {@link File} handle for the directory requested.
+     * <p>
+     * This serves as a "safety" wrapper to cover most usage contexts, to avoid
+     * copy/paste code and inconsistent or incomplete logic when dealing with
+     * various issues that can come up when trying to make a directory that may
+     * or may not already exist and that may or may not already have contents.
+     *
+     * @param directoryPath The {@link Path} encapsulation of the directory
+     * @param directoryFile The directory to create
+     * @param replaceIfExists {@code true} if the directory and its contents
+     *                               should be deleted if already exists vs.
+     *                               retained and returned for additions;
+     *                               {@code false} to leave the directory as-is
+     * @param headlessMode {@code true} if no confirmation dialogs are wanted
+     * @return The {@link File} handle for the directory requested
+     */
+    public static File makeDirectory( final Path directoryPath,
+                                      final File directoryFile,
                                       final boolean replaceIfExists,
                                       final boolean headlessMode ) {
         if ( !FileDiagnostics.checkFileExists(
-                directory.getPath(), "", true ) ) {
+                directoryFile.getPath(), "", true ) ) {
             try {
-                FileUtils.forceMkdir( directory );
+                FileUtils.forceMkdir( directoryFile );
             }
             catch ( final Exception e ) {
                 LOGGER.log( Level.ERROR, e.getMessage(), e );
 
                 if ( !headlessMode ) {
                     final String message = "Could Not Create Folder: "
-                            + StringUtilities.quote( directory.getPath() );
+                            + StringUtilities.quote( directoryFile.getPath() );
                     final String masthead = "Folder Not Created";
                     final String title = "File Error";
 
@@ -178,21 +245,21 @@ public final class FileManagementUtilities {
             }
         }
         else {
-            if ( !FileDiagnostics.isDirectoryEmpty( directory )
+            if ( !FileDiagnostics.isDirectoryEmpty( directoryFile )
                     && replaceIfExists ) {
                 if ( !headlessMode ) {
                     if ( !DialogUtilities.checkRemoveDirectoryContents(
-                            directory.getPath() ) ) {
+                            directoryFile.getPath() ) ) {
                         return null;
                     }
                 }
 
                 // Delete the current directory contents but preserve structure.
-                if ( !FileUtilities.deleteDirectoryContents( directory ) ) {
+                if ( !FileUtilities.deleteDirectoryContents( directoryFile ) ) {
                     if ( !headlessMode ) {
                         final String message = "Could Not Delete Folder: "
                                 + StringUtilities.quote(
-                                directory.getPath() );
+                                directoryFile.getPath() );
                         final String masthead = "Folder Not Deleted";
                         final String title = "File Error";
 
@@ -203,6 +270,17 @@ public final class FileManagementUtilities {
             }
         }
 
-        return directory;
+        return directoryFile;
+    }
+
+    public static void toggleStageVisible( final XStage stage ) {
+        // NOTE: If the stage visibility is set to false while iconified, then
+        //  the stage enters a bad state that cannot be shown when visibility is
+        //  iet to true. Setting iconified to false prior to visibility to false
+        //  prevents this issue from occurring.
+        if ( stage.isShowing() ) {
+            stage.setIconified( false );
+        }
+        stage.setVisible( !stage.isShowing(), true );
     }
 }

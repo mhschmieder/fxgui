@@ -28,8 +28,9 @@
  *
  * Project: https://github.com/mhschmieder/fxguitoolkit
  */
-package com.mhschmieder.fxgui.stage;
+package com.mhschmieder.fxgui.task;
 
+import com.mhschmieder.fxgui.application.MainApplicationWindowHandler;
 import javafx.application.Platform;
 import javafx.concurrent.Task;
 import org.apache.commons.math3.util.FastMath;

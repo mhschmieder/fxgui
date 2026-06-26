@@ -28,7 +28,7 @@
  *
  * Project: https://github.com/mhschmieder/fxguitoolkit
  */
-package com.mhschmieder.fxgui.stage;
+package com.mhschmieder.fxgui.file;
 
 import com.mhschmieder.jcommons.io.FileExtensions;
 import javafx.stage.FileChooser.ExtensionFilter;

@@ -39,6 +39,9 @@ import com.mhschmieder.fxgraphics.image.ImageUtilities;
 import com.mhschmieder.fxgraphics.io.RasterGraphicsExportOptions;
 import com.mhschmieder.fxgraphics.io.VectorGraphicsExportOptions;
 import com.mhschmieder.fxgraphics.paint.ColorConstants;
+import com.mhschmieder.fxgraphics.paint.ForegroundManager;
+import com.mhschmieder.fxgui.application.ApplicationWindowHandler;
+import com.mhschmieder.fxgui.event.FileActionHandler;
 import com.mhschmieder.fxgui.print.PrintManager;
 import com.mhschmieder.fxgui.util.GuiUtilities;
 import com.mhschmieder.jcommons.branding.ProductBranding;
@@ -82,8 +85,8 @@ import java.util.stream.Stream;
  * {@code XStage} is a skeletal abstract base class that extends the JavaFX
  * Stage class enough to serve as a better boilerplate starting point for most.
  */
-public abstract class XStage extends Stage implements ForegroundManager, 
-    FileActionHandler, ApplicationWindowHandler {
+public abstract class XStage extends Stage implements ForegroundManager,
+        FileActionHandler, ApplicationWindowHandler {
 
     // To avoid cut/paste errors with resource references, make global constants
     // for the CSS theme to be used for dark vs. light backgrounds.

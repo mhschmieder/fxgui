@@ -28,7 +28,7 @@
  *
  * Project: https://github.com/mhschmieder/fxguitoolkit
  */
-package com.mhschmieder.fxgui.stage;
+package com.mhschmieder.fxgui.application;
 
 import javafx.geometry.Dimension2D;
 
@@ -36,8 +36,8 @@ import java.io.File;
 import java.util.prefs.Preferences;
 
 /**
- * Defines the contract for methods that all application windows and stages
- * must implement for handling basic application session functionality.
+ * Defines the contract for methods that all application windows and stages must
+ * implement for handling basic application session functionality.
  */
 public interface ApplicationWindowHandler { 
     

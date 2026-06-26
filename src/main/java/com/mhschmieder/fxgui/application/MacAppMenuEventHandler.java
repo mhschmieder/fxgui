@@ -24,42 +24,29 @@
  * This file is part of the FxGuiToolkit Library
  *
  * You should have received a copy of the MIT License along with the
- * FxGuiToolkit Library. If not, see <https://opensource.org/licenses/MIT>.
+ * GuiToolkit Library. If not, see <https://opensource.org/licenses/MIT>.
  *
  * Project: https://github.com/mhschmieder/fxguitoolkit
  */
-package com.mhschmieder.fxgui.stage;
-
-import javafx.scene.paint.Color;
+package com.mhschmieder.fxgui.application;
 
 /**
- * {@code ForegroundManager} is an interface that establishes the contract for
- * what methods an implementing class must provide in order to properly manage
- * the foreground of components such that the background does not mask text,
- * outlines, and other graphics that is drawn on the canvas.
- *
- * @version 1.0
- *
- * @author Mark Schmieder
+ * {@code MacAppMenuEventHandler} is an interface that defines methods that
+ * primary application windows must implement in order to support system level
+ * calls on macOS and redirected handlers from the Apple Application Menu.
  */
-public interface ForegroundManager {
+public interface MacAppMenuEventHandler {
 
-    /**
-     * Sets the appropriate foreground color for a {@code Component} based on
-     * the specified background color.
-     * <p>
-     * Both the background and the foreground are applied to the entire layout
-     * hierarchy, with the foreground color chosen to provide adequate contrast
-     * against the background for text rendering as well as for line graphics.
-     * <p>
-     * This method should be overridden and called as the first line in the
-     * method override, before adding support for GUI elements unique to the
-     * derived class hierarchy.
-     *
-     * @param backColor
-     *            The current background color to apply to this component
-     *
-     * @since 1.0
-     */
-    void setForegroundFromBackground( final Color backColor );
+    void about();
+
+    void hide();
+
+    void open( final String filePath );
+
+    void preferences();
+
+    void quit();
+
+    void toFront();
+
 }

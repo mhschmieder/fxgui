@@ -28,7 +28,7 @@
  *
  * Project: https://github.com/mhschmieder/fxguitoolkit
  */
-package com.mhschmieder.fxgui.stage;
+package com.mhschmieder.fxgui.application;
 
 import javafx.application.Platform;
 import javafx.stage.WindowEvent;

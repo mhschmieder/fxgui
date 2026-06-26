@@ -28,7 +28,7 @@
  *
  * Project: https://github.com/mhschmieder/fxguitoolkit
  */
-package com.mhschmieder.fxgui.stage;
+package com.mhschmieder.fxgui.event;
 
 import com.mhschmieder.fxcontrols.util.MessageFactory;
 import com.mhschmieder.fxgraphics.image.ImageSize;
@@ -37,6 +37,9 @@ import com.mhschmieder.fxgraphics.io.RasterGraphicsExportOptions;
 import com.mhschmieder.fxgraphics.io.RenderedGraphicsExportOptions;
 import com.mhschmieder.fxgraphics.io.VectorGraphicsExportOptions;
 import com.mhschmieder.fxgui.dialog.DialogUtilities;
+import com.mhschmieder.fxgui.file.ExtensionFilterUtilities;
+import com.mhschmieder.fxgui.file.ExtensionFilters;
+import com.mhschmieder.fxgui.file.FileChooserUtilities;
 import com.mhschmieder.jcommons.io.CsvUtilities;
 import com.mhschmieder.jcommons.io.FileMode;
 import com.mhschmieder.jcommons.io.FileMover;
@@ -108,7 +111,7 @@ public interface FileActionHandler {
         final List< File > files = new ArrayList<>();
         if ( multiSelectionEnabled ) {
             // Get a file (or list of files) for a "File Open" action.
-            files.addAll( FileChooserUtilities.getFilesForOpen( 
+            files.addAll( FileChooserUtilities.getFilesForOpen(
                     fileChooserTitle,
                     initialDirectory,
                     extensionFilterAdditions,

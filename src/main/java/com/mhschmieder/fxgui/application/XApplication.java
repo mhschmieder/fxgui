@@ -31,7 +31,7 @@
 package com.mhschmieder.fxgui.application;
 
 import com.mhschmieder.fxgui.demo.DemoStage;
-import com.mhschmieder.fxgui.stage.MainApplicationLoadTask;
+import com.mhschmieder.fxgui.task.MainApplicationLoadTask;
 import com.mhschmieder.fxgui.stage.MainApplicationStage;
 import com.mhschmieder.jcommons.branding.ProductBranding;
 import com.mhschmieder.jcommons.branding.ProductVersion;
