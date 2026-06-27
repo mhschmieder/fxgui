@@ -33,7 +33,7 @@ package com.mhschmieder.fxgui.layout;
 import com.mhschmieder.fxcontrols.control.ControlUtilities;
 import com.mhschmieder.fxcontrols.control.LayerPropertiesTable;
 import com.mhschmieder.fxcontrols.model.LayerProperties;
-import com.mhschmieder.fxcontrols.util.LayerPropertiesManager;
+import com.mhschmieder.fxcontrols.util.LayerPropertiesManagement;
 import com.mhschmieder.fxcontrols.util.RegionUtilities;
 import com.mhschmieder.fxgui.stage.XStage;
 import com.mhschmieder.jcommons.util.ClientProperties;
@@ -47,7 +47,7 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.paint.Color;
 import org.apache.commons.math3.util.FastMath;
 
-public final class LayerManagementPane extends BorderPane {
+public final class LayerManagerPane extends BorderPane {
 
     // Declare the table and controls used for the Layer Properties.
     public LayerPropertiesTable _layerPropertiesTable;
@@ -58,8 +58,8 @@ public final class LayerManagementPane extends BorderPane {
     // Declare change listeners for various observable properties.
     protected InvalidationListener layerSelectionChangeListener;
 
-    public LayerManagementPane( final XStage layerManagementStage,
-                                final ClientProperties pClientProperties ) {
+    public LayerManagerPane(final XStage layerManagementStage,
+                            final ClientProperties pClientProperties ) {
         // Always call the superclass constructor first!
         super();
 
@@ -134,7 +134,7 @@ public final class LayerManagementPane extends BorderPane {
     public String getNewLayerNameDefault() {
         // Forward this method to the Layer Properties Table.
         // return _layerPropertiesTable.getNewLayerNameDefault();
-        return LayerPropertiesManager.LAYER_NAME_DEFAULT + FastMath.random();
+        return LayerPropertiesManagement.LAYER_NAME_DEFAULT + FastMath.random();
     }
 
     // TODO: Determine the need for this method as compared to similar methods
@@ -146,7 +146,7 @@ public final class LayerManagementPane extends BorderPane {
         // Forward this method to the Layer Properties Table.
         // return _layerPropertiesTable.getUniqueLayerName( layerNameCandidate
         // );
-        return LayerPropertiesManager.LAYER_NAME_DEFAULT + FastMath.random();
+        return LayerPropertiesManagement.LAYER_NAME_DEFAULT + FastMath.random();
     }
 
     private void initPane( final ClientProperties pClientProperties ) {

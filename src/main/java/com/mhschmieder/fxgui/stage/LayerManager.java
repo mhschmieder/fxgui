@@ -31,14 +31,13 @@
 package com.mhschmieder.fxgui.stage;
 
 import com.mhschmieder.fxcontrols.action.LayerManagementActions;
-import com.mhschmieder.fxcontrols.control.LayerManagementToolBar;
+import com.mhschmieder.fxcontrols.control.LayerManagerToolBar;
 import com.mhschmieder.fxcontrols.control.LayerPropertiesTable;
 import com.mhschmieder.fxcontrols.control.MenuFactory;
 import com.mhschmieder.fxcontrols.model.LayerProperties;
-import com.mhschmieder.fxcontrols.util.LayerManagementMessageFactory;
-import com.mhschmieder.fxcontrols.util.LayerPropertiesManager;
+import com.mhschmieder.fxcontrols.util.LayerPropertiesManagement;
 import com.mhschmieder.fxgui.dialog.DialogUtilities;
-import com.mhschmieder.fxgui.layout.LayerManagementPane;
+import com.mhschmieder.fxgui.layout.LayerManagerPane;
 import com.mhschmieder.jcommons.branding.ProductBranding;
 import com.mhschmieder.jcommons.util.ClientProperties;
 import javafx.collections.ObservableList;
@@ -50,7 +49,7 @@ import javafx.scene.paint.Color;
 
 import java.util.Optional;
 
-public final class LayerManagementStage extends XStage {
+public final class LayerManager extends XStage {
 
     public static final String                LAYER_MANAGEMENT_FRAME_TITLE_DEFAULT  =
                                                                                    "Layer Management"; //$NON-NLS-1$
@@ -65,17 +64,17 @@ public final class LayerManagementStage extends XStage {
     public LayerManagementActions             _actions;
 
     // Declare the main tool bar.
-    public LayerManagementToolBar _toolBar;
+    public LayerManagerToolBar _toolBar;
 
     // Cache the Layer Collection reference.
     private ObservableList<LayerProperties> _layerCollection;
 
     // Declare the main content pane.
-    protected LayerManagementPane             _layerManagementPane;
+    protected LayerManagerPane _layerManagerPane;
 
     @SuppressWarnings("nls")
-    public LayerManagementStage( final ProductBranding productBranding,
-                                 final ClientProperties pClientProperties ) {
+    public LayerManager(final ProductBranding productBranding,
+                        final ClientProperties pClientProperties ) {
         // Always call the superclass constructor first!
         super( LAYER_MANAGEMENT_FRAME_TITLE_DEFAULT,
                "layerManagement",
@@ -118,7 +117,7 @@ public final class LayerManagementStage extends XStage {
 
     public void addLayerSelectionListener() {
         // Forward this method to the Layer Management Pane.
-        _layerManagementPane.addLayerSelectionListener();
+        _layerManagerPane.addLayerSelectionListener();
     }
 
     // Add the Tool Bar's event listeners.
@@ -138,13 +137,13 @@ public final class LayerManagementStage extends XStage {
     // Clear any selected rows in the Layers Table.
     protected void clearSelection() {
         // Forward this method to the Layer Management Pane.
-        _layerManagementPane.clearSelection();
+        _layerManagerPane.clearSelection();
     }
 
     // Create a new Layer cloned from the selected Layer.
     public void createLayer() {
         // Insert the new Layer into the Layer Properties Table.
-        final int referenceIndex = _layerManagementPane.createLayer();
+        final int referenceIndex = _layerManagerPane.createLayer();
         if ( referenceIndex < 0 ) {
             return;
         }
@@ -172,7 +171,7 @@ public final class LayerManagementStage extends XStage {
         }
 
         // Delete the selected Layer(s) from the Layer Properties Table.
-        final int referenceIndex = _layerManagementPane.deleteLayers();
+        final int referenceIndex = _layerManagerPane.deleteLayers();
 
         // If the current Active Layer was deleted, reset it and the selected
         // row to the Default Layer. Otherwise, select the reference row from
@@ -183,12 +182,12 @@ public final class LayerManagementStage extends XStage {
         // to sync the table's displayed rows.
         // NOTE: Deferred instead, in hopes that it's valid after dirty flag
         // callback has finished executing.
-        if ( !LayerPropertiesManager.hasActiveLayer( _layerCollection ) ) {
-            LayerPropertiesManager.setDefaultLayerActive( _layerCollection );
-            _layerManagementPane.setSelectedRow( LayerPropertiesTable.ROW_DEFAULT_LAYER );
+        if ( !LayerPropertiesManagement.hasActiveLayer( _layerCollection ) ) {
+            LayerPropertiesManagement.setDefaultLayerActive( _layerCollection );
+            _layerManagerPane.setSelectedRow( LayerPropertiesTable.ROW_DEFAULT_LAYER );
         }
         else {
-            _layerManagementPane.setSelectedRow( referenceIndex );
+            _layerManagerPane.setSelectedRow( referenceIndex );
         }
 
         // Update the contextual Layer Management settings.
@@ -204,7 +203,7 @@ public final class LayerManagementStage extends XStage {
     public LayerProperties importLayer( final LayerProperties layerCandidate ) {
         // Add the Layer candidate to the collection if not already present.
         final LayerProperties layerAdjusted
-                = LayerPropertiesManager.importLayer(
+                = LayerPropertiesManagement.importLayer(
                         _layerCollection, layerCandidate );
 
         // Update the contextual Layer Management settings.
@@ -239,9 +238,9 @@ public final class LayerManagementStage extends XStage {
     @Override
     protected Node loadContent() {
         // Instantiate and return the custom Content Node.
-        _layerManagementPane = new LayerManagementPane(
+        _layerManagerPane = new LayerManagerPane(
                 this, clientProperties );
-        return _layerManagementPane;
+        return _layerManagerPane;
     }
 
     // Add the Menu Bar for this Stage.
@@ -259,7 +258,7 @@ public final class LayerManagementStage extends XStage {
     @Override
     public ToolBar loadToolBar() {
         // Build the Tool Bar for this Stage.
-        _toolBar = new LayerManagementToolBar( clientProperties, _actions );
+        _toolBar = new LayerManagerToolBar( clientProperties, _actions );
 
         // Return the Tool Bar so the superclass can use it.
         return _toolBar;
@@ -267,13 +266,13 @@ public final class LayerManagementStage extends XStage {
 
     public void removeLayerSelectionListener() {
         // Forward this method to the Layer Management Pane.
-        _layerManagementPane.removeLayerSelectionListener();
+        _layerManagerPane.removeLayerSelectionListener();
     }
 
     // Place editing focus in the specified row and column.
     protected void setEditingFocus( final int rowIndex, final int columnIndex ) {
         // Forward this method to the Layer Management Pane.
-        _layerManagementPane.setEditingFocus( rowIndex, columnIndex );
+        _layerManagerPane.setEditingFocus( rowIndex, columnIndex );
     }
 
     @Override
@@ -283,7 +282,7 @@ public final class LayerManagementStage extends XStage {
         super.setForegroundFromBackground( backColor );
 
         // Forward this method to the Layer Management Pane.
-        _layerManagementPane.setForegroundFromBackground( backColor );
+        _layerManagerPane.setForegroundFromBackground( backColor );
     }
 
     // This method should only be called once, at startup, but it is now
@@ -294,7 +293,7 @@ public final class LayerManagementStage extends XStage {
         _layerCollection = layerCollection;
 
         // Forward this method to the Layer Management Pane.
-        _layerManagementPane.setLayerCollection( layerCollection );
+        _layerManagerPane.setLayerCollection( layerCollection );
     }
 
     // Update the contextual Layer Management settings.
@@ -305,7 +304,7 @@ public final class LayerManagementStage extends XStage {
         // are selected, and additionally whether the Layers on any selected
         // rows are hidden vs. visible. If no rows are selected, we seed the
         // logic auto-selected to the last row (current hard-wired as such).
-        final boolean canDeleteRows = _layerManagementPane.canDeleteTableRows();
+        final boolean canDeleteRows = _layerManagerPane.canDeleteTableRows();
 
         // Conditionally disable or re-enable the Delete Button based on whether
         // it is legal to delete either the selected row(s) or the default
@@ -315,7 +314,7 @@ public final class LayerManagementStage extends XStage {
 
     public void updateLayerCollection() {
         // Forward this method to the Layer Management Pane.
-        _layerManagementPane.updateLayerCollection();
+        _layerManagerPane.updateLayerCollection();
 
         // The available options may change based on the new Layer Collection.
         updateContextualSettings();

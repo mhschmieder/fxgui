@@ -34,7 +34,7 @@ import com.mhschmieder.fxcontrols.model.LinearObjectProperties;
 import com.mhschmieder.fxgraphics.collections.GraphicalObjectCollection;
 import com.mhschmieder.fxgraphics.geometry.CartesianLine;
 import com.mhschmieder.fxgraphics.layers.Layer;
-import com.mhschmieder.fxgraphics.layers.LayerManager;
+import com.mhschmieder.fxgraphics.layers.LayerManagement;
 import com.mhschmieder.jcommons.util.ClientProperties;
 import com.mhschmieder.jgraphics.input.ScrollingSensitivity;
 import com.mhschmieder.jphysics.measure.AngleUnit;
@@ -70,7 +70,7 @@ public final class CartesianLinePane extends VBox {
         _clientProperties = pClientProperties;
 
         // Avoid chicken-or-egg null pointer problems during startup.
-        _layerCollection = LayerManager.makeLayerCollection();
+        _layerCollection = LayerManagement.makeLayerCollection();
 
         try {
             initPane( cartesianLineCollection, 
@@ -228,7 +228,7 @@ public final class CartesianLinePane extends VBox {
 
         // Cache the current Layer selection via Layer Name lookup.
         final String layerName = linearObjectProperties.getLayerName();
-        final Layer layer = LayerManager.getLayerByName(
+        final Layer layer = LayerManagement.getLayerByName(
                 _layerCollection, layerName );
         cartesianLine.setLayer( layer );
 
@@ -278,7 +278,7 @@ public final class CartesianLinePane extends VBox {
 
     public void updateLayerNames( final Layer currentLayer ) {
         final List< Layer > layerCollection = _layerCollection;
-        final int currentLayerIndex = LayerManager.getLayerIndex(
+        final int currentLayerIndex = LayerManagement.getLayerIndex(
                 layerCollection, currentLayer );
 
         // Forward this method to the Linear Object Properties Pane.

@@ -32,7 +32,7 @@ package com.mhschmieder.fxgui.layout;
 
 import com.mhschmieder.fxcontrols.control.LinearObjectPropertiesControls;
 import com.mhschmieder.fxcontrols.model.LinearObjectProperties;
-import com.mhschmieder.fxcontrols.util.LayerPropertiesManager;
+import com.mhschmieder.fxcontrols.util.LayerPropertiesManagement;
 import com.mhschmieder.fxgraphics.collections.GraphicalObjectCollection;
 import com.mhschmieder.fxgraphics.geometry.GraphicalObject;
 import com.mhschmieder.fxgraphics.geometry.LinearObject;
@@ -111,7 +111,7 @@ public class LinearObjectPropertiesPane extends BorderPane {
         // later updates.
         _linearObjectProperties = new LinearObjectProperties(
                 linearObjectLabelDefault,
-                LayerPropertiesManager.DEFAULT_LAYER_NAME,
+                LayerPropertiesManagement.DEFAULT_LAYER_NAME,
                 LinearObject.USE_AS_PROJECTOR_DEFAULT,
                 LinearObject.NUMBER_OF_PROJECTION_ZONES_DEFAULT );
 
