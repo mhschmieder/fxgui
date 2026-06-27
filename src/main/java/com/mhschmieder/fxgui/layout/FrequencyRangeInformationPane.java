@@ -21,20 +21,20 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  *
- * This file is part of the FxAcoustics Library
+ * This file is part of the fxgui Library
  *
- * You should have received a copy of the MIT License along with the
- * FxAcoustics Library. If not, see <https://opensource.org/licenses/MIT>.
+ * You should have received a copy of the MIT License along with the fxgui
+ * Library. If not, see <https://opensource.org/licenses/MIT>.
  *
- * Project: https://github.com/mhschmieder/fxacoustics
+ * Project: https://github.com/mhschmieder/fxgui
  */
 package com.mhschmieder.fxgui.layout;
 
 import com.mhschmieder.fxcontrols.util.RegionUtilities;
 import com.mhschmieder.fxgraphics.paint.ColorUtilities;
 import com.mhschmieder.fxgui.util.GuiUtilities;
-import com.mhschmieder.jacoustics.FrequencySignalUtilities;
 import com.mhschmieder.jcommons.util.ClientProperties;
+import com.mhschmieder.jphysics.acoustics.FrequencySignalUtilities;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.Label;

@@ -21,12 +21,12 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  *
- * This file is part of the FxGuiToolkit Library
+ * This file is part of the fxgui Library
  *
- * You should have received a copy of the MIT License along with the
- * FxGuiToolkit Library. If not, see <https://opensource.org/licenses/MIT>.
+ * You should have received a copy of the MIT License along with the fxgui
+ * Library. If not, see <https://opensource.org/licenses/MIT>.
  *
- * Project: https://github.com/mhschmieder/fxguitoolkit
+ * Project: https://github.com/mhschmieder/fxgui
  */
 package com.mhschmieder.fxgui.layout;
 
@@ -80,5 +80,4 @@ public class Axes extends Pane {
     public NumberAxis getYAxis() {
         return yAxis;
     }
-
 }

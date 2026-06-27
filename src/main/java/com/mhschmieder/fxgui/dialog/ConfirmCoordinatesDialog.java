@@ -21,17 +21,17 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  *
- * This file is part of the FxPhysics Library
+ * This file is part of the fxgui Library
  *
- * You should have received a copy of the MIT License along with the FxPhysics
+ * You should have received a copy of the MIT License along with the FxfxguiPhysics
  * Library. If not, see <https://opensource.org/licenses/MIT>.
  *
- * Project: https://github.com/mhschmieder/fxphysics
+ * Project: https://github.com/mhschmieder/fxgui
  */
 package com.mhschmieder.fxgui.dialog;
 
+import com.mhschmieder.fxgui.layout.CartesianPositionPane;
 import com.mhschmieder.fxgui.util.GuiUtilities;
-import com.mhschmieder.fxphysicsgui.layout.CartesianPositionPane;
 import com.mhschmieder.jcommons.util.ClientProperties;
 import com.mhschmieder.jphysics.measure.DistanceUnit;
 import javafx.geometry.Insets;

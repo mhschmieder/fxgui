@@ -21,20 +21,19 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  *
- * This file is part of the fxphysicsgui Library
+ * This file is part of the fxgui Library
  *
- * You should have received a copy of the MIT License along with the
- * fxphysicsgui Library. If not, see <https://opensource.org/licenses/MIT>.
+ * You should have received a copy of the MIT License along with the fxgui
+ * Library. If not, see <https://opensource.org/licenses/MIT>.
  *
- * Project: https://github.com/mhschmieder/fxphysicsgui
+ * Project: https://github.com/mhschmieder/fxgui
  */
 package com.mhschmieder.fxgui.layout;
 
-import com.mhschmieder.fxcadcontrols.model.Extents2DProperties;
+import com.mhschmieder.fxcontrols.model.Extents2DProperties;
 import com.mhschmieder.fxcontrols.util.RegionUtilities;
 import com.mhschmieder.fxgraphics.paint.ColorUtilities;
 import com.mhschmieder.fxgui.util.GuiUtilities;
-import com.mhschmieder.fxphysicsgui.layout.CartesianPositionPane;
 import com.mhschmieder.jcommons.util.ClientProperties;
 import com.mhschmieder.jphysics.measure.DistanceUnit;
 import javafx.application.Platform;

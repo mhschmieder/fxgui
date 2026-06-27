@@ -21,17 +21,17 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  *
- * This file is part of the FxAcoustics Library
+ * This file is part of the fxgui Library
  *
- * You should have received a copy of the MIT License along with the
- * FxAcoustics Library. If not, see <https://opensource.org/licenses/MIT>.
+ * You should have received a copy of the MIT License along with the fxgui
+ * Library. If not, see <https://opensource.org/licenses/MIT>.
  *
- * Project: https://github.com/mhschmieder/fxacoustics
+ * Project: https://github.com/mhschmieder/fxgui
  */
 package com.mhschmieder.fxgui.layout;
 
-import com.mhschmieder.fxacousticscontrols.control.AcousticsControlFactory;
-import com.mhschmieder.fxacousticscontrols.control.AcousticsLabeledControlFactory;
+import com.mhschmieder.fxcontrols.control.ControlFactory;
+import com.mhschmieder.fxcontrols.control.LabeledControlFactory;
 import com.mhschmieder.jcommons.util.ClientProperties;
 import javafx.application.Platform;
 import javafx.geometry.Insets;
@@ -52,8 +52,7 @@ public class DitheringPane extends VBox {
     public Spinner< Double >    _ditheringAmountSpinner;
 
     // Declare a cache of the current Dithering Amount in percentiles.
-    protected double _splRangeDb
-            = AcousticsControlFactory.DITHERING_AMOUNT_DEFAULT;
+    protected double _splRangeDb = ControlFactory.DITHERING_AMOUNT_DEFAULT;
 
     public DitheringPane( final ClientProperties clientProperties,
                           final boolean initialDisableDithering ) {
@@ -66,14 +65,15 @@ public class DitheringPane extends VBox {
     public final void initPane( final ClientProperties clientProperties,
                                 final boolean initialDisableDithering ) {
         // Make the JavaFX Nodes and add them to the Scene.
-        _useDitheringCheckBox = AcousticsLabeledControlFactory
+        _useDitheringCheckBox = LabeledControlFactory
                 .getUseDitheringCheckBox( clientProperties );
 
-        _ditheringAmountLabel =
-                              AcousticsLabeledControlFactory.getDitheringLabel( clientProperties );
+        _ditheringAmountLabel = LabeledControlFactory.getDitheringLabel(
+                clientProperties );
 
-        _ditheringAmountSpinner = AcousticsControlFactory
-                .getDitheringAmountSpinnerInstance( clientProperties, false );
+        _ditheringAmountSpinner = ControlFactory
+                .getDitheringAmountSpinnerInstance(
+                        clientProperties, false );
 
         // Disable the Dithering Amount spinner until Use Dithering is turned
         // on.
@@ -127,8 +127,7 @@ public class DitheringPane extends VBox {
         // If we are not in Use Dithering Mode, reset to the default Dithering
         // Amount.
         if ( !useDithering ) {
-            setDitheringAmount( AcousticsControlFactory
-                    .DITHERING_AMOUNT_DEFAULT );
+            setDitheringAmount( ControlFactory.DITHERING_AMOUNT_DEFAULT );
         }
     }
 

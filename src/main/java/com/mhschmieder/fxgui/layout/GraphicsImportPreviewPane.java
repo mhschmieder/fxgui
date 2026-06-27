@@ -21,27 +21,21 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  *
- * This file is part of the fxcadgui Library.
+ * This file is part of the fxgui Library.
  *
- * You should have received a copy of the MIT License along with the fxcadgui
+ * You should have received a copy of the MIT License along with the fxgui
  * Library. If not, see <https://opensource.org/licenses/MIT>.
  *
- * Project: https://github.com/mhschmieder/fxcadgui
+ * Project: https://github.com/mhschmieder/fxgui
  */
 package com.mhschmieder.fxgui.layout;
 
-import com.mhschmieder.fxcadcontrols.model.DrawingLimitsProperties;
-import com.mhschmieder.fxcadcontrols.model.Extents2DProperties;
-import com.mhschmieder.fxcadgui.util.BoundsUtilities;
-import com.mhschmieder.fxchart.control.ChartLabeledControlFactory;
 import com.mhschmieder.fxcontrols.control.LabeledControlFactory;
 import com.mhschmieder.fxcontrols.control.XComboBox;
+import com.mhschmieder.fxcontrols.model.DrawingLimitsProperties;
 import com.mhschmieder.fxcontrols.util.RegionUtilities;
-import com.mhschmieder.fxdxfimport.DxfShapeGroup;
-import com.mhschmieder.fxdxfimport.GraphicsImportOptions;
 import com.mhschmieder.fxgraphics.geometry.DrawingLimits;
 import com.mhschmieder.fxgui.util.GuiUtilities;
-import com.mhschmieder.fxphysicscontrols.control.PhysicsControlFactory;
 import com.mhschmieder.jcommons.util.ClientProperties;
 import com.mhschmieder.jcommons.util.SystemType;
 import com.mhschmieder.jphysics.measure.DistanceUnit;

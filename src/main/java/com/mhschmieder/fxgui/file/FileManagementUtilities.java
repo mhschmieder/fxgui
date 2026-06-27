@@ -39,7 +39,6 @@ import org.apache.commons.io.FileUtils;
 
 import java.io.File;
 import java.lang.System.Logger;
-import java.lang.System.Logger.Level;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;

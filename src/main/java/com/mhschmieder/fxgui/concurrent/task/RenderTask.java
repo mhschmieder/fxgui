@@ -30,6 +30,8 @@
  */
 package com.mhschmieder.fxgui.concurrent.task;
 
+import com.mhschmieder.jgraphics.render.RenderingProgress;
+import com.mhschmieder.jgraphics.render.RenderingState;
 import javafx.concurrent.Task;
 import javafx.geometry.Point2D;
 import javafx.scene.image.Image;

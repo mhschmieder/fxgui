@@ -1025,7 +1025,6 @@ public final class GuiUtilities {
         return labeledTextFieldPane;
     }
 
-    @SuppressWarnings("nls")
     public static Label getPropertySheetLabel( final String labelText ) {
         final String propertySheetLabelText
                 = labelText + ControlUtilities.LABEL_DELIMITER;
@@ -1049,7 +1048,6 @@ public final class GuiUtilities {
         return labeledLabelPane;
     }
 
-    @SuppressWarnings("nls")
     public static Label getRowHeader( final String labelText ) {
         // We enforce a style of right-justified row headers using bold
         // italic text, and we add a colon and space for better comprehension of
@@ -1229,32 +1227,6 @@ public final class GuiUtilities {
         addStylesheetsAsJarResource( scene, jarRelativeStylesheetFilenames );
         
         return fxColor;
-    }
-
-    /**
-     * This method initializes the persistent shared attributes of decorator
-     * node groups, which generally are application managed and non-interactive.
-     *
-     * @param decoratorNodeGroup
-     *            The decorator node group whose persistent shared attributes
-     *            are to be set at initialization time
-     */
-    public static void initDecoratorNodeGroup( final Group decoratorNodeGroup ) {
-        // Mark the decorator node group as unmanaged, as its preferred size
-        // changes should not affect our layout, and as otherwise changes to
-        // Distance Unit can create interim states that we never recover from
-        // due to JavaFX making layout decisions for managed nodes/groups.
-        decoratorNodeGroup.setManaged( false );
-
-        // Do not auto-size decorator node group children, as we are managing
-        // the nodes ourselves, and as otherwise changes to Distance Unit can
-        // create interim states that we never recover from due to JavaFX making
-        // layout decisions for auto-sized children.
-        decoratorNodeGroup.setAutoSizeChildren( false );
-
-        // For now, we do not allow mouse-picking of decorator node groups.
-        decoratorNodeGroup.setMouseTransparent( true );
-        decoratorNodeGroup.setPickOnBounds( false );
     }
 
     // Launch the user's default browser set to the specified initial URL.

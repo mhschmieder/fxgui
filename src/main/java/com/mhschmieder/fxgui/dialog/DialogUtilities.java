@@ -21,12 +21,12 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  *
- * This file is part of the FxGuiToolkit Library
+ * This file is part of the fxgui Library
  *
- * You should have received a copy of the MIT License along with the
- * FxGuiToolkit Library. If not, see <https://opensource.org/licenses/MIT>.
+ * You should have received a copy of the MIT License along with the fxgui
+ * Library. If not, see <https://opensource.org/licenses/MIT>.
  *
- * Project: https://github.com/mhschmieder/fxguitoolkit
+ * Project: https://github.com/mhschmieder/fxgui
  */
 package com.mhschmieder.fxgui.dialog;
 
@@ -39,6 +39,7 @@ import com.mhschmieder.jcommons.lang.StringUtilities;
 import com.mhschmieder.jcommons.util.ClientProperties;
 import com.mhschmieder.jphysics.measure.DistanceUnit;
 import javafx.geometry.Insets;
+import javafx.geometry.Point2D;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.ButtonType;
@@ -542,16 +543,18 @@ public final class DialogUtilities {
     }
 
     // NOTE: Point2D is immutable, so this method must return the confirmed
-    // coordinates vs. a status. This isn't a problem though, as the default
-    // choice is passed in, so a Cancel action simply returns the initial
-    // coordinates unchanged.
-    public static Point2D showConfirmCoordinatesDialog( final String title,
-                                                        final ClientProperties clientProperties,
-                                                        final Point2D coordinatesCandidate,
-                                                        final DistanceUnit distanceUnit ) {
+    //  coordinates vs. a status. This isn't a problem though, as the default
+    //  choice is passed in, so a Cancel action simply returns the initial
+    //  coordinates unchanged.
+    public static Point2D showConfirmCoordinatesDialog(
+            final String title,
+            final ClientProperties clientProperties,
+            final Point2D coordinatesCandidate,
+            final DistanceUnit distanceUnit ) {
         final String masthead = MessageFactory.getConfirmCoordinatesMasthead();
-        final com.mhschmieder.fxgui.dialog.ConfirmCoordinatesDialog confirmCoordinatesDialog =
-                new com.mhschmieder.fxgui.dialog.ConfirmCoordinatesDialog( title,
+        final ConfirmCoordinatesDialog confirmCoordinatesDialog
+                = new ConfirmCoordinatesDialog(
+                        title,
                         masthead,
                         clientProperties,
                         coordinatesCandidate );

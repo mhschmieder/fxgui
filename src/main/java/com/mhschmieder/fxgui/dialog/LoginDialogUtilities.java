@@ -21,17 +21,17 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  *
- * This file is part of the FxConcurrent Library
+ * This file is part of the fxgui Library
  *
- * You should have received a copy of the MIT License along with the FxConcurrent
+ * You should have received a copy of the MIT License along with the fxgui
  * Library. If not, see <https://opensource.org/licenses/MIT>.
  *
- * Project: https://github.com/mhschmieder/fxconcurrent
+ * Project: https://github.com/mhschmieder/fxgui
  */
 package com.mhschmieder.fxgui.dialog;
 
-import com.mhschmieder.fxconcurrent.service.AuthorizationRequestService;
 import com.mhschmieder.fxcontrols.util.MessageFactory;
+import com.mhschmieder.fxgui.concurrent.service.AuthorizationRequestService;
 import com.mhschmieder.jcommons.security.LoginCredentials;
 import com.mhschmieder.jcommons.security.LoginType;
 import javafx.util.Callback;
@@ -51,12 +51,13 @@ public final class LoginDialogUtilities {
      */
     private LoginDialogUtilities() {}
 
-    public static boolean showLoginDialog( final LoginType loginType,
-                                           final LoginCredentials loginCredentials,
-                                           final String productName,
-                                           final Locale locale,
-                                           final AuthorizationRequestService authorizationRequestService,
-                                           final boolean useAuthenticator ) {
+    public static boolean showLoginDialog(
+            final LoginType loginType,
+            final LoginCredentials loginCredentials,
+            final String productName,
+            final Locale locale,
+            final AuthorizationRequestService authorizationRequestService,
+            final boolean useAuthenticator ) {
         // Block on the Login, passing in any cached Login Credentials.
         final String title = MessageFactory.getLoginCredentialsTitle( loginType );
         final String headerText = MessageFactory.getLoginCredentialsMasthead( loginType,

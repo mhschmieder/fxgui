@@ -21,17 +21,18 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  *
- * This file is part of the FxPhysics Library
+ * This file is part of the fxgui Library
  *
- * You should have received a copy of the MIT License along with the
- * FxPhysics Library. If not, see <https://opensource.org/licenses/MIT>.
+ * You should have received a copy of the MIT License along with the fxgui
+ * Library. If not, see <https://opensource.org/licenses/MIT>.
  *
- * Project: https://github.com/mhschmieder/fxphysics
+ * Project: https://github.com/mhschmieder/fxgui
  */
 package com.mhschmieder.fxgui.layout;
 
 import com.mhschmieder.fxcontrols.control.AngleEditor;
 import com.mhschmieder.fxcontrols.control.AngleSlider;
+import com.mhschmieder.fxcontrols.control.ControlFactory;
 import com.mhschmieder.fxcontrols.control.ControlUtilities;
 import com.mhschmieder.jcommons.util.ClientProperties;
 import com.mhschmieder.jgraphics.input.ScrollingSensitivity;
@@ -68,8 +69,8 @@ public class AnglePane extends VBox {
         _angleSlider = new AngleSlider( clientProperties, useContextMenu );
 
         // Conform the associated textField (text field) to the slider attributes.
-        _angleEditor =
-                     PhysicsControlFactory.makeAngleSliderEditor( clientProperties, _angleSlider );
+        _angleEditor = ControlFactory.makeAngleSliderEditor(
+                clientProperties, _angleSlider );
         _angleEditor.setPrefWidth( 70d );
 
         final Label angleLabel = ControlUtilities.getControlLabel( labelText );
