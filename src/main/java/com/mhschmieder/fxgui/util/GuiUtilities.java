@@ -129,8 +129,6 @@ public final class GuiUtilities {
     public static final int                             SPLASH_WIDTH                    = 600;
     public static final int                             SPLASH_HEIGHT                   = 400;
 
-    public static final int                             LABEL_EDITOR_WIDTH_DEFAULT      = 320;
-
     // Default smallest screen size (4:3 AR), based on laptops (not netbooks).
     // :OTE: The next level up is typically 1280 x 1024, which is more useful.
     // NOTE: For retina displays, it is more commonly 1366 x 768 (native),

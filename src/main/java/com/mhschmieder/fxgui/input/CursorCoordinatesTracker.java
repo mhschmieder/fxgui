@@ -30,8 +30,8 @@
  */
 package com.mhschmieder.fxgui.input;
 
-import com.mhschmieder.jcommons.text.TextUtilities;
 import com.mhschmieder.fxgraphics.input.MouseToolManager;
+import com.mhschmieder.jcommons.text.TextUtilities;
 import com.mhschmieder.jgraphics.input.MouseToolMode;
 import com.mhschmieder.jphysics.measure.DistanceUnit;
 import javafx.scene.chart.ValueAxis;

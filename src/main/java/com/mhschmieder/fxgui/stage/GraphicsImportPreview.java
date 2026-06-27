@@ -31,12 +31,10 @@
 package com.mhschmieder.fxgui.stage;
 
 import com.mhschmieder.fxcadcontrols.model.DrawingLimitsProperties;
-import com.mhschmieder.fxgui.layout.GraphicsImportPreviewPane;
 import com.mhschmieder.fxcadgui.util.CadHelpUtilities;
 import com.mhschmieder.fxdxfimport.DxfShapeGroup;
 import com.mhschmieder.fxdxfimport.GraphicsImportOptions;
-import com.mhschmieder.fxgui.stage.NoticeBox;
-import com.mhschmieder.fxgui.stage.XStage;
+import com.mhschmieder.fxgui.layout.GraphicsImportPreviewPane;
 import com.mhschmieder.jcommons.branding.ProductBranding;
 import com.mhschmieder.jcommons.util.ClientProperties;
 import com.mhschmieder.jphysics.measure.DistanceUnit;

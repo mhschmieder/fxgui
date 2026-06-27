@@ -30,14 +30,14 @@
  */
 package com.mhschmieder.fxgui.layout;
 
-import com.mhschmieder.fxcontrols.control.LinearObjectPropertiesControls;
 import com.mhschmieder.fxcadcontrols.model.LinearObjectProperties;
-import com.mhschmieder.fxgraphics.geometry.GraphicalObject;
-import com.mhschmieder.fxgraphics.collections.GraphicalObjectCollection;
-import com.mhschmieder.fxgraphics.geometry.LinearObject;
-import com.mhschmieder.fxgui.util.GuiUtilities;
+import com.mhschmieder.fxcontrols.control.LinearObjectPropertiesControls;
 import com.mhschmieder.fxcontrols.util.LayerPropertiesManager;
+import com.mhschmieder.fxgraphics.collections.GraphicalObjectCollection;
+import com.mhschmieder.fxgraphics.geometry.GraphicalObject;
+import com.mhschmieder.fxgraphics.geometry.LinearObject;
 import com.mhschmieder.fxgraphics.layers.Layer;
+import com.mhschmieder.fxgui.util.GuiUtilities;
 import com.mhschmieder.jcommons.util.ClientProperties;
 import javafx.geometry.HPos;
 import javafx.geometry.Insets;

@@ -30,13 +30,12 @@
  */
 package com.mhschmieder.fxgui.stage;
 
+import com.mhschmieder.fxcadcontrols.model.Region2DProperties;
 import com.mhschmieder.fxcontrols.action.Region2DActions;
 import com.mhschmieder.fxcontrols.control.MenuFactory;
 import com.mhschmieder.fxcontrols.control.Region2DToolBar;
-import com.mhschmieder.fxcadcontrols.model.Region2DProperties;
 import com.mhschmieder.fxgraphics.geometry.Region2D;
 import com.mhschmieder.fxgui.layout.Region2DPane;
-import com.mhschmieder.fxgui.stage.XStage;
 import com.mhschmieder.jcommons.branding.ProductBranding;
 import com.mhschmieder.jcommons.util.ClientProperties;
 import com.mhschmieder.jphysics.measure.DistanceUnit;

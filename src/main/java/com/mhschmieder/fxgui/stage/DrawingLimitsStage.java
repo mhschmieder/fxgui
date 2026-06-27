@@ -32,10 +32,9 @@ package com.mhschmieder.fxgui.stage;
 
 import com.mhschmieder.fxcadcontrols.model.DrawingLimitsProperties;
 import com.mhschmieder.fxcadcontrols.model.Extents2DProperties;
-import com.mhschmieder.fxgui.layout.DrawingLimitsPane;
 import com.mhschmieder.fxcontrols.action.SimulationActions;
 import com.mhschmieder.fxcontrols.control.PredictToolBar;
-import com.mhschmieder.fxgui.stage.XStage;
+import com.mhschmieder.fxgui.layout.DrawingLimitsPane;
 import com.mhschmieder.jcommons.branding.ProductBranding;
 import com.mhschmieder.jcommons.util.ClientProperties;
 import com.mhschmieder.jphysics.measure.DistanceUnit;

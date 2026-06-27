@@ -32,7 +32,6 @@ package com.mhschmieder.fxgui.layout;
 
 import com.mhschmieder.fxcadcontrols.model.DrawingLimitsProperties;
 import com.mhschmieder.fxcadcontrols.model.Extents2DProperties;
-import com.mhschmieder.fxgraphics.geometry.DrawingLimits;
 import com.mhschmieder.fxcadgui.util.BoundsUtilities;
 import com.mhschmieder.fxchart.control.ChartLabeledControlFactory;
 import com.mhschmieder.fxcontrols.control.LabeledControlFactory;
@@ -40,6 +39,7 @@ import com.mhschmieder.fxcontrols.control.XComboBox;
 import com.mhschmieder.fxcontrols.util.RegionUtilities;
 import com.mhschmieder.fxdxfimport.DxfShapeGroup;
 import com.mhschmieder.fxdxfimport.GraphicsImportOptions;
+import com.mhschmieder.fxgraphics.geometry.DrawingLimits;
 import com.mhschmieder.fxgui.util.GuiUtilities;
 import com.mhschmieder.fxphysicscontrols.control.PhysicsControlFactory;
 import com.mhschmieder.jcommons.util.ClientProperties;

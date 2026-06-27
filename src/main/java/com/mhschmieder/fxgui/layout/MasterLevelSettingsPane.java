@@ -30,10 +30,10 @@
  */
 package com.mhschmieder.fxgui.layout;
 
-import com.mhschmieder.fxgui.util.GuiUtilities;
 import com.mhschmieder.fxcontrols.control.MasterLevelSettingsControls;
 import com.mhschmieder.fxcontrols.model.MasterLevelSettings;
 import com.mhschmieder.fxcontrols.util.LabelFactory;
+import com.mhschmieder.fxgui.util.GuiUtilities;
 import com.mhschmieder.jcommons.util.ClientProperties;
 import javafx.geometry.HPos;
 import javafx.geometry.Insets;

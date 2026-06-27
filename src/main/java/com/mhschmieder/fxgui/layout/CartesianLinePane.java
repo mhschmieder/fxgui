@@ -31,8 +31,8 @@
 package com.mhschmieder.fxgui.layout;
 
 import com.mhschmieder.fxcadcontrols.model.LinearObjectProperties;
-import com.mhschmieder.fxgraphics.geometry.CartesianLine;
 import com.mhschmieder.fxgraphics.collections.GraphicalObjectCollection;
+import com.mhschmieder.fxgraphics.geometry.CartesianLine;
 import com.mhschmieder.fxgraphics.layers.Layer;
 import com.mhschmieder.fxgraphics.layers.LayerManager;
 import com.mhschmieder.jcommons.util.ClientProperties;

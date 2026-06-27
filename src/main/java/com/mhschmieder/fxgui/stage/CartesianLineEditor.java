@@ -30,11 +30,10 @@
  */
 package com.mhschmieder.fxgui.stage;
 
-import com.mhschmieder.fxgraphics.geometry.CartesianLine;
 import com.mhschmieder.fxgraphics.collections.GraphicalObjectCollection;
-import com.mhschmieder.fxgui.layout.CartesianLinePane;
-import com.mhschmieder.fxgui.stage.ObjectPropertiesEditor;
+import com.mhschmieder.fxgraphics.geometry.CartesianLine;
 import com.mhschmieder.fxgraphics.layers.Layer;
+import com.mhschmieder.fxgui.layout.CartesianLinePane;
 import com.mhschmieder.jcommons.branding.ProductBranding;
 import com.mhschmieder.jcommons.util.ClientProperties;
 import com.mhschmieder.jgraphics.input.ScrollingSensitivity;

@@ -32,8 +32,8 @@ package com.mhschmieder.fxgui.stage;
 
 import com.mhschmieder.fxcontrols.action.NaturalEnvironmentActions;
 import com.mhschmieder.fxcontrols.control.NaturalEnvironmentToolBar;
-import com.mhschmieder.fxphysicscontrols.model.NaturalEnvironmentProperties;
 import com.mhschmieder.fxgui.layout.NaturalEnvironmentPane;
+import com.mhschmieder.fxphysicscontrols.model.NaturalEnvironmentProperties;
 import com.mhschmieder.jcommons.branding.ProductBranding;
 import com.mhschmieder.jcommons.util.ClientProperties;
 import com.mhschmieder.jgraphics.input.ScrollingSensitivity;

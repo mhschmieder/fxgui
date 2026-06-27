@@ -30,12 +30,12 @@
  */
 package com.mhschmieder.fxgui.layout;
 
-import com.mhschmieder.fxcontrols.control.SurfaceSelectorControls;
 import com.mhschmieder.fxcadcontrols.model.SurfaceProperties;
+import com.mhschmieder.fxcontrols.control.SurfaceSelectorControls;
+import com.mhschmieder.fxcontrols.util.RegionUtilities;
 import com.mhschmieder.fxcontrols.util.SurfacePropertiesNameManager;
 import com.mhschmieder.fxgraphics.geometry.Region2D;
 import com.mhschmieder.fxgraphics.geometry.Surface;
-import com.mhschmieder.fxcontrols.util.RegionUtilities;
 import com.mhschmieder.fxgraphics.paint.ColorUtilities;
 import com.mhschmieder.fxgui.util.GuiUtilities;
 import com.mhschmieder.jcommons.text.NumberFormatUtilities;

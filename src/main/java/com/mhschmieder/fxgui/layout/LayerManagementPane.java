@@ -31,11 +31,11 @@
 package com.mhschmieder.fxgui.layout;
 
 import com.mhschmieder.fxcontrols.control.ControlUtilities;
+import com.mhschmieder.fxcontrols.model.LayerProperties;
+import com.mhschmieder.fxcontrols.util.LayerPropertiesManager;
 import com.mhschmieder.fxcontrols.util.RegionUtilities;
 import com.mhschmieder.fxgui.stage.XStage;
 import com.mhschmieder.fxlayercontrols.control.LayerPropertiesTable;
-import com.mhschmieder.fxcontrols.model.LayerProperties;
-import com.mhschmieder.fxcontrols.util.LayerPropertiesManager;
 import com.mhschmieder.jcommons.util.ClientProperties;
 import javafx.beans.InvalidationListener;
 import javafx.collections.ObservableList;

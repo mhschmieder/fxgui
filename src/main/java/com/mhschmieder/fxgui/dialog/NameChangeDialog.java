@@ -31,7 +31,6 @@
 package com.mhschmieder.fxgui.dialog;
 
 import com.mhschmieder.fxcontrols.control.TextEditor;
-import com.mhschmieder.fxgui.dialog.XDialog;
 import com.mhschmieder.fxgui.util.GuiUtilities;
 import com.mhschmieder.jcommons.util.GlobalUtilities;
 import javafx.beans.property.SimpleStringProperty;

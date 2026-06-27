@@ -30,8 +30,8 @@
  */
 package com.mhschmieder.fxgui.layout;
 
-import com.mhschmieder.fxgui.util.GuiUtilities;
 import com.mhschmieder.fxcontrols.control.DistanceEditor;
+import com.mhschmieder.fxgui.util.GuiUtilities;
 import com.mhschmieder.jcommons.util.ClientProperties;
 import com.mhschmieder.jgraphics.input.ScrollingSensitivity;
 import com.mhschmieder.jphysics.measure.AngleUnit;

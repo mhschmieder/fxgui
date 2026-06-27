@@ -30,11 +30,11 @@
  */
 package com.mhschmieder.fxgui.layout;
 
+import com.mhschmieder.fxcontrols.control.PressureEditor;
+import com.mhschmieder.fxcontrols.control.PressureSlider;
 import com.mhschmieder.fxcontrols.util.RegionUtilities;
 import com.mhschmieder.fxgraphics.paint.ColorUtilities;
 import com.mhschmieder.fxgui.util.GuiUtilities;
-import com.mhschmieder.fxcontrols.control.PressureEditor;
-import com.mhschmieder.fxcontrols.control.PressureSlider;
 import com.mhschmieder.fxphysicscontrols.model.NaturalEnvironmentProperties;
 import com.mhschmieder.jcommons.util.ClientProperties;
 import com.mhschmieder.jgraphics.input.ScrollingSensitivity;

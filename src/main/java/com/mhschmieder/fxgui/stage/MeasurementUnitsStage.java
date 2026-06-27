@@ -32,8 +32,8 @@ package com.mhschmieder.fxgui.stage;
 
 import com.mhschmieder.fxcontrols.action.MeasurementUnitsActions;
 import com.mhschmieder.fxcontrols.control.MeasurementUnitsToolBar;
-import com.mhschmieder.fxphysicscontrols.model.MeasurementUnitProperties;
 import com.mhschmieder.fxgui.layout.MeasurementUnitsPane;
+import com.mhschmieder.fxphysicscontrols.model.MeasurementUnitProperties;
 import com.mhschmieder.jcommons.branding.ProductBranding;
 import com.mhschmieder.jcommons.util.ClientProperties;
 import javafx.scene.Node;

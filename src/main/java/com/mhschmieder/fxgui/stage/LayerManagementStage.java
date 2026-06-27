@@ -30,15 +30,15 @@
  */
 package com.mhschmieder.fxgui.stage;
 
-import com.mhschmieder.fxgui.dialog.DialogUtilities;
 import com.mhschmieder.fxcontrols.action.LayerManagementActions;
-import com.mhschmieder.fxlayercontrols.control.LayerManagementMenuFactory;
-import com.mhschmieder.fxlayercontrols.control.LayerManagementToolBar;
-import com.mhschmieder.fxlayercontrols.control.LayerPropertiesTable;
 import com.mhschmieder.fxcontrols.model.LayerProperties;
 import com.mhschmieder.fxcontrols.util.LayerManagementMessageFactory;
 import com.mhschmieder.fxcontrols.util.LayerPropertiesManager;
+import com.mhschmieder.fxgui.dialog.DialogUtilities;
 import com.mhschmieder.fxgui.layout.LayerManagementPane;
+import com.mhschmieder.fxlayercontrols.control.LayerManagementMenuFactory;
+import com.mhschmieder.fxlayercontrols.control.LayerManagementToolBar;
+import com.mhschmieder.fxlayercontrols.control.LayerPropertiesTable;
 import com.mhschmieder.jcommons.branding.ProductBranding;
 import com.mhschmieder.jcommons.util.ClientProperties;
 import javafx.collections.ObservableList;

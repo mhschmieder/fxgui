@@ -32,9 +32,9 @@ package com.mhschmieder.fxgui.layout;
 
 import com.mhschmieder.fxcontrols.util.RegionUtilities;
 import com.mhschmieder.fxgraphics.paint.ColorUtilities;
+import com.mhschmieder.fxgui.swing.NaturalEnvironmentInformationComponent;
 import com.mhschmieder.fxgui.util.GuiUtilities;
 import com.mhschmieder.fxphysicscontrols.model.NaturalEnvironmentProperties;
-import com.mhschmieder.fxgui.swing.NaturalEnvironmentInformationComponent;
 import com.mhschmieder.jcommons.util.ClientProperties;
 import com.mhschmieder.jphysics.measure.PressureUnit;
 import com.mhschmieder.jphysics.measure.TemperatureUnit;

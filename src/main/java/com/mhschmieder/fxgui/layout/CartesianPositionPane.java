@@ -31,9 +31,9 @@
 package com.mhschmieder.fxgui.layout;
 
 import com.mhschmieder.fxcontrols.control.ControlUtilities;
+import com.mhschmieder.fxcontrols.control.DistanceEditor;
 import com.mhschmieder.fxcontrols.util.RegionUtilities;
 import com.mhschmieder.fxgraphics.paint.ColorUtilities;
-import com.mhschmieder.fxcontrols.control.DistanceEditor;
 import com.mhschmieder.jcommons.util.ClientProperties;
 import com.mhschmieder.jphysics.measure.DistanceUnit;
 import javafx.geometry.Insets;
