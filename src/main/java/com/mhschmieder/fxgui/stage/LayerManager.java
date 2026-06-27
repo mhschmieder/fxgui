@@ -30,7 +30,7 @@
  */
 package com.mhschmieder.fxgui.stage;
 
-import com.mhschmieder.fxcontrols.action.LayerManagementActions;
+import com.mhschmieder.fxcontrols.action.LayerManagerActions;
 import com.mhschmieder.fxcontrols.control.LayerManagerToolBar;
 import com.mhschmieder.fxcontrols.control.LayerPropertiesTable;
 import com.mhschmieder.fxcontrols.control.MenuFactory;
@@ -51,37 +51,37 @@ import java.util.Optional;
 
 public final class LayerManager extends XStage {
 
-    public static final String                LAYER_MANAGEMENT_FRAME_TITLE_DEFAULT  =
-                                                                                   "Layer Management"; //$NON-NLS-1$
+    public static final String LAYER_MANAGER_FRAME_TITLE_DEFAULT
+            = "Layer Manager";
 
     // Default window locations and dimensions.
-    public static final int                   LAYER_MANAGEMENT_STAGE_X_DEFAULT      = 20;
-    public static final int                   LAYER_MANAGEMENT_STAGE_Y_DEFAULT      = 20;
-    public static final int                   LAYER_MANAGEMENT_STAGE_WIDTH_DEFAULT  = 640;
-    public static final int                   LAYER_MANAGEMENT_STAGE_HEIGHT_DEFAULT = 300;
+    public static final int LAYER_MANAGER_STAGE_X_DEFAULT = 20;
+    public static final int LAYER_MANAGER_STAGE_Y_DEFAULT = 20;
+    public static final int LAYER_MANAGER_STAGE_WIDTH_DEFAULT = 640;
+    public static final int LAYER_MANAGER_STAGE_HEIGHT_DEFAULT = 300;
 
     // Declare the actions.
-    public LayerManagementActions             _actions;
+    public LayerManagerActions _actions;
 
     // Declare the main tool bar.
     public LayerManagerToolBar _toolBar;
 
     // Cache the Layer Collection reference.
-    private ObservableList<LayerProperties> _layerCollection;
+    private ObservableList< LayerProperties > _layerCollection;
 
     // Declare the main content pane.
     protected LayerManagerPane _layerManagerPane;
 
-    @SuppressWarnings("nls")
-    public LayerManager(final ProductBranding productBranding,
-                        final ClientProperties pClientProperties ) {
+    public LayerManager( final ProductBranding productBranding,
+                         final ClientProperties pClientProperties ) {
         // Always call the superclass constructor first!
-        super( LAYER_MANAGEMENT_FRAME_TITLE_DEFAULT,
-               "layerManagement",
-               true,
-               true,
-               productBranding,
-               pClientProperties );
+        super(
+                LAYER_MANAGER_FRAME_TITLE_DEFAULT,
+                "layerManager",
+                true,
+                true,
+                productBranding,
+                pClientProperties );
 
         try {
             initStage( true );
@@ -95,8 +95,10 @@ public final class LayerManager extends XStage {
     @Override
     protected void addActionHandlers() {
         // Load the action handlers for the "File" actions.
-        _actions.fileActions._closeWindowAction.setEventHandler( evt -> doCloseWindow() );
-        _actions.fileActions._pageSetupAction.setEventHandler( evt -> doPageSetup() );
+        _actions.fileActions._closeWindowAction.setEventHandler(
+                evt -> doCloseWindow() );
+        _actions.fileActions._pageSetupAction.setEventHandler(
+                evt -> doPageSetup() );
         _actions.fileActions._printAction.setEventHandler( evt -> doPrint() );
 
         // Load the action handlers for the "Export" actions.
@@ -149,7 +151,9 @@ public final class LayerManager extends XStage {
         }
 
         // Immediately place editing focus into the default new Layer Name.
-        setEditingFocus( referenceIndex, LayerPropertiesTable.COLUMN_LAYER_NAME );
+        setEditingFocus(
+                referenceIndex,
+                LayerPropertiesTable.COLUMN_LAYER_NAME );
 
         // Update the contextual Layer Management settings.
         // NOTE: This is redundant due to the callback on selection changed.
@@ -159,9 +163,9 @@ public final class LayerManager extends XStage {
     // Conditionally delete the selected Layer(s).
     public void deleteLayers() {
         // Make sure the user is aware of the repercussions first.
-        final String message = LayerManagementMessageFactory.getDeleteLayersMessage();
-        final String masthead = LayerManagementMessageFactory.getDeleteLayersMasthead();
-        final String title = LayerManagementMessageFactory.getDeleteLayersTitle();
+        final String message = MessageFactory.getDeleteLayersMessage();
+        final String masthead = MessageFactory.getDeleteLayersMasthead();
+        final String title = MessageFactory.getDeleteLayersTitle();
         final Optional< ButtonType > response = DialogUtilities
                 .showConfirmationAlert( message, masthead, title, false );
 
@@ -217,8 +221,8 @@ public final class LayerManager extends XStage {
     public void initStage( final boolean resizable ) {
         // First have the superclass initialize its content.
         initStage( "/com/ahaSoft/icons/Layers16.png",
-                   LAYER_MANAGEMENT_STAGE_WIDTH_DEFAULT,
-                   LAYER_MANAGEMENT_STAGE_HEIGHT_DEFAULT,
+                LAYER_MANAGER_STAGE_WIDTH_DEFAULT,
+                LAYER_MANAGER_STAGE_HEIGHT_DEFAULT,
                    resizable );
 
         // Clear any selected rows in the Layers Table, to set enablement.
@@ -232,7 +236,7 @@ public final class LayerManager extends XStage {
     @Override
     protected void loadActions() {
         // Make all the actions.
-        _actions = new LayerManagementActions( clientProperties );
+        _actions = new LayerManagerActions( clientProperties );
     }
 
     @Override
@@ -247,7 +251,7 @@ public final class LayerManager extends XStage {
     @Override
     protected MenuBar loadMenuBar() {
         // Build the Menu Bar for this Stage.
-        final MenuBar menuBar = MenuFactory.getLayerManagementMenuBar(
+        final MenuBar menuBar = MenuFactory.getLayerManagerMenuBar(
                 clientProperties, _actions );
 
         // Return the Menu Bar so the superclass can use it.

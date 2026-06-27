@@ -50,20 +50,20 @@ import org.apache.commons.math3.util.FastMath;
 public final class LayerManagerPane extends BorderPane {
 
     // Declare the table and controls used for the Layer Properties.
-    public LayerPropertiesTable _layerPropertiesTable;
+    public LayerPropertiesTable layerPropertiesTable;
 
     // Maintain a reference to the owning stage, for enablement updates.
-    protected XStage _layerManagementStage;
+    protected XStage layerManager;
 
     // Declare change listeners for various observable properties.
     protected InvalidationListener layerSelectionChangeListener;
 
-    public LayerManagerPane(final XStage layerManagementStage,
-                            final ClientProperties pClientProperties ) {
+    public LayerManagerPane( final XStage pLayerManager,
+                             final ClientProperties pClientProperties ) {
         // Always call the superclass constructor first!
         super();
 
-        _layerManagementStage = layerManagementStage;
+        layerManager = pLayerManager;
 
         try {
             initPane( pClientProperties );
@@ -80,7 +80,8 @@ public final class LayerManagerPane extends BorderPane {
         // If the user clicks outside the table, deselect all rows.
         addEventFilter( MouseEvent.MOUSE_CLICKED, evt -> {
             final Node sourceNode = evt.getPickResult().getIntersectedNode();
-            if ( !ControlUtilities.isNodeInHierarchy( sourceNode, _layerPropertiesTable ) ) {
+            if ( !ControlUtilities.isNodeInHierarchy(
+                    sourceNode, layerPropertiesTable ) ) {
                 // NOTE: We must remove the selection listeners while clearing
                 // the selection, or we get run-time array out of bounds index
                 // exceptions due to interim states where the selection index is
@@ -88,7 +89,7 @@ public final class LayerManagerPane extends BorderPane {
                 removeLayerSelectionListener();
                 clearSelection();
                 addLayerSelectionListener();
-                _layerManagementStage.updateContextualSettings();
+                layerManager.updateContextualSettings();
             }
         } );
     }
@@ -97,31 +98,31 @@ public final class LayerManagerPane extends BorderPane {
         // Register an invalidation listener to update the contextual Layer
         // Management options when the selection changes.
         if ( layerSelectionChangeListener == null ) {
-            layerSelectionChangeListener = listener -> _layerManagementStage
+            layerSelectionChangeListener = listener -> layerManager
                     .updateContextualSettings();
         }
-        _layerPropertiesTable.getSelectionModel().selectedIndexProperty()
+        layerPropertiesTable.getSelectionModel().selectedIndexProperty()
                 .addListener( layerSelectionChangeListener );
     }
 
     public boolean canDeleteTableRows() {
         // Forward this method to the Layer Properties Table.
-        return _layerPropertiesTable.canDeleteTableRows();
+        return layerPropertiesTable.canDeleteTableRows();
     }
 
     public void clearSelection() {
         // Forward this method to the Layer Properties Table.
-        _layerPropertiesTable.clearSelection();
+        layerPropertiesTable.clearSelection();
     }
 
     public int createLayer() {
         // Forward this method to the Layer Properties Table.
-        return _layerPropertiesTable.insertTableRow();
+        return layerPropertiesTable.insertTableRow();
     }
 
     public int deleteLayers() {
         // Forward this method to the Layer Properties Table.
-        final int referenceIndex = _layerPropertiesTable.deleteTableRows();
+        final int referenceIndex = layerPropertiesTable.deleteTableRows();
 
         return referenceIndex;
     }
@@ -150,9 +151,9 @@ public final class LayerManagerPane extends BorderPane {
     }
 
     private void initPane( final ClientProperties pClientProperties ) {
-        _layerPropertiesTable = new LayerPropertiesTable( pClientProperties );
+        layerPropertiesTable = new LayerPropertiesTable( pClientProperties );
 
-        setCenter( _layerPropertiesTable );
+        setCenter(layerPropertiesTable);
 
         setPadding( new Insets( 12d ) );
 
@@ -175,20 +176,20 @@ public final class LayerManagerPane extends BorderPane {
         // exceptions during interim states where the table is empty before a
         // collection replacement.
         if ( layerSelectionChangeListener != null ) {
-            _layerPropertiesTable.getSelectionModel().selectedIndexProperty()
+            layerPropertiesTable.getSelectionModel().selectedIndexProperty()
                     .removeListener( layerSelectionChangeListener );
         }
     }
 
     // Reset all fields to the default values, regardless of state.
     public void reset() {
-        _layerPropertiesTable.reset();
+        layerPropertiesTable.reset();
     }
 
     // Place editing focus in the specified row and column.
     public void setEditingFocus( final int rowIndex, final int columnIndex ) {
         // Forward this method to the Layer Properties Table.
-        _layerPropertiesTable.setEditingFocus( rowIndex, columnIndex );
+        layerPropertiesTable.setEditingFocus( rowIndex, columnIndex );
     }
 
     public void setForegroundFromBackground( final Color backColor ) {
@@ -197,22 +198,22 @@ public final class LayerManagerPane extends BorderPane {
         setBackground( background );
 
         // Forward this method to the Layer Properties Table.
-        _layerPropertiesTable.setForegroundFromBackground( backColor );
+        layerPropertiesTable.setForegroundFromBackground( backColor );
     }
 
     public void setLayerCollection( final ObservableList<LayerProperties> layerCollection ) {
         // Forward this method to the Layer Properties Table.
-        _layerPropertiesTable.setLayerCollection( layerCollection );
+        layerPropertiesTable.setLayerCollection( layerCollection );
     }
 
     public void setSelectedRow( final int selectedRowIndex ) {
         // Forward this method to the Layer Properties Table.
-        _layerPropertiesTable.selectRow( selectedRowIndex );
+        layerPropertiesTable.selectRow( selectedRowIndex );
     }
 
     public void updateLayerCollection() {
         // Forward this method to the Layer Properties Table.
-        _layerPropertiesTable.updateLayerCollection();
+        layerPropertiesTable.updateLayerCollection();
     }
 
 }
