@@ -21,19 +21,19 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  *
- * This file is part of the FxCadGui Library
+ * This file is part of the fxgui Library
  *
- * You should have received a copy of the MIT License along with the FxCadGui
+ * You should have received a copy of the MIT License along with the fxgui
  * Library. If not, see <https://opensource.org/licenses/MIT>.
  *
- * Project: https://github.com/mhschmieder/fxcadgui
+ * Project: https://github.com/mhschmieder/fxgui
  */
 package com.mhschmieder.fxgui.stage;
 
-import com.mhschmieder.fxcadcontrols.model.DrawingLimitsProperties;
-import com.mhschmieder.fxcadcontrols.model.Extents2DProperties;
 import com.mhschmieder.fxcontrols.action.SimulationActions;
 import com.mhschmieder.fxcontrols.control.PredictToolBar;
+import com.mhschmieder.fxcontrols.model.DrawingLimitsProperties;
+import com.mhschmieder.fxcontrols.model.Extents2DProperties;
 import com.mhschmieder.fxgui.layout.DrawingLimitsPane;
 import com.mhschmieder.jcommons.branding.ProductBranding;
 import com.mhschmieder.jcommons.util.ClientProperties;

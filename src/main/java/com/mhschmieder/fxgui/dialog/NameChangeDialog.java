@@ -42,6 +42,7 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 
 import java.lang.System.Logger;
+import java.lang.System.Logger.Level;
 import java.util.Collections;
 
 public class NameChangeDialog extends XDialog {

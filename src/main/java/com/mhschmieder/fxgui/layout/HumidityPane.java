@@ -21,21 +21,22 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  *
- * This file is part of the FxPhysics Library
+ * This file is part of the fxgui Library
  *
- * You should have received a copy of the MIT License along with the
- * FxPhysics Library. If not, see <https://opensource.org/licenses/MIT>.
+ * You should have received a copy of the MIT License along with the fxgui
+ * Library. If not, see <https://opensource.org/licenses/MIT>.
  *
- * Project: https://github.com/mhschmieder/fxphysics
+ * Project: https://github.com/mhschmieder/fxgui
  */
 package com.mhschmieder.fxgui.layout;
 
+import com.mhschmieder.fxcontrols.control.ControlFactory;
 import com.mhschmieder.fxcontrols.control.HumidityEditor;
 import com.mhschmieder.fxcontrols.control.HumiditySlider;
+import com.mhschmieder.fxcontrols.model.NaturalEnvironmentProperties;
 import com.mhschmieder.fxcontrols.util.RegionUtilities;
 import com.mhschmieder.fxgraphics.paint.ColorUtilities;
 import com.mhschmieder.fxgui.util.GuiUtilities;
-import com.mhschmieder.fxphysicscontrols.model.NaturalEnvironmentProperties;
 import com.mhschmieder.jcommons.util.ClientProperties;
 import com.mhschmieder.jgraphics.input.ScrollingSensitivity;
 import javafx.beans.property.DoubleProperty;
@@ -98,8 +99,9 @@ public final class HumidityPane extends VBox {
         _humiditySlider = new HumiditySlider( clientProperties );
 
         // Conform the associated textField (text field) to the slider attributes.
-        _humidityEditor = PhysicsControlFactory.makeHumiditySliderEditor( clientProperties,
-                                                                          _humiditySlider );
+        _humidityEditor = ControlFactory.makeHumiditySliderEditor(
+                clientProperties,
+                _humiditySlider );
         _humidityEditor.setPrefWidth( 100d );
         _humidityEditor.setMaxWidth( 100d );
 
@@ -113,7 +115,8 @@ public final class HumidityPane extends VBox {
     }
 
     public void reset() {
-        _humiditySlider.setValue( NaturalEnvironmentProperties.HUMIDITY_RELATIVE_DEFAULT );
+        _humiditySlider.setValue( NaturalEnvironmentProperties
+                .HUMIDITY_RELATIVE_DEFAULT );
     }
 
     public void setForegroundFromBackground( final Color backColor ) {

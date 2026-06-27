@@ -21,17 +21,17 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  *
- * This file is part of the fxcadgui Library
+ * This file is part of the fxgui Library
  *
- * You should have received a copy of the MIT License along with the fxcadgui
+ * You should have received a copy of the MIT License along with the fxgui
  * Library. If not, see <https://opensource.org/licenses/MIT>.
  *
- * Project: https://github.com/mhschmieder/fxcadgui
+ * Project: https://github.com/mhschmieder/fxgui
  */
 package com.mhschmieder.fxgui.layout;
 
-import com.mhschmieder.fxcadcontrols.model.SurfaceProperties;
 import com.mhschmieder.fxcontrols.control.SurfaceSelectorControls;
+import com.mhschmieder.fxcontrols.model.SurfaceProperties;
 import com.mhschmieder.fxcontrols.util.RegionUtilities;
 import com.mhschmieder.fxcontrols.util.SurfacePropertiesNameManager;
 import com.mhschmieder.fxgraphics.geometry.Region2D;

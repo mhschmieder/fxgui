@@ -21,12 +21,12 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  *
- * This file is part of the FxGuiToolkit Library
+ * This file is part of the fxgui Library
  *
- * You should have received a copy of the MIT License along with the
- * FxGuiToolkit Library. If not, see <https://opensource.org/licenses/MIT>.
+ * You should have received a copy of the MIT License along with the fxgui
+ * Library. If not, see <https://opensource.org/licenses/MIT>.
  *
- * Project: https://github.com/mhschmieder/fxguitoolkit
+ * Project: https://github.com/mhschmieder/fxgui
  */
 package com.mhschmieder.fxgui.stage;
 
@@ -39,8 +39,8 @@ import java.util.prefs.Preferences;
 
 /**
  * This is a container class for collections of windows of various types and
- * classifications, used to enable macro-like operations on multiple windows so
- * as to avoid cut/paste errors and oversights. Primarily this will be used for
+ * classifications, used to enable macro-like operations on multiple windows to
+ * avoid cut/paste errors and oversights. Primarily this will be used for
  * secondary windows (including pop-ups) that are owned by other windows.
  */
 public final class WindowManager {

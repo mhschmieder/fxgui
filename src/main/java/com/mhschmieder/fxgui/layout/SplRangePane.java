@@ -21,17 +21,17 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  *
- * This file is part of the FxAcoustics Library
+ * This file is part of the fxgui Library
  *
- * You should have received a copy of the MIT License along with the
- * FxAcoustics Library. If not, see <https://opensource.org/licenses/MIT>.
+ * You should have received a copy of the MIT License along with the fxgui
+ * Library. If not, see <https://opensource.org/licenses/MIT>.
  *
- * Project: https://github.com/mhschmieder/fxacoustics
+ * Project: https://github.com/mhschmieder/fxgui
  */
 package com.mhschmieder.fxgui.layout;
 
-import com.mhschmieder.fxacousticscontrols.control.AcousticsControlFactory;
-import com.mhschmieder.fxacousticscontrols.control.AcousticsLabeledControlFactory;
+import com.mhschmieder.fxcontrols.control.ControlFactory;
+import com.mhschmieder.fxcontrols.control.LabeledControlFactory;
 import com.mhschmieder.jcommons.util.ClientProperties;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -51,7 +51,7 @@ public class SplRangePane extends VBox {
     public Spinner< Integer >   _splRangeSpinner;
 
     // Declare a cache of the current SPL Range in dB.
-    protected double _splRangeDb = AcousticsControlFactory.SPL_RANGE_DB_DEFAULT;
+    protected double _splRangeDb = ControlFactory.SPL_RANGE_DB_DEFAULT;
 
     public SplRangePane( final ClientProperties clientProperties, final boolean useExtendedRange ) {
         // Always call the superclass constructor first!
@@ -62,11 +62,11 @@ public class SplRangePane extends VBox {
 
     public final void initPane( final ClientProperties clientProperties,
                                 final boolean useExtendedRange ) {
-        _autoRangeSplCheckBox = AcousticsLabeledControlFactory
+        _autoRangeSplCheckBox = LabeledControlFactory
                 .getAutoRangeSplCheckBox( clientProperties );
-        _splRangeLabel = AcousticsLabeledControlFactory.getSplRangeLabel( clientProperties );
-        _splRangeSpinner = AcousticsControlFactory
-                .getSplRangeSpinnerInstance( clientProperties, false, useExtendedRange );
+        _splRangeLabel = LabeledControlFactory.getSplRangeLabel( clientProperties );
+        _splRangeSpinner = ControlFactory.getSplRangeSpinnerInstance(
+                clientProperties, false, useExtendedRange );
 
         // Disable the SPL Range spinner until Auto-Range SPL is turned off.
         _autoRangeSplCheckBox.setDisable( false );
@@ -95,7 +95,7 @@ public class SplRangePane extends VBox {
 
     public final int getSplRangeDb() {
         if ( _autoRangeSplCheckBox.isSelected() ) {
-            return AcousticsControlFactory.SPL_RANGE_DB_DEFAULT;
+            return ControlFactory.SPL_RANGE_DB_DEFAULT;
         }
 
         final Integer splRangeDb = _splRangeSpinner.getValue();
@@ -115,7 +115,7 @@ public class SplRangePane extends VBox {
 
         // If we are now in Auto-Range Mode, reset to the default SPL Range.
         if ( autoRangeSpl ) {
-            setSplRangeDb( AcousticsControlFactory.SPL_RANGE_DB_DEFAULT );
+            setSplRangeDb( ControlFactory.SPL_RANGE_DB_DEFAULT );
         }
     }
 

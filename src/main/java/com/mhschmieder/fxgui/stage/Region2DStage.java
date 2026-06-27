@@ -21,19 +21,19 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  *
- * This file is part of the FxCadGui Library
+ * This file is part of the fxgui Library
  *
- * You should have received a copy of the MIT License along with the FxCadGui
+ * You should have received a copy of the MIT License along with the fxgui
  * Library. If not, see <https://opensource.org/licenses/MIT>.
  *
- * Project: https://github.com/mhschmieder/fxcadgui
+ * Project: https://github.com/mhschmieder/fxgui
  */
 package com.mhschmieder.fxgui.stage;
 
-import com.mhschmieder.fxcadcontrols.model.Region2DProperties;
 import com.mhschmieder.fxcontrols.action.Region2DActions;
 import com.mhschmieder.fxcontrols.control.MenuFactory;
 import com.mhschmieder.fxcontrols.control.Region2DToolBar;
+import com.mhschmieder.fxcontrols.model.Region2DProperties;
 import com.mhschmieder.fxgraphics.geometry.Region2D;
 import com.mhschmieder.fxgui.layout.Region2DPane;
 import com.mhschmieder.jcommons.branding.ProductBranding;

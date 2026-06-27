@@ -21,19 +21,20 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  *
- * This file is part of the fxphysicsgui Library
+ * This file is part of the fxgui Library
  *
- * You should have received a copy of the MIT License along with the
- * fxphysicsgui Library. If not, see <https://opensource.org/licenses/MIT>.
+ * You should have received a copy of the MIT License along with the fxgui
+ * Library. If not, see <https://opensource.org/licenses/MIT>.
  *
- * Project: https://github.com/mhschmieder/fxphysicsgui
+ * Project: https://github.com/mhschmieder/fxgui
  */
 package com.mhschmieder.fxgui.stage;
 
 import com.mhschmieder.fxcontrols.action.NaturalEnvironmentActions;
+import com.mhschmieder.fxcontrols.control.MenuFactory;
 import com.mhschmieder.fxcontrols.control.NaturalEnvironmentToolBar;
+import com.mhschmieder.fxcontrols.model.NaturalEnvironmentProperties;
 import com.mhschmieder.fxgui.layout.NaturalEnvironmentPane;
-import com.mhschmieder.fxphysicscontrols.model.NaturalEnvironmentProperties;
 import com.mhschmieder.jcommons.branding.ProductBranding;
 import com.mhschmieder.jcommons.util.ClientProperties;
 import com.mhschmieder.jgraphics.input.ScrollingSensitivity;
@@ -209,8 +210,9 @@ public final class NaturalEnvironmentStage extends XStage {
     @Override
     protected MenuBar loadMenuBar() {
         // Build the Menu Bar for this Stage.
-        final MenuBar menuBar = PhysicsMenuFactory.getNaturalEnvironmentMenuBar( clientProperties,
-                                                                                  _actions );
+        final MenuBar menuBar = MenuFactory.getNaturalEnvironmentMenuBar(
+                clientProperties,
+                _actions );
 
         // Return the Menu Bar so the superclass can use it.
         return menuBar;

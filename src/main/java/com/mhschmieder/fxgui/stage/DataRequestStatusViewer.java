@@ -21,17 +21,17 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  *
- * This file is part of the FxConcurrent Library
+ * This file is part of the fxgui Library
  *
- * You should have received a copy of the MIT License along with the FxConcurrent
+ * You should have received a copy of the MIT License along with the fxgui
  * Library. If not, see <https://opensource.org/licenses/MIT>.
  *
- * Project: https://github.com/mhschmieder/fxconcurrent
+ * Project: https://github.com/mhschmieder/fxgui
  */
 package com.mhschmieder.fxgui.stage;
 
-import com.mhschmieder.fxconcurrent.task.DataRequestTask;
 import com.mhschmieder.fxgraphics.image.ImageUtilities;
+import com.mhschmieder.fxgui.concurrent.task.DataRequestTask;
 import com.mhschmieder.jcommons.branding.ProductBranding;
 import com.mhschmieder.jcommons.util.ClientProperties;
 import com.mhschmieder.jcommons.util.SystemType;
@@ -60,7 +60,7 @@ public final class DataRequestStatusViewer extends XStage {
     protected TaskProgressView< DataRequestTask > taskProgressView;
 
     // Declare a callback that will be used to determine the task icon.
-    private Callback< DataRequestTask, Node > taskIconFactory;
+    private Callback<DataRequestTask, Node > taskIconFactory;
 
     // Pre-cache the task icons for each category of task, for efficiency.
     protected ImageView fullUpdateTaskIcon;

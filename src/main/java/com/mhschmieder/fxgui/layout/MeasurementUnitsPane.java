@@ -21,18 +21,19 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  *
- * This file is part of the FxPhysics Library
+ * This file is part of the fxgui Library
  *
- * You should have received a copy of the MIT License along with the
- * FxPhysics Library. If not, see <https://opensource.org/licenses/MIT>.
+ * You should have received a copy of the MIT License along with the fxgui
+ * Library. If not, see <https://opensource.org/licenses/MIT>.
  *
- * Project: https://github.com/mhschmieder/fxphysics
+ * Project: https://github.com/mhschmieder/fxgui
  */
 package com.mhschmieder.fxgui.layout;
 
+import com.mhschmieder.fxcontrols.control.ControlFactory;
 import com.mhschmieder.fxcontrols.control.ControlUtilities;
 import com.mhschmieder.fxcontrols.control.XComboBox;
-import com.mhschmieder.fxphysicscontrols.model.MeasurementUnitProperties;
+import com.mhschmieder.fxcontrols.model.MeasurementUnitProperties;
 import com.mhschmieder.jcommons.util.ClientProperties;
 import com.mhschmieder.jphysics.measure.DistanceUnit;
 import com.mhschmieder.jphysics.measure.PressureUnit;
@@ -138,7 +139,7 @@ public final class MeasurementUnitsPane extends VBox {
 
     private void initPane( final ClientProperties pClientProperties ) {
         final Label distanceUnitLabel = ControlUtilities.getControlLabel( "Distance Unit" );
-        distanceUnitSelector = PhysicsControlFactory.makeDistanceUnitSelector( 
+        distanceUnitSelector = ControlFactory.makeDistanceUnitSelector(
                 pClientProperties,
                 true,
                 false,
@@ -153,19 +154,19 @@ public final class MeasurementUnitsPane extends VBox {
         */
 
         final Label weightUnitLabel = ControlUtilities.getControlLabel( "Weight Unit" );
-        weightUnitSelector = PhysicsControlFactory.makeWeightUnitSelector( 
+        weightUnitSelector = ControlFactory.makeWeightUnitSelector(
                 pClientProperties,
                 true,
                 WeightUnit.defaultValue() );
 
         final Label temperatureUnitLabel = ControlUtilities.getControlLabel( "Temperature Unit" );
-        temperatureUnitSelector = PhysicsControlFactory.makeTemperatureUnitSelector( 
+        temperatureUnitSelector = ControlFactory.makeTemperatureUnitSelector(
                 pClientProperties,
                 true,
                 TemperatureUnit.defaultValue() );
 
         final Label pressureUnitLabel = ControlUtilities.getControlLabel( "Pressure Unit" );
-        pressureUnitSelector = PhysicsControlFactory.makePressureUnitSelector( 
+        pressureUnitSelector = ControlFactory.makePressureUnitSelector(
                 pClientProperties,
                 true,
                 PressureUnit.defaultValue() );

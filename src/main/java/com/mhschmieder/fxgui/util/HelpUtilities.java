@@ -21,15 +21,16 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  *
- * This file is part of the fxcadgui Library
+ * This file is part of the fxgui Library
  *
- * You should have received a copy of the MIT License along with the fxcadgui
+ * You should have received a copy of the MIT License along with the fxgui
  * Library. If not, see <https://opensource.org/licenses/MIT>.
  *
- * Project: https://github.com/mhschmieder/fxcadgui
+ * Project: https://github.com/mhschmieder/fxgui
  */
 package com.mhschmieder.fxgui.util;
 
+import com.mhschmieder.fxcontrols.util.MessageFactory;
 import com.mhschmieder.fxgui.stage.NoticeBox;
 import com.mhschmieder.jcommons.util.SystemType;
 
@@ -47,7 +48,7 @@ public final class HelpUtilities {
         final URL graphicsImportHelpUrl = getGraphicsImportHelpAsUrl();
 
         // Make a Notice Box to display the local Help until dismissed.
-        final String graphicsImportHelpBanner = CadMessageFactory
+        final String graphicsImportHelpBanner = MessageFactory
                 .getGraphicsImportHelpBanner();
 
         return new NoticeBox(

@@ -21,21 +21,21 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  *
- * This file is part of the fxlayergui Library
+ * This file is part of the fxgui Library
  *
- * You should have received a copy of the MIT License along with the fxlayergui
+ * You should have received a copy of the MIT License along with the fxgui
  * Library. If not, see <https://opensource.org/licenses/MIT>.
  *
- * Project: https://github.com/mhschmieder/fxlayergui
+ * Project: https://github.com/mhschmieder/fxgui
  */
 package com.mhschmieder.fxgui.layout;
 
 import com.mhschmieder.fxcontrols.control.ControlUtilities;
+import com.mhschmieder.fxcontrols.control.LayerPropertiesTable;
 import com.mhschmieder.fxcontrols.model.LayerProperties;
 import com.mhschmieder.fxcontrols.util.LayerPropertiesManager;
 import com.mhschmieder.fxcontrols.util.RegionUtilities;
 import com.mhschmieder.fxgui.stage.XStage;
-import com.mhschmieder.fxlayercontrols.control.LayerPropertiesTable;
 import com.mhschmieder.jcommons.util.ClientProperties;
 import javafx.beans.InvalidationListener;
 import javafx.collections.ObservableList;
@@ -50,7 +50,7 @@ import org.apache.commons.math3.util.FastMath;
 public final class LayerManagementPane extends BorderPane {
 
     // Declare the table and controls used for the Layer Properties.
-    public LayerPropertiesTable    _layerPropertiesTable;
+    public LayerPropertiesTable _layerPropertiesTable;
 
     // Maintain a reference to the owning stage, for enablement updates.
     protected XStage _layerManagementStage;

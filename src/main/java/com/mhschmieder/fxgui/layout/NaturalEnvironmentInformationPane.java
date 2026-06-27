@@ -21,20 +21,20 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  *
- * This file is part of the FxPhysics Library
+ * This file is part of the fxgui Library
  *
- * You should have received a copy of the MIT License along with the
- * FxPhysics Library. If not, see <https://opensource.org/licenses/MIT>.
+ * You should have received a copy of the MIT License along with the fxgui
+ * Library. If not, see <https://opensource.org/licenses/MIT>.
  *
- * Project: https://github.com/mhschmieder/fxphysics
+ * Project: https://github.com/mhschmieder/fxgui
  */
 package com.mhschmieder.fxgui.layout;
 
+import com.mhschmieder.fxcontrols.model.NaturalEnvironmentProperties;
 import com.mhschmieder.fxcontrols.util.RegionUtilities;
 import com.mhschmieder.fxgraphics.paint.ColorUtilities;
 import com.mhschmieder.fxgui.swing.NaturalEnvironmentInformationComponent;
 import com.mhschmieder.fxgui.util.GuiUtilities;
-import com.mhschmieder.fxphysicscontrols.model.NaturalEnvironmentProperties;
 import com.mhschmieder.jcommons.util.ClientProperties;
 import com.mhschmieder.jphysics.measure.PressureUnit;
 import com.mhschmieder.jphysics.measure.TemperatureUnit;
@@ -49,25 +49,25 @@ import java.text.NumberFormat;
 
 public final class NaturalEnvironmentInformationPane extends VBox {
 
-    public static String getAirAttenuationLabel( final NaturalEnvironmentProperties naturalEnvironmentProperties) {
-        final String airAttenuationLabel = NaturalEnvironmentInformationComponent.AIR_ATTENUATION_LABEL_LABEL
-                + ( naturalEnvironmentProperties.isAirAttenuationApplied() ? " On" : " Off" ); //$NON-NLS-1$ //$NON-NLS-2$
-        return airAttenuationLabel;
+    public static String getAirAttenuationLabel(
+            final NaturalEnvironmentProperties naturalEnvironmentProperties) {
+        return NaturalEnvironmentInformationComponent.AIR_ATTENUATION_LABEL_LABEL
+                + ( naturalEnvironmentProperties.isAirAttenuationApplied()
+                ? " On"
+                : " Off" );
     }
 
-    @SuppressWarnings("nls")
-    public static String getPressureLabel( final NaturalEnvironmentProperties naturalEnvironmentProperties,
-                                           final PressureUnit pressureUnit,
-                                           final NumberFormat numberFormat ) {
+    public static String getPressureLabel(
+            final NaturalEnvironmentProperties naturalEnvironmentProperties,
+            final PressureUnit pressureUnit,
+            final NumberFormat numberFormat ) {
         numberFormat.setMinimumFractionDigits( 2 );
         numberFormat.setMaximumFractionDigits( 2 );
-        final String pressureLabel = NaturalEnvironmentInformationComponent.PRESSURE_LABEL_LABEL + " = "
-                + numberFormat.format( naturalEnvironmentProperties.getPressure( pressureUnit ) ) + " "
-                + pressureUnit.label();
-        return pressureLabel;
+        return NaturalEnvironmentInformationComponent.PRESSURE_LABEL_LABEL
+                + " = " + numberFormat.format( naturalEnvironmentProperties
+                .getPressure(  pressureUnit ) ) + " " + pressureUnit.label();
     }
 
-    @SuppressWarnings("nls")
     public static String getRelativeHumidityLabel( final NaturalEnvironmentProperties naturalEnvironmentProperties,
                                                    final NumberFormat percentFormat ) {
         percentFormat.setMinimumFractionDigits( 1 );

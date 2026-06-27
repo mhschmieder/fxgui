@@ -21,19 +21,19 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  *
- * This file is part of the FxPhysics Library
+ * This file is part of the fxgui Library
  *
- * You should have received a copy of the MIT License along with the FxPhysics
+ * You should have received a copy of the MIT License along with the fxgui
  * Library. If not, see <https://opensource.org/licenses/MIT>.
  *
- * Project: https://github.com/mhschmieder/fxphysics
+ * Project: https://github.com/mhschmieder/fxgui
  */
 package com.mhschmieder.fxgui.swing;
 
-import com.mhschmieder.fxphysicscontrols.model.NaturalEnvironmentProperties;
-import com.mhschmieder.fxphysicsgui.layout.NaturalEnvironmentInformationPane;
+import com.mhschmieder.fxcontrols.model.NaturalEnvironmentProperties;
+import com.mhschmieder.fxgui.layout.NaturalEnvironmentInformationPane;
 import com.mhschmieder.jcommons.lang.StringConstants;
-import com.mhschmieder.jgui.component.JxDataViewComponent;
+import com.mhschmieder.jcontrols.component.JxDataViewComponent;
 import com.mhschmieder.jphysics.measure.PressureUnit;
 import com.mhschmieder.jphysics.measure.TemperatureUnit;
 
@@ -58,7 +58,8 @@ import java.util.Locale;
  *
  * @author Mark Schmieder
  */
-public final class NaturalEnvironmentInformationComponent extends JxDataViewComponent {
+public final class NaturalEnvironmentInformationComponent
+        extends JxDataViewComponent {
     // Declare strings for the static part of the settings formatting.
     public static final String                          AIR_ATTENUATION_LABEL_LABEL     =
                                                                                     "Air Attenuation";                      //$NON-NLS-1$

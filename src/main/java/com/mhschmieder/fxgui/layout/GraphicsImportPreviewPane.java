@@ -30,11 +30,17 @@
  */
 package com.mhschmieder.fxgui.layout;
 
+import com.mhschmieder.fxchart.control.ChartLabeledControlFactory;
+import com.mhschmieder.fxcontrols.control.ControlFactory;
 import com.mhschmieder.fxcontrols.control.LabeledControlFactory;
 import com.mhschmieder.fxcontrols.control.XComboBox;
 import com.mhschmieder.fxcontrols.model.DrawingLimitsProperties;
+import com.mhschmieder.fxcontrols.model.Extents2DProperties;
 import com.mhschmieder.fxcontrols.util.RegionUtilities;
+import com.mhschmieder.fxdxfimport.DxfShapeGroup;
+import com.mhschmieder.fxdxfimport.GraphicsImportOptions;
 import com.mhschmieder.fxgraphics.geometry.DrawingLimits;
+import com.mhschmieder.fxgui.util.BoundsUtilities;
 import com.mhschmieder.fxgui.util.GuiUtilities;
 import com.mhschmieder.jcommons.util.ClientProperties;
 import com.mhschmieder.jcommons.util.SystemType;
@@ -112,12 +118,12 @@ public final class GraphicsImportPreviewPane extends GridPane {
     /**
      * Cache the Graphics Import Options as a global singleton reference.
      */
-    private GraphicsImportOptions                 _graphicsImportOptions;
+    private GraphicsImportOptions _graphicsImportOptions;
 
     /**
      * Cache the imported geometry for later use, as this window is modeless.
      */
-    private DxfShapeGroup                         _geometryContainer;
+    private DxfShapeGroup _geometryContainer;
 
     /**
      * Wraps {@link #_geometryContainer} to receive a scale transform so that:
@@ -337,7 +343,7 @@ public final class GraphicsImportPreviewPane extends GridPane {
         // Specifically query the Graphics Import Distance Unit, as most DXF
         // files are unitless and it is unlikely this unit will match the
         // current preference in the application itself.
-        _distanceUnitSelector = PhysicsControlFactory.makeDistanceUnitSelector( 
+        _distanceUnitSelector = ControlFactory.makeDistanceUnitSelector(
                 _clientProperties,
                 true,
                 true,
@@ -464,7 +470,8 @@ public final class GraphicsImportPreviewPane extends GridPane {
         // factor of the stroke width from the Graphics Import, as right now
         // it can be too small to see or too blockish to avoid obscuring
         // details of nearby graphics.
-        _drawingLimitsNode.strokeWidthProperty().bind( _geometryContainer.strokeWidthProperty() );
+        _drawingLimitsNode.strokeWidthProperty().bind(
+                _geometryContainer.strokeWidthProperty() );
 
         // Rectangles are by default filled, so we have to turn that off.
         _drawingLimitsNode.setFill( null );

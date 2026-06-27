@@ -21,19 +21,19 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  *
- * This file is part of the FxPhysics Library
+ * This file is part of the fxgui Library
  *
- * You should have received a copy of the MIT License along with the FxPhysics
+ * You should have received a copy of the MIT License along with the fxgui
  * Library. If not, see <https://opensource.org/licenses/MIT>.
  *
- * Project: https://github.com/mhschmieder/fxphysics
+ * Project: https://github.com/mhschmieder/fxgui
  */
 package com.mhschmieder.fxgui.stage;
 
 import com.mhschmieder.fxcontrols.action.MeasurementUnitsActions;
 import com.mhschmieder.fxcontrols.control.MeasurementUnitsToolBar;
+import com.mhschmieder.fxcontrols.model.MeasurementUnitProperties;
 import com.mhschmieder.fxgui.layout.MeasurementUnitsPane;
-import com.mhschmieder.fxphysicscontrols.model.MeasurementUnitProperties;
 import com.mhschmieder.jcommons.branding.ProductBranding;
 import com.mhschmieder.jcommons.util.ClientProperties;
 import javafx.scene.Node;
@@ -165,7 +165,8 @@ public final class MeasurementUnitsStage extends XStage {
 
     // Set and propagate the Measurement Units reference.
     // NOTE: This should be done only once, to avoid breaking bindings.
-    public void setMeasurementUnits( final MeasurementUnitProperties pMeasurementUnitProperties) {
+    public void setMeasurementUnits(
+            final MeasurementUnitProperties pMeasurementUnitProperties ) {
         // Forward this reference to the Measurement Units Pane.
         _measurementUnitsPane.setMeasurementUnits(pMeasurementUnitProperties);
     }
