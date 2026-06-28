@@ -42,4 +42,27 @@ module fxgui {
     exports com.mhschmieder.fxgui.stage;
     exports com.mhschmieder.fxgui.swing;
     exports com.mhschmieder.fxgui.util;
+    requires commons.math3;
+    requires fxcontrols;
+    requires fxdxfimport;
+    requires fxgraphics;
+    requires java.desktop;
+    requires java.logging;
+    requires java.prefs;
+    requires javafx.controls;
+    requires javafx.graphics;
+    requires javafx.swing;
+    requires javafx.web;
+    requires jcommons;
+    requires jcontrols;
+    requires jgraphics;
+    requires jgui;
+    requires jmath;
+    requires jphysics;
+    requires jvectorexport;
+    requires org.apache.commons.io;
+    requires org.apache.commons.rng.api;
+    requires org.apache.commons.rng.core;
+    requires org.controlsfx.controls;
+    requires org.jsoup;
 }

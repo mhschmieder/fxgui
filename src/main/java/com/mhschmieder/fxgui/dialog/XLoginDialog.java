@@ -32,7 +32,6 @@ package com.mhschmieder.fxgui.dialog;
 
 import com.mhschmieder.fxcontrols.util.RegionUtilities;
 import com.mhschmieder.fxgraphics.paint.ColorConstants;
-import impl.org.controlsfx.i18n.Localization;
 import javafx.application.Platform;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
@@ -108,10 +107,14 @@ public final class XLoginDialog extends Dialog< Pair< String, String > > {
             // Set the Login Button Type, replacing the default English text
             // from ControlsFX as it is grammatically incorrect ("Log In" is two
             // words).
-            final String loginButtonText =
-                                         Locale.ENGLISH.getLanguage().equals( locale.getLanguage() )
-                                             ? "Log In"
-                                             : Localization.getString( "login.dlg.login.button" );
+            // NOTE: The Localization class is not visible after ControlsFX v8.
+            /*
+            final String loginButtonText = Locale.ENGLISH.getLanguage().equals(
+                    locale.getLanguage() )
+                    ? "Log In"
+                    : Localization.getString( "login.dlg.login.button" );
+            */
+            final String loginButtonText = "Log In";
 
             // If there is no authenticator set, we need to let ControlsFX take
             // care of the button handling or else the dialog never gets
@@ -269,11 +272,16 @@ public final class XLoginDialog extends Dialog< Pair< String, String > > {
             }
         } );
 
+        // NOTE: The Localization class is not visible after ControlsFX v8.
+        /*
         final String userNameCaption = Localization.getString( "login.dlg.user.caption" );
         userNameField.setPromptText( userNameCaption );
 
         final String passwordCaption = Localization.getString( "login.dlg.pswd.caption" );
         passwordField.setPromptText( passwordCaption );
+        */
+        final String userNameCaption = "User Name";
+        final String passwordCaption = "Password";
 
         setLoginInformation( initialUserInfo );
 

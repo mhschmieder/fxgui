@@ -30,7 +30,6 @@
  */
 package com.mhschmieder.fxgui.layout;
 
-import com.mhschmieder.fxchart.control.ChartLabeledControlFactory;
 import com.mhschmieder.fxcontrols.control.ControlFactory;
 import com.mhschmieder.fxcontrols.control.LabeledControlFactory;
 import com.mhschmieder.fxcontrols.control.XComboBox;
@@ -831,7 +830,6 @@ public final class GraphicsImportPreviewPane extends GridPane {
 
     // TODO: Modularize this method for better decoupling and
     //  order-independence, noting that some redundant operations take place.
-    @SuppressWarnings("nls")
     private void updateGeometryPreview() {
         // Add unitless Cartesian axes, set to scale to the Computed Bounds, as
         // those are the most useful for full context when the user chooses
@@ -844,16 +842,18 @@ public final class GraphicsImportPreviewPane extends GridPane {
                 FastMath.min( computedBounds.getWidth(), computedBounds.getHeight() );
         final double tickUnit = FastMath.round( minDimension / 10.0d );
 
-        _xAxis = ChartLabeledControlFactory.getUnitlessAxis( "X",
-                                                             computedBounds.getMinX(),
-                                                             computedBounds.getMaxX(),
-                                                             tickUnit,
-                                                             Side.BOTTOM );
-        _yAxis = ChartLabeledControlFactory.getUnitlessAxis( "Y",
-                                                             computedBounds.getMinY(),
-                                                             computedBounds.getMaxY(),
-                                                             tickUnit,
-                                                             Side.LEFT );
+        _xAxis = LabeledControlFactory.getUnitlessAxis(
+                "X",
+                computedBounds.getMinX(),
+                computedBounds.getMaxX(),
+                tickUnit,
+                Side.BOTTOM );
+        _yAxis = LabeledControlFactory.getUnitlessAxis(
+                "Y",
+                computedBounds.getMinY(),
+                computedBounds.getMaxY(),
+                tickUnit,
+                Side.LEFT );
 
         // NOTE: The extra Group layer is the only way to get the enclosing
         //  layout to honor size requests of a scaled Graphics Import Preview.

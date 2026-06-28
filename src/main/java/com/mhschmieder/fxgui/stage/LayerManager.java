@@ -36,6 +36,7 @@ import com.mhschmieder.fxcontrols.control.LayerPropertiesTable;
 import com.mhschmieder.fxcontrols.control.MenuFactory;
 import com.mhschmieder.fxcontrols.model.LayerProperties;
 import com.mhschmieder.fxcontrols.util.LayerPropertiesManagement;
+import com.mhschmieder.fxcontrols.util.MessageFactory;
 import com.mhschmieder.fxgui.dialog.DialogUtilities;
 import com.mhschmieder.fxgui.layout.LayerManagerPane;
 import com.mhschmieder.jcommons.branding.ProductBranding;
