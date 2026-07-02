@@ -51,6 +51,7 @@ import javafx.scene.text.TextFlow;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 /**
@@ -179,7 +180,7 @@ public final class DialogUtilities {
             final boolean showCancel,
             final AlertType alertType ) {
         // Most confirmation dialogs do not need a Cancel button.
-        final ArrayList< ButtonType > buttonTypes = new ArrayList<>();
+        final List< ButtonType > buttonTypes = new ArrayList<>();
         buttonTypes.add( ButtonType.YES );
         buttonTypes.add( ButtonType.NO );
         if ( showCancel ) {
