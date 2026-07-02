@@ -70,16 +70,16 @@ public final class DialogUtilities {
     private DialogUtilities() {}
 
     /**
-     * This is meant to be used as the layout pane background in windows
-     * that don't support custom colors per user. It is designed to be a fairly
-     * close match to Day Mode, adjusted for ideal contrast.
+     * This is meant to be used as the layout pane background in windows that
+     * don't support custom colors per user. It is designed to be a fairly close
+     * match for Day Mode background, adjusted for ideal contrast.
      */
     public static final Color WINDOW_BACKGROUND_COLOR = Color.GAINSBORO;
 
     /**
-     * This is meant to be used as the layout pane background in windows
-     * that don't support custom colors per user. It is designed to be a fairly
-     * close match to Day Mode, adjusted for ideal contrast.
+     * This is meant to be used as the layout pane background in windows that
+     * don't support custom colors per user. It is designed to be a fairly close
+     * match for Day Mode foreground, adjusted for ideal contrast.
      */
     public static final Color WINDOW_FOREGROUND_COLOR = Color.BLACK;
 
@@ -91,9 +91,7 @@ public final class DialogUtilities {
      * @return A @Background object targeted to setBackground()
      */
     public static Background makeDialogBackground() {
-        final Background background = makeDialogBackground( Insets.EMPTY );
-
-        return background;
+        return makeDialogBackground( Insets.EMPTY );
     }
 
     /**
@@ -106,10 +104,9 @@ public final class DialogUtilities {
      * @return A @Background object targeted to setBackground()
      */
     public static Background makeDialogBackground( final Insets insets ) {
-        final Background background = RegionUtilities.makeRegionBackground( WINDOW_BACKGROUND_COLOR,
-                                                                          insets );
-
-        return background;
+        return RegionUtilities.makeRegionBackground(
+                WINDOW_BACKGROUND_COLOR,
+                insets );
     }
 
     /**
@@ -123,19 +120,15 @@ public final class DialogUtilities {
      *            passed into {@link Alert#setTitle(String)}
      * @return The response from {@link Alert#showAndWait()}
      */
-    private static Optional< ButtonType > showAlertDialog( final Alert alert,
-                                                           final String masthead,
-                                                           final String title ) {
+    private static Optional< ButtonType > showAlertDialog(
+            final Alert alert,
+            final String masthead,
+            final String title ) {
         if ( masthead != null ) {
             alert.setHeaderText( masthead );
         }
         alert.setTitle( title );
-
-        // Forward the show as a modal blocking call.
-        final Optional< ButtonType > response = alert.showAndWait();
-
-        // Return the user's dismissal ButtonType status to the caller.
-        return response;
+        return alert.showAndWait();
     }
 
     /**
@@ -151,16 +144,17 @@ public final class DialogUtilities {
      *            Whether the confirmation dialog shows a cancel button
      * @return the result of {@link Alert#showAndWait()}
      */
-    public static Optional< ButtonType > showConfirmationAlert( final String message,
-                                                                final String masthead,
-                                                                final String title,
-                                                                final boolean showCancel ) {
-        final Optional< ButtonType > response = showConfirmationAlert( message,
-                                                                       masthead,
-                                                                       title,
-                                                                       showCancel,
-                                                                       AlertType.CONFIRMATION );
-        return response;
+    public static Optional< ButtonType > showConfirmationAlert(
+            final String message,
+            final String masthead,
+            final String title,
+            final boolean showCancel ) {
+        return showConfirmationAlert(
+                message,
+                masthead,
+                title,
+                showCancel,
+                AlertType.CONFIRMATION );
     }
 
     /**
@@ -178,11 +172,12 @@ public final class DialogUtilities {
      *            The type of alert to indicate with the banner icon
      * @return the result of {@link Alert#showAndWait()}
      */
-    public static Optional< ButtonType > showConfirmationAlert( final String message,
-                                                                final String masthead,
-                                                                final String title,
-                                                                final boolean showCancel,
-                                                                final AlertType alertType ) {
+    public static Optional< ButtonType > showConfirmationAlert(
+            final String message,
+            final String masthead,
+            final String title,
+            final boolean showCancel,
+            final AlertType alertType ) {
         // Most confirmation dialogs do not need a Cancel button.
         final ArrayList< ButtonType > buttonTypes = new ArrayList<>();
         buttonTypes.add( ButtonType.YES );
@@ -190,13 +185,9 @@ public final class DialogUtilities {
         if ( showCancel ) {
             buttonTypes.add( ButtonType.CANCEL );
         }
-
         final ButtonType[] buttons = buttonTypes.toArray( new ButtonType[ 0 ] );
-
         final Alert alert = new Alert( alertType, message, buttons );
-        final Optional< ButtonType > response = showAlertDialog( alert, masthead, title );
-
-        return response;
+        return showAlertDialog( alert, masthead, title );
     }
 
     /**
@@ -224,17 +215,17 @@ public final class DialogUtilities {
         showAlertDialog( alert, masthead, title );
     }
 
-    public static Optional< ButtonType > showFileExitConfirmationAlert( final File file,
-                                                                        final String productName ) {
+    public static Optional< ButtonType > showFileExitConfirmationAlert(
+            final File file,
+            final String productName ) {
         final String message = MessageFactory.getSaveFileChangesMessage( file );
         final String masthead = MessageFactory.getFileExitMasthead();
         final String title = MessageFactory.getFileExitTitle( productName );
-        final Optional< ButtonType > response = showConfirmationAlert( message,
-                                                                       masthead,
-                                                                       title,
-                                                                       true );
-
-        return response;
+        return showConfirmationAlert(
+                message,
+                masthead,
+                title,
+                true );
     }
 
     /**
@@ -256,7 +247,8 @@ public final class DialogUtilities {
      * @param masthead
      *            header text
      */
-    public static void showFileOpenErrorAlert( final String message, final String masthead ) {
+    public static void showFileOpenErrorAlert( final String message,
+                                               final String masthead ) {
         final String title = MessageFactory.getFileOpenErrorTitle();
         showErrorAlert( message, masthead, title );
     }
@@ -272,16 +264,16 @@ public final class DialogUtilities {
         showErrorAlert( message, null, title );
     }
 
-    public static Optional< ButtonType > showFileSaveConfirmationAlert( final File file,
-                                                                        final String title ) {
+    public static Optional< ButtonType > showFileSaveConfirmationAlert(
+            final File file,
+            final String title ) {
         final String message = MessageFactory.getSaveFileChangesMessage( file );
         final String masthead = MessageFactory.getSaveFileChangesMasthead();
-        final Optional< ButtonType > response = showConfirmationAlert( message,
-                                                                       masthead,
-                                                                       title,
-                                                                       true );
-
-        return response;
+        return showConfirmationAlert(
+                message,
+                masthead,
+                title,
+                true );
     }
 
     /**
@@ -333,8 +325,6 @@ public final class DialogUtilities {
             alert.setHeaderText( masthead );
         }
         alert.setTitle( title );
-
-        // Forward the show as a modal blocking call.
         alert.showAndWait();
     }
 
@@ -355,110 +345,119 @@ public final class DialogUtilities {
         showAlertDialog( alert, masthead, title );
     }
 
-    public static boolean showRasterGraphicsExportOptions( final ClientProperties clientProperties,
-                                                           final RasterGraphicsExportOptions rasterGraphicsExportOptions,
-                                                           final boolean hasChart,
-                                                           final boolean hasAuxiliary,
-                                                           final String graphicsExportAllLabel,
-                                                           final String graphicsExportChartLabel,
-                                                           final String graphicsExportAuxiliaryLabel ) {
-        // First, clone the Raster Graphics Export Options to serve as the
-        // candidate.
-        final RasterGraphicsExportOptions rasterGraphicsExportOptionsCandidate =
-                                                                               new RasterGraphicsExportOptions( rasterGraphicsExportOptions );
+    public static boolean showRasterGraphicsExportOptions(
+            final ClientProperties clientProperties,
+            final RasterGraphicsExportOptions rasterGraphicsExportOptions,
+            final boolean hasChart,
+            final boolean hasAuxiliary,
+            final String graphicsExportAllLabel,
+            final String graphicsExportChartLabel,
+            final String graphicsExportAuxiliaryLabel ) {
+        // Clone the Raster Graphics Export Options to serve as the candidate.
+        final RasterGraphicsExportOptions rasterGraphicsExportOptionsCandidate
+                = new RasterGraphicsExportOptions( rasterGraphicsExportOptions );
 
         final String masthead = MessageFactory.getRasterGraphicsExportOptionsMasthead();
         final String title = MessageFactory.getFileSaveOptionsTitle();
-        final RasterGraphicsExportOptionsDialog rasterGraphicsExportOptionsDialog =
-                                                                                  new RasterGraphicsExportOptionsDialog( title,
-                                                                                                                         masthead,
-                                                                                                                         clientProperties,
-                                                                                                                         rasterGraphicsExportOptionsCandidate,
-                                                                                                                         hasChart,
-                                                                                                                         hasAuxiliary,
-                                                                                                                         graphicsExportAllLabel,
-                                                                                                                         graphicsExportChartLabel,
-                                                                                                                         graphicsExportAuxiliaryLabel );
-        final Optional< ButtonType > response = rasterGraphicsExportOptionsDialog.showModalDialog();
+        final RasterGraphicsExportOptionsDialog rasterGraphicsExportOptionsDialog
+                = new RasterGraphicsExportOptionsDialog(
+                        title,
+                masthead,
+                clientProperties,
+                rasterGraphicsExportOptionsCandidate,
+                hasChart,
+                hasAuxiliary,
+                graphicsExportAllLabel,
+                graphicsExportChartLabel,
+                graphicsExportAuxiliaryLabel );
+        final Optional< ButtonType > response
+                = rasterGraphicsExportOptionsDialog.showModalDialog();
 
-        // Cache the new Raster Graphics Export Options, unless the user
-        // canceled.
-        final boolean rasterGraphicsExportOptionsCaptured =
-                                                          rasterGraphicsExportOptionsDialog._exportButton
-                                                                  .equals( response.get() );
+        // Cache the new Raster Graphics Export Options unless the user canceled.
+        final boolean rasterGraphicsExportOptionsCaptured = response.isPresent()
+                && response.get().equals( rasterGraphicsExportOptionsDialog
+                ._exportButton );
         if ( rasterGraphicsExportOptionsCaptured ) {
             // Sync the data model to final edits before caching the result.
             rasterGraphicsExportOptionsDialog.updateModel();
-            rasterGraphicsExportOptions
-                    .setRasterGraphicsExportOptions( rasterGraphicsExportOptionsCandidate );
+            rasterGraphicsExportOptions.setRasterGraphicsExportOptions(
+                    rasterGraphicsExportOptionsCandidate );
         }
 
         return rasterGraphicsExportOptionsCaptured;
     }
 
-    public static boolean showVectorGraphicsExportOptions( final ClientProperties clientProperties,
-                                                           final VectorGraphicsExportOptions vectorGraphicsExportOptions,
-                                                           final boolean hasTitle,
-                                                           final boolean hasChart,
-                                                           final boolean hasAuxiliary,
-                                                           final String graphicsExportAllLabel,
-                                                           final String graphicsExportChartLabel,
-                                                           final String graphicsExportAuxiliaryLabel ) {
-        // First, clone the Vector Graphics Export Options to serve as the
-        // candidate.
-        final VectorGraphicsExportOptions vectorGraphicsExportOptionsCandidate =
-                                                                               new VectorGraphicsExportOptions( vectorGraphicsExportOptions );
+    public static boolean showVectorGraphicsExportOptions(
+            final ClientProperties clientProperties,
+            final VectorGraphicsExportOptions vectorGraphicsExportOptions,
+            final boolean hasTitle,
+            final boolean hasChart,
+            final boolean hasAuxiliary,
+            final String graphicsExportAllLabel,
+            final String graphicsExportChartLabel,
+            final String graphicsExportAuxiliaryLabel ) {
+        // Clone the Vector Graphics Export Options to serve as the candidate.
+        final VectorGraphicsExportOptions vectorGraphicsExportOptionsCandidate
+                = new VectorGraphicsExportOptions( vectorGraphicsExportOptions );
 
-        final String masthead = MessageFactory.getVectorGraphicsExportOptionsMasthead();
+        final String masthead = MessageFactory
+                .getVectorGraphicsExportOptionsMasthead();
         final String title = MessageFactory.getFileSaveOptionsTitle();
-        final VectorGraphicsExportOptionsDialog vectorGraphicsExportOptionsDialog =
-                                                                                  new VectorGraphicsExportOptionsDialog( title,
-                                                                                                                         masthead,
-                                                                                                                         clientProperties,
-                                                                                                                         vectorGraphicsExportOptionsCandidate,
-                                                                                                                         hasTitle,
-                                                                                                                         hasChart,
-                                                                                                                         hasAuxiliary,
-                                                                                                                         graphicsExportAllLabel,
-                                                                                                                         graphicsExportChartLabel,
-                                                                                                                         graphicsExportAuxiliaryLabel );
-        final Optional< ButtonType > response = vectorGraphicsExportOptionsDialog.showModalDialog();
+        final VectorGraphicsExportOptionsDialog vectorGraphicsExportOptionsDialog
+                = new VectorGraphicsExportOptionsDialog(
+                        title,
+                        masthead,
+                        clientProperties,
+                        vectorGraphicsExportOptionsCandidate,
+                        hasTitle,
+                        hasChart,
+                        hasAuxiliary,
+                        graphicsExportAllLabel,
+                        graphicsExportChartLabel,
+                        graphicsExportAuxiliaryLabel );
+        final Optional< ButtonType > response
+                = vectorGraphicsExportOptionsDialog.showModalDialog();
 
-        // Cache the new Vector Graphics Export Options, unless the user
-        // canceled.
-        final boolean vectorGraphicsExportOptionsCaptured =
-                                                          vectorGraphicsExportOptionsDialog._exportButton
-                                                                  .equals( response.get() );
+        // Cache the new Vector Graphics Export Options unless the user canceled.
+        final boolean vectorGraphicsExportOptionsCaptured = response.isPresent()
+                && response.get().equals( vectorGraphicsExportOptionsDialog
+                ._exportButton );
         if ( vectorGraphicsExportOptionsCaptured ) {
             // Sync the data model to final edits before caching the result.
             vectorGraphicsExportOptionsDialog.updateModel();
-            vectorGraphicsExportOptions
-                    .setVectorGraphicsExportOptions( vectorGraphicsExportOptionsCandidate );
+            vectorGraphicsExportOptions.setVectorGraphicsExportOptions(
+                    vectorGraphicsExportOptionsCandidate );
         }
 
         return vectorGraphicsExportOptionsCaptured;
     }
 
-    public static void showIncompatibileClientAlert( final String productName,
-                                                     final Hyperlink checkForUpdatesHyperlink ) {
-        final String message = MessageFactory.getIncompatibleClientMessage( productName );
-        final String masthead = MessageFactory.getIncompatibleClientMasthead( productName );
+    public static void showIncompatibileClientAlert(
+            final String productName,
+            final Hyperlink checkForUpdatesHyperlink ) {
+        final String message = MessageFactory.getIncompatibleClientMessage(
+                productName );
+        final String masthead = MessageFactory.getIncompatibleClientMasthead(
+                productName );
         final String title = MessageFactory.getClientServerProtocolErrorTitle();
-        final String checkForUpdatesPreamble = MessageFactory.getCheckForUpdatesPreamble();
-        final TextFlow textFlow = new TextFlow( new Text( checkForUpdatesPreamble ),
-                                                checkForUpdatesHyperlink );
-
+        final String checkForUpdatesPreamble = MessageFactory
+                .getCheckForUpdatesPreamble();
+        final TextFlow textFlow = new TextFlow(
+                new Text( checkForUpdatesPreamble ),
+                checkForUpdatesHyperlink );
         showTextFlowAlert( message, masthead, title, textFlow, AlertType.ERROR );
     }
 
-    public static void showInvalidUserAccountAlert( final String message,
-                                                    final Hyperlink accountManagementHyperlink ) {
+    public static void showInvalidUserAccountAlert(
+            final String message,
+            final Hyperlink accountManagementHyperlink ) {
         final String masthead = MessageFactory.getInvalidUserAccountMasthead();
         final String title = MessageFactory.getUserAuthorizationErrorTitle();
-        final String accountManagementPreamble = MessageFactory.getAccountManagementPreamble();
-        final TextFlow textFlow = new TextFlow( new Text( accountManagementPreamble ),
-                                                accountManagementHyperlink );
-
+        final String accountManagementPreamble = MessageFactory
+                .getAccountManagementPreamble();
+        final TextFlow textFlow = new TextFlow(
+                new Text( accountManagementPreamble ),
+                accountManagementHyperlink );
         showTextFlowAlert( message, masthead, title, textFlow, AlertType.ERROR );
     }
 
@@ -498,8 +497,7 @@ public final class DialogUtilities {
                 masthead,
                 title,
                 false );
-
-        return ( !ButtonType.NO.equals( response.get() ) );
+        return response.isPresent() && !response.get().equals( ButtonType.NO );
     }
 
     /**
@@ -524,8 +522,7 @@ public final class DialogUtilities {
                 masthead,
                 title,
                 false );
-
-        return ( !ButtonType.NO.equals( response.get() ) );
+        return response.isPresent() && !response.get().equals( ButtonType.NO );
     }
 
     // NOTE: No longer used, but keep it at hand for upcoming deployments.
@@ -559,14 +556,15 @@ public final class DialogUtilities {
                         clientProperties,
                         coordinatesCandidate );
         confirmCoordinatesDialog.setDistanceUnit( distanceUnit );
-        final Optional< ButtonType > response = confirmCoordinatesDialog.showModalDialog();
+        final Optional< ButtonType > response = confirmCoordinatesDialog
+                .showModalDialog();
 
-        // Get the Button Type that was pressed, but use standard
-        // object-oriented comparisons as Lambda Expressions do not give us
-        // the flexibility of exiting this method directly or of sharing
-        // common code after initial special-case handling of the three user
-        // options ("Yes", "No", and "Cancel") and their variants.
-        final ButtonType buttonType = response.get();
+        // Get the Button Type that was pressed. Use object-oriented comparisons
+        // as Lambda Expressions do not give us the flexibility of exiting this
+        // method directly or of sharing common code after initial special-case
+        // handling of the three user options ("Yes", "No", and "Cancel") and
+        // their variants. If no button was pressed, default to Cancel.
+        final ButtonType buttonType = response.orElse( ButtonType.CANCEL );
 
         // Handle the full enumeration of potential responses.
         Point2D coordinates = coordinatesCandidate;
@@ -576,12 +574,11 @@ public final class DialogUtilities {
             case HELP_2:
             case BACK_PREVIOUS:
             case CANCEL_CLOSE:
-                // These options equate to cancellation.
-                // If the user cancels, return the initial coordinates.
+                // These options equate to cancellation. If the user cancels,
+                // return the initial coordinates.
                 break;
             case NO:
-                // This case is currently unsupported, but would be like a
-                // Cancel.
+                // This case is currently unsupported but would act like Cancel.
                 break;
             case APPLY:
             case FINISH:
