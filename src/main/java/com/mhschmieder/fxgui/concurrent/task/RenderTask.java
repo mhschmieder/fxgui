@@ -126,9 +126,9 @@ public abstract class RenderTask extends Task< Image > {
      * @return the number of worker threads to use for this render.
      */
     private int getRenderThreadCount() {
-        final int availableProcessors = Runtime.getRuntime()
+        final int numberOfAvailableProcessors = Runtime.getRuntime()
                 .availableProcessors();
-        return FastMath.max( 1, FastMath.min( width, availableProcessors ) );
+        return Math.clamp( width, 1, numberOfAvailableProcessors );
     }
 
     /**
