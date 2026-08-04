@@ -31,25 +31,27 @@
 package com.mhschmieder.fxgui.file;
 
 import com.mhschmieder.jcommons.io.FileExtensions;
-import javafx.stage.FileChooser.ExtensionFilter;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import javafx.stage.FileChooser.ExtensionFilter;
 
 /**
  * {@code ExtensionFilterUtilities} is a static utilities class for generating
  * file extension filters that can be used by a JavaFX File Chooser.
  * <p>
  * NOTE: This code is copied from GraphicsToolkit on GitHub until it is
- * published
- * to Maven Central from where it can be pulled via Gradle.
+ * published to Maven Central from where it can be pulled via Gradle.
  */
 public final class ExtensionFilterUtilities {
 
     /**
-     * The default constructor is disabled, as this is a static utilities class.
+     * The default constructor is disabled, as this is a static utilities
+     * class.
      */
-    private ExtensionFilterUtilities() {}
+    private ExtensionFilterUtilities() {
+    }
 
     public static ExtensionFilter getExtensionFilter( final String description,
                                                       final String extension ) {
@@ -62,7 +64,8 @@ public final class ExtensionFilterUtilities {
     }
 
     public static List< ExtensionFilter > getCsvExtendedExtensionFilters() {
-        final List< ExtensionFilter > extensionFilterAdditions = new ArrayList<>();
+        final List< ExtensionFilter > extensionFilterAdditions
+                = new ArrayList<>();
 
         extensionFilterAdditions.add( ExtensionFilters.CSV_EXTENSION_FILTER );
         extensionFilterAdditions.add( ExtensionFilters.ZIP_EXTENSION_FILTER );
@@ -71,7 +74,8 @@ public final class ExtensionFilterUtilities {
     }
 
     public static List< ExtensionFilter > getCsvExtensionFilters() {
-        final List< ExtensionFilter > extensionFilterAdditions = new ArrayList<>();
+        final List< ExtensionFilter > extensionFilterAdditions
+                = new ArrayList<>();
 
         extensionFilterAdditions.add( ExtensionFilters.CSV_EXTENSION_FILTER );
 
@@ -79,7 +83,8 @@ public final class ExtensionFilterUtilities {
     }
 
     public static List< ExtensionFilter > getDxfExtensionFilters() {
-        final List< ExtensionFilter > extensionFilterAdditions = new ArrayList<>();
+        final List< ExtensionFilter > extensionFilterAdditions
+                = new ArrayList<>();
 
         extensionFilterAdditions.add( ExtensionFilters.DXF_EXTENSION_FILTER );
 
@@ -87,7 +92,8 @@ public final class ExtensionFilterUtilities {
     }
 
     public static List< ExtensionFilter > getHtmlExtensionFilters() {
-        final List< ExtensionFilter > extensionFilterAdditions = new ArrayList<>();
+        final List< ExtensionFilter > extensionFilterAdditions
+                = new ArrayList<>();
 
         extensionFilterAdditions.add( ExtensionFilters.HTML_EXTENSION_FILTER );
 
@@ -108,7 +114,8 @@ public final class ExtensionFilterUtilities {
         //  disabled due to removing Swing and AWT dependencies.
         // NOTE: A brief experiment with PNM failed to produce output, but no
         //  real time was spent on looking into what happened or changing type.
-        final List< ExtensionFilter > extensionFilterAdditions = new ArrayList<>();
+        final List< ExtensionFilter > extensionFilterAdditions
+                = new ArrayList<>();
 
         extensionFilterAdditions.add( ExtensionFilters.IMAGE_GRAPHICS_EXTENSION_FILTER );
         extensionFilterAdditions.add( ExtensionFilters.PNG_EXTENSION_FILTER );
@@ -127,7 +134,8 @@ public final class ExtensionFilterUtilities {
     }
 
     public static List< ExtensionFilter > getLogExtensionFilters() {
-        final List< ExtensionFilter > extensionFilterAdditions = new ArrayList<>();
+        final List< ExtensionFilter > extensionFilterAdditions
+                = new ArrayList<>();
 
         extensionFilterAdditions.add( ExtensionFilters.LOG_EXTENSION_FILTER );
 
@@ -135,7 +143,8 @@ public final class ExtensionFilterUtilities {
     }
 
     public static List< ExtensionFilter > getPdfExtensionFilters() {
-        final List< ExtensionFilter > extensionFilterAdditions = new ArrayList<>();
+        final List< ExtensionFilter > extensionFilterAdditions
+                = new ArrayList<>();
 
         extensionFilterAdditions.add( ExtensionFilters.PDF_EXTENSION_FILTER );
 
@@ -143,7 +152,8 @@ public final class ExtensionFilterUtilities {
     }
 
     public static List< ExtensionFilter > getPngExtensionFilters() {
-        final List< ExtensionFilter > extensionFilterAdditions = new ArrayList<>();
+        final List< ExtensionFilter > extensionFilterAdditions
+                = new ArrayList<>();
 
         extensionFilterAdditions.add( ExtensionFilters.PNG_EXTENSION_FILTER );
 
@@ -151,7 +161,8 @@ public final class ExtensionFilterUtilities {
     }
 
     public static List< ExtensionFilter > getPptxExtensionFilters() {
-        final List< ExtensionFilter > extensionFilterAdditions = new ArrayList<>();
+        final List< ExtensionFilter > extensionFilterAdditions
+                = new ArrayList<>();
 
         extensionFilterAdditions.add( ExtensionFilters.PPTX_EXTENSION_FILTER );
 
@@ -159,7 +170,8 @@ public final class ExtensionFilterUtilities {
     }
 
     public static List< ExtensionFilter > getPresentationExtensionFilters() {
-        final List< ExtensionFilter > extensionFilterAdditions = new ArrayList<>();
+        final List< ExtensionFilter > extensionFilterAdditions
+                = new ArrayList<>();
 
         extensionFilterAdditions.add( ExtensionFilters.PRESENTATION_EXTENSION_FILTER );
         extensionFilterAdditions.add( ExtensionFilters.PPTX_EXTENSION_FILTER );
@@ -169,16 +181,16 @@ public final class ExtensionFilterUtilities {
     }
 
     public static List< ExtensionFilter > getRasterImageExtensionFilters() {
-        final List< ExtensionFilter > extensionFilterAdditions = new ArrayList<>();
+        final List< ExtensionFilter > extensionFilterAdditions
+                = new ArrayList<>();
 
         // NOTE: TIFF requires either ImageIO-Ext or JAI 1.1.3 JAR's. Both
         //  are quite large (especially the former, which also has JNI
         //  support that might not include the Mac, but otherwise is a more
         //  direct analog to how we do other formats currently vs. the
         //  different JAI approach). Therefore, we do not yet support TIFF.
-        extensionFilterAdditions
-                .add( new ExtensionFilter( FileExtensions.RASTER_IMAGE_DESCRIPTION,
-                                           FileExtensions.RASTER_IMAGE_EXTENSIONS ) );
+        extensionFilterAdditions.add( new ExtensionFilter( FileExtensions.RASTER_IMAGE_DESCRIPTION,
+                                                           FileExtensions.RASTER_IMAGE_EXTENSIONS ) );
         extensionFilterAdditions.add( new ExtensionFilter( FileExtensions.PNG_DESCRIPTION,
                                                            FileExtensions.PNG_EXTENSIONS ) );
         extensionFilterAdditions.add( new ExtensionFilter( FileExtensions.GIF_DESCRIPTION,
@@ -190,7 +202,8 @@ public final class ExtensionFilterUtilities {
     }
 
     public static List< ExtensionFilter > getSessionLogExtensionFilters() {
-        final List< ExtensionFilter > extensionFilterAdditions = new ArrayList<>();
+        final List< ExtensionFilter > extensionFilterAdditions
+                = new ArrayList<>();
 
         extensionFilterAdditions.add( ExtensionFilters.TXT_EXTENSION_FILTER );
         extensionFilterAdditions.add( ExtensionFilters.LOG_EXTENSION_FILTER );
@@ -199,7 +212,8 @@ public final class ExtensionFilterUtilities {
     }
 
     public static List< ExtensionFilter > getSpreadsheetExtensionFilters() {
-        final List< ExtensionFilter > extensionFilterAdditions = new ArrayList<>();
+        final List< ExtensionFilter > extensionFilterAdditions
+                = new ArrayList<>();
 
         extensionFilterAdditions.add( ExtensionFilters.SPREADSHEET_EXTENSION_FILTER );
         extensionFilterAdditions.add( ExtensionFilters.XLSX_EXTENSION_FILTER );
@@ -209,7 +223,8 @@ public final class ExtensionFilterUtilities {
     }
 
     public static List< ExtensionFilter > getSvgExtensionFilters() {
-        final List< ExtensionFilter > extensionFilterAdditions = new ArrayList<>();
+        final List< ExtensionFilter > extensionFilterAdditions
+                = new ArrayList<>();
 
         extensionFilterAdditions.add( ExtensionFilters.SVG_EXTENSION_FILTER );
 
@@ -217,7 +232,8 @@ public final class ExtensionFilterUtilities {
     }
 
     public static List< ExtensionFilter > getVectorGraphicsExtensionFilters() {
-        final List< ExtensionFilter > extensionFilterAdditions = new ArrayList<>();
+        final List< ExtensionFilter > extensionFilterAdditions
+                = new ArrayList<>();
 
         // NOTE: The jfxConverter library is hard-wired to work with Apache
         //  POI's legacy support vs. the standard XML versions of PowerPoint
@@ -234,7 +250,8 @@ public final class ExtensionFilterUtilities {
     }
 
     public static List< ExtensionFilter > getXlsxExtensionFilters() {
-        final List< ExtensionFilter > extensionFilterAdditions = new ArrayList<>();
+        final List< ExtensionFilter > extensionFilterAdditions
+                = new ArrayList<>();
 
         extensionFilterAdditions.add( ExtensionFilters.XLSX_EXTENSION_FILTER );
 
@@ -242,7 +259,8 @@ public final class ExtensionFilterUtilities {
     }
 
     public static List< ExtensionFilter > getXmlExtensionFilters() {
-        final List< ExtensionFilter > extensionFilterAdditions = new ArrayList<>();
+        final List< ExtensionFilter > extensionFilterAdditions
+                = new ArrayList<>();
 
         extensionFilterAdditions.add( ExtensionFilters.XML_EXTENSION_FILTER );
 
@@ -250,11 +268,11 @@ public final class ExtensionFilterUtilities {
     }
 
     public static List< ExtensionFilter > getZipExtensionFilters() {
-        final List< ExtensionFilter > extensionFilterAdditions = new ArrayList<>();
+        final List< ExtensionFilter > extensionFilterAdditions
+                = new ArrayList<>();
 
         extensionFilterAdditions.add( ExtensionFilters.ZIP_EXTENSION_FILTER );
 
         return extensionFilterAdditions;
     }
-
 }

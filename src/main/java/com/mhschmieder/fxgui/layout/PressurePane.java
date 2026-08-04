@@ -41,6 +41,8 @@ import com.mhschmieder.jcommons.util.ClientProperties;
 import com.mhschmieder.jgraphics.input.ScrollingSensitivity;
 import com.mhschmieder.jphysics.PhysicsConstants;
 import com.mhschmieder.jphysics.measure.PressureUnit;
+import org.apache.commons.math3.util.FastMath;
+
 import javafx.application.Platform;
 import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.SimpleDoubleProperty;
@@ -51,14 +53,12 @@ import javafx.scene.layout.Background;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
-import org.apache.commons.math3.util.FastMath;
 
 public final class PressurePane extends VBox {
 
-    private Label          _pressureLabel;
-    public PressureSlider  _pressureSlider;
-    public PressureEditor  _pressureEditor;
-
+    public PressureSlider _pressureSlider;
+    public PressureEditor _pressureEditor;
+    private Label _pressureLabel;
     private DoubleProperty pressurePa;
 
     // Cache the number converter so its units and extrema can be changed later
@@ -74,49 +74,16 @@ public final class PressurePane extends VBox {
         initPane( clientProperties );
     }
 
-    private void bindProperties() {
-        // Bidirectionally bind the slider to an editable text field restricted
-        // to the slider range.
-        // NOTE: This is OK because we embed unit conversion in DoubleEditor.
-        _pressureSlider.valueProperty().bindBidirectional( _pressureEditor.valueProperty() );
-
-        // NOTE: Sliders sync to the exact value of JavaFX Bean Properties,
-        // only passing through the unit conversion.
-        pressurePaProperty().addListener( ( observableValue, oldValue, newValue ) -> {
-            _pressureSlider.setPressurePa( newValue.doubleValue() );
-        } );
-
-        // NOTE: Sliders might switch presentation units, whereas JavaFX Bean
-        // Properties are specified with a single unchanging unit, so we have to
-        // be careful to only sync the cached Pressure property to the slider
-        // when a real magnitude change occurred vs. a Pressure Unit change.
-        _pressureSlider.valueProperty().addListener( ( observableValue, oldValue, newValue ) -> {
-            final double storedValue = getPressurePa();
-            final double sliderValue = _pressureSlider.getPressurePa();
-            final double epsilon = 1e-7;
-
-            // Make sure we don't set dirty flag because of round-off
-            // errors in slider value when changing units, but wrap this
-            // in a JavaFX runLater thread to ensure all FX event code
-            // precedes the custom selection.
-            if ( ( FastMath.abs( storedValue - sliderValue ) >= epsilon ) ) {
-                Platform.runLater( () -> setPressurePa( sliderValue ) );
-            }
-        } );
-    }
-
-    public double getPressurePa() {
-        return pressurePa.get();
-    }
-
     private void initPane( final ClientProperties clientProperties ) {
         // Make a bolded label to clearly identify the functionality.
-        _pressureLabel = GuiUtilities.getColumnHeader( "Atmospheric Pressure" ); //$NON-NLS-1$
+        _pressureLabel = GuiUtilities.getColumnHeader( "Atmospheric Pressure" );
+        //$NON-NLS-1$
 
         // Create a default Pressure Slider.
         _pressureSlider = new PressureSlider( clientProperties );
 
-        // Conform the associated textField (text field) to the slider attributes.
+        // Conform the associated textField (text field) to the slider
+        // attributes.
         _pressureEditor = ControlFactory.makePressureEditor( clientProperties );
         _pressureEditor.setPrefWidth( 100d );
         _pressureEditor.setMaxWidth( 100d );
@@ -131,7 +98,9 @@ public final class PressurePane extends VBox {
         // PhysicsConstants.PRESSURE_MINIMUM_PA,
         // PhysicsConstants.PRESSURE_MAXIMUM_PA );
 
-        getChildren().addAll( _pressureLabel, _pressureSlider, _pressureEditor );
+        getChildren().addAll( _pressureLabel,
+                              _pressureSlider,
+                              _pressureEditor );
 
         setAlignment( Pos.CENTER );
         setPadding( new Insets( 6.0d ) );
@@ -140,30 +109,23 @@ public final class PressurePane extends VBox {
         VBox.setVgrow( _pressureSlider, Priority.ALWAYS );
     }
 
-    public DoubleProperty pressurePaProperty() {
-        return pressurePa;
-    }
-
     public void reset() {
-        _pressureSlider.setPressurePa( NaturalEnvironmentProperties
-                .PRESSURE_PA_DEFAULT );
+        _pressureSlider.setPressurePa( NaturalEnvironmentProperties.PRESSURE_PA_DEFAULT );
     }
 
     public void setForegroundFromBackground( final Color backColor ) {
         // Set the new Background first, so it sets context for CSS derivations.
-        final Background background = RegionUtilities.makeRegionBackground( backColor );
+        final Background background = RegionUtilities.makeRegionBackground(
+                backColor );
         setBackground( background );
 
-        final Color foregroundColor = ColorUtilities.getForegroundFromBackground( backColor );
+        final Color foregroundColor
+                = ColorUtilities.getForegroundFromBackground( backColor );
         _pressureLabel.setTextFill( foregroundColor );
     }
 
     public void setGesturesEnabled( final boolean gesturesEnabled ) {
         _pressureSlider.setGesturesEnabled( gesturesEnabled );
-    }
-
-    public void setPressurePa( final double pPressureKpa ) {
-        pressurePa.set( pPressureKpa );
     }
 
     // Set and bind the Pressure property reference.
@@ -176,11 +138,62 @@ public final class PressurePane extends VBox {
         bindProperties();
     }
 
+    private void bindProperties() {
+        // Bidirectionally bind the slider to an editable text field restricted
+        // to the slider range.
+        // NOTE: This is OK because we embed unit conversion in DoubleEditor.
+        _pressureSlider.valueProperty()
+                       .bindBidirectional( _pressureEditor.valueProperty() );
+
+        // NOTE: Sliders sync to the exact value of JavaFX Bean Properties,
+        // only passing through the unit conversion.
+        pressurePaProperty().addListener( ( observableValue, oldValue,
+                                            newValue ) -> {
+            _pressureSlider.setPressurePa( newValue.doubleValue() );
+        } );
+
+        // NOTE: Sliders might switch presentation units, whereas JavaFX Bean
+        // Properties are specified with a single unchanging unit, so we have to
+        // be careful to only sync the cached Pressure property to the slider
+        // when a real magnitude change occurred vs. a Pressure Unit change.
+        _pressureSlider.valueProperty()
+                       .addListener( ( observableValue, oldValue, newValue ) -> {
+                           final double storedValue = getPressurePa();
+                           final double sliderValue
+                                   = _pressureSlider.getPressurePa();
+                           final double epsilon = 1e-7;
+
+                           // Make sure we don't set dirty flag because of
+                           // round-off
+                           // errors in slider value when changing units, but
+                           // wrap this
+                           // in a JavaFX runLater thread to ensure all FX
+                           // event code
+                           // precedes the custom selection.
+                           if ( ( FastMath.abs( storedValue - sliderValue )
+                                  >= epsilon ) ) {
+                               Platform.runLater( () -> setPressurePa(
+                                       sliderValue ) );
+                           }
+                       } );
+    }
+
+    public double getPressurePa() {
+        return pressurePa.get();
+    }
+
+    public void setPressurePa( final double pPressureKpa ) {
+        pressurePa.set( pPressureKpa );
+    }
+
+    public DoubleProperty pressurePaProperty() {
+        return pressurePa;
+    }
+
     /**
      * Set the new Scrolling Sensitivity for the Pressure Sliders.
      *
-     * @param scrollingSensitivity
-     *            The sensitivity of the mouse scroll wheel
+     * @param scrollingSensitivity The sensitivity of the mouse scroll wheel
      */
     public void setScrollingSensitivity( final ScrollingSensitivity scrollingSensitivity ) {
         _pressureSlider.setScrollingSensitivity( scrollingSensitivity );
@@ -220,7 +233,8 @@ public final class PressurePane extends VBox {
         // value and max values change, and therefore it becomes clamped as the
         // not-yet-converted old value may not be within the new range, and thus
         // it fires an event, setting the dirty flag.
-        final double pressureMaximum = 10.0d * PhysicsConstants.PRESSURE_MAXIMUM_PA;
+        final double pressureMaximum = 10.0d
+                                       * PhysicsConstants.PRESSURE_MAXIMUM_PA;
         final double pressureMinimum = -pressureMaximum;
         _pressureEditor.setMinimumValue( pressureMinimum );
         _pressureEditor.setMaximumValue( pressureMaximum );
@@ -238,5 +252,4 @@ public final class PressurePane extends VBox {
         // minimum allowed, when the user's cached unit is the default unit.
         Platform.runLater( () -> _pressureEditor.setValue( _pressureSlider.getValue() ) );
     }
-
 }

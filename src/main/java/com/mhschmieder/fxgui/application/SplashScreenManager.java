@@ -35,6 +35,7 @@ import com.mhschmieder.fxgraphics.image.ImageUtilities;
 import com.mhschmieder.fxgui.concurrent.task.MainApplicationLoadTask;
 import com.mhschmieder.fxgui.util.GuiUtilities;
 import com.mhschmieder.jcommons.branding.ProductBranding;
+
 import javafx.animation.FadeTransition;
 import javafx.concurrent.Task;
 import javafx.concurrent.Worker;
@@ -65,44 +66,39 @@ import javafx.util.Duration;
  */
 public class SplashScreenManager {
 
-    /**
-     *  This interface is solely for the purpose of providing a simple mechanism
-     *  for completing the display of the startup Splash Screen.
-     */
-    public interface InitCompletionHandler {
-        void complete();
-    }
-
     // Declare GUI components related to Splash Screen and startup.
-    protected Pane                  splashScreenLayout;
-    protected ImageView             splashScreenImageView;
-    protected ProgressBar           loadProgress;
-    protected String                progressText;
-    protected Label                 progressLabel;
+    protected Pane splashScreenLayout;
+    protected ImageView splashScreenImageView;
+    protected ProgressBar loadProgress;
+    protected String progressText;
+    protected Label progressLabel;
 
     public SplashScreenManager( final String jarRelativeSplashScreenFilename,
                                 final ProductBranding productBranding ) {
         // Layout the Splash Screen so it is ready to go when we get a Stage.
         // NOTE: This is OK to do on the JavaFX Launcher Thread vs. the JavaFX
         //  Application Thread, as we hold off on working with Scenes or Stages,
-        //  and as the image loading might take awhile so should be front-loaded.
+        //  and as the image loading might take awhile so should be
+        //  front-loaded.
         layoutSplashScreen( jarRelativeSplashScreenFilename, productBranding );
     }
 
     /**
      * Layout the Splash Screen so it is ready to go when we get a Stage.
-     * 
+     *
      * @param jarRelativeSplashScreenFilename The JAR-relative path for the
      *                                        splash screen image filename
-     * @param productBranding The {@link ProductBranding} for app name etc.                                    
+     * @param productBranding                 The {@link ProductBranding} for
+     *                                        app name etc.
      */
     private void layoutSplashScreen( final String jarRelativeSplashScreenFilename,
                                      final ProductBranding productBranding ) {
         // Background-load the Splash Screen Image as a JAR-resident resource,
-        // then place it into an Image View container, so that it can be 
+        // then place it into an Image View container, so that it can be
         // scaled and displayed.
-        splashScreenImageView = ImageUtilities.getImageView( jarRelativeSplashScreenFilename,
-                                                             true );
+        splashScreenImageView = ImageUtilities.getImageView(
+                jarRelativeSplashScreenFilename,
+                true );
 
         // Create a Progress Bar the same width as the Splash Screen Image.
         loadProgress = new ProgressBar();
@@ -112,63 +108,70 @@ public class SplashScreenManager {
 
         splashScreenLayout = new VBox();
         splashScreenLayout.getChildren()
-                .addAll( splashScreenImageView, loadProgress, progressLabel );
+                          .addAll( splashScreenImageView,
+                                   loadProgress,
+                                   progressLabel );
 
         progressLabel.setAlignment( Pos.CENTER );
 
         // Set border and colors to make the Splash Screen easier to see.
         // NOTE: This mimics the custom CSS tag #status-box for the About Box.
-        final Background background = RegionUtilities.makeRegionBackground( Color.ALICEBLUE );
+        final Background background = RegionUtilities.makeRegionBackground(
+                Color.ALICEBLUE );
         splashScreenLayout.setBackground( background );
         splashScreenLayout.setPadding( new Insets( 3.0d ) );
-        final BorderStroke borderStroke = new BorderStroke( Color.LIGHTSTEELBLUE,
-                                                            BorderStrokeStyle.SOLID,
-                                                            CornerRadii.EMPTY,
-                                                            new BorderWidths( 3.0d ) );
+        final BorderStroke borderStroke
+                = new BorderStroke( Color.LIGHTSTEELBLUE,
+                                    BorderStrokeStyle.SOLID,
+                                    CornerRadii.EMPTY,
+                                    new BorderWidths( 3.0d ) );
         splashScreenLayout.setBorder( new Border( borderStroke ) );
     }
 
     /**
      * Create the Splash Screen and show it, using the initial stage.
      *
-     * @param initialStage
-     *            The initial stage created by the JavaFX engine at startup
-     * @param task
-     *            The task used to link the Splash Screen to the startup cycle
-     * @param initCompletionHandler
-     *            The handler for watching startup completion
+     * @param initialStage          The initial stage created by the JavaFX
+     *                              engine at startup
+     * @param task                  The task used to link the Splash Screen to
+     *                              the startup cycle
+     * @param initCompletionHandler The handler for watching startup completion
      */
     public void showSplashScreen( final Stage initialStage,
                                   final Task< ? > task,
                                   final InitCompletionHandler initCompletionHandler ) {
         progressLabel.textProperty().bind( task.messageProperty() );
         loadProgress.progressProperty().bind( task.progressProperty() );
-        task.stateProperty().addListener( ( observableValue, oldState, newState ) -> {
-            if ( newState == Worker.State.SUCCEEDED ) {
-                // Once the task is done, unbind the properties and set to
-                // indeterminate so that there is no confusion if still visible.
-                loadProgress.progressProperty().unbind();
-                loadProgress.setProgress( -1d );
+        task.stateProperty()
+            .addListener( ( observableValue, oldState, newState ) -> {
+                if ( newState == Worker.State.SUCCEEDED ) {
+                    // Once the task is done, unbind the properties and set to
+                    // indeterminate so that there is no confusion if still
+                    // visible.
+                    loadProgress.progressProperty().unbind();
+                    loadProgress.setProgress( -1d );
 
-                initialStage.toFront();
+                    initialStage.toFront();
 
-                final FadeTransition fadeSplash = new FadeTransition( Duration.seconds( 1.2 ),
-                                                                      splashScreenLayout );
-                fadeSplash.setFromValue( 1.0d );
-                fadeSplash.setToValue( 0.0d );
+                    final FadeTransition fadeSplash = new FadeTransition(
+                            Duration.seconds( 1.2 ),
+                            splashScreenLayout );
+                    fadeSplash.setFromValue( 1.0d );
+                    fadeSplash.setToValue( 0.0d );
 
-                fadeSplash.setOnFinished( actionEvent -> initialStage.hide() );
+                    fadeSplash.setOnFinished( actionEvent -> initialStage.hide() );
 
-                fadeSplash.play();
+                    fadeSplash.play();
 
-                initCompletionHandler.complete();
-            }
-        } );
+                    initCompletionHandler.complete();
+                }
+            } );
 
         // Now that we are on the JavaFX Application Thread, it is safe to
         // create a Scene from the prepared layout pane.
         // TODO: Set the specific size at Scene creation time as well?
-        final Scene splashScene = new Scene( splashScreenLayout, Color.TRANSPARENT );
+        final Scene splashScene = new Scene( splashScreenLayout,
+                                             Color.TRANSPARENT );
 
         // Attempt to set transparency on the Splash Screen, if supported.
         initialStage.initStyle( StageStyle.TRANSPARENT );
@@ -187,8 +190,16 @@ public class SplashScreenManager {
         // Show the Splash Screen, now that it is fully initialized.
         initialStage.show();
     }
-    
+
     public MainApplicationLoadTask makeMainApplicationLoadTask() {
         return new MainApplicationLoadTask( progressText );
+    }
+
+    /**
+     * This interface is solely for the purpose of providing a simple mechanism
+     * for completing the display of the startup Splash Screen.
+     */
+    public interface InitCompletionHandler {
+        void complete();
     }
 }

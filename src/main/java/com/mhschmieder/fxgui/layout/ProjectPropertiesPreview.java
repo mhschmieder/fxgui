@@ -33,6 +33,7 @@ package com.mhschmieder.fxgui.layout;
 import com.mhschmieder.fxcontrols.model.ProjectProperties;
 import com.mhschmieder.fxgui.util.GuiUtilities;
 import com.mhschmieder.jcommons.util.ClientProperties;
+
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.Label;
@@ -60,16 +61,6 @@ public final class ProjectPropertiesPreview extends GridPane {
         initPane( clientProperties, useProjectNotes );
     }
 
-    private void bindProperties() {
-        // Bind the text labels to their associated Project Properties.
-        projectName.textProperty().bind( projectProperties.projectNameProperty() );
-        projectType.textProperty().bind( projectProperties.projectTypeProperty() );
-        projectVenue.textProperty().bind( projectProperties.projectLocationProperty() );
-        projectDesigner.textProperty().bind( projectProperties.projectAuthorProperty() );
-        projectDate.textProperty().bind( projectProperties.projectDateProperty().asString() );
-        projectNotes.textProperty().bind( projectProperties.projectNotesProperty() );
-    }
-
     private void initPane( final ClientProperties clientProperties,
                            final boolean useProjectNotes ) {
         setAlignment( Pos.CENTER );
@@ -78,28 +69,31 @@ public final class ProjectPropertiesPreview extends GridPane {
         setPadding( new Insets( 0.0d, 4.0d, 0.0d, 4.0d ) );
 
         projectName = new Label();
-        final HBox projectNamePane = GuiUtilities.getPropertySheetLabelPane( "Project",
-                                                                             projectName );
+        final HBox projectNamePane = GuiUtilities.getPropertySheetLabelPane(
+                "Project",
+                projectName );
 
         projectType = new Label();
         final HBox typePane = GuiUtilities.getPropertySheetLabelPane( "Type",
-                                                                       projectType );
+                                                                      projectType );
 
         projectVenue = new Label();
         final HBox venuePane = GuiUtilities.getPropertySheetLabelPane( "Venue",
                                                                        projectVenue );
 
         projectDesigner = new Label();
-        final HBox designerPane = GuiUtilities.getPropertySheetLabelPane( "Designer",
-                                                                          projectDesigner );
+        final HBox designerPane = GuiUtilities.getPropertySheetLabelPane(
+                "Designer",
+                projectDesigner );
 
         projectDate = new Label();
         final HBox datePane = GuiUtilities.getPropertySheetLabelPane( "Date",
                                                                       projectDate );
 
         projectNotes = new Label();
-        final HBox notesPane = GuiUtilities.getPropertySheetLabelPane( "Project Notes: ",
-                                                                       projectNotes );
+        final HBox notesPane = GuiUtilities.getPropertySheetLabelPane(
+                "Project Notes: ",
+                projectNotes );
 
         add( projectNamePane, 0, 0 );
         add( typePane, 0, 1 );
@@ -119,5 +113,21 @@ public final class ProjectPropertiesPreview extends GridPane {
 
         // Bind the data model to the respective GUI components.
         bindProperties();
+    }
+
+    private void bindProperties() {
+        // Bind the text labels to their associated Project Properties.
+        projectName.textProperty()
+                   .bind( projectProperties.projectNameProperty() );
+        projectType.textProperty()
+                   .bind( projectProperties.projectTypeProperty() );
+        projectVenue.textProperty()
+                    .bind( projectProperties.projectLocationProperty() );
+        projectDesigner.textProperty()
+                       .bind( projectProperties.projectAuthorProperty() );
+        projectDate.textProperty()
+                   .bind( projectProperties.projectDateProperty().asString() );
+        projectNotes.textProperty()
+                    .bind( projectProperties.projectNotesProperty() );
     }
 }

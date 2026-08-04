@@ -32,13 +32,14 @@ package com.mhschmieder.fxgui.layout;
 
 import com.mhschmieder.fxgraphics.geometry.GraphicalObject;
 import com.mhschmieder.fxgraphics.shape.ShapeGroup;
+import org.apache.commons.math3.util.FastMath;
+
 import javafx.collections.ObservableList;
 import javafx.geometry.Bounds;
 import javafx.scene.Node;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.shape.Rectangle;
-import org.apache.commons.math3.util.FastMath;
 
 /**
  * The Graphical Object Preview Pane is a layout wrapper for displaying previews
@@ -63,20 +64,21 @@ public final class GraphicalObjectPreviewPane extends StackPane {
      * The last graphic to be produced by the {@link GraphicalObject} given to
      * {@link #updatePreview}.
      */
-    private ShapeGroup          _shapeFx;
+    private ShapeGroup _shapeFx;
 
     /**
      * We need a nested layout scheme, to take advantage of auto-clipping.
      */
-    private Pane                _drawingPane;
+    private Pane _drawingPane;
 
     /**
      * The bounds of the parent at the time that they are first relevant for
      * sizing this node.
      */
-    private Bounds              _parentBounds;
+    private Bounds _parentBounds;
 
-    public GraphicalObjectPreviewPane( final double width, final double height ) {
+    public GraphicalObjectPreviewPane( final double width,
+                                       final double height ) {
         // Always call the superclass constructor first!
         super();
 
@@ -91,7 +93,8 @@ public final class GraphicalObjectPreviewPane extends StackPane {
         }
     }
 
-    private void initPane( final double width, final double height ) {
+    private void initPane( final double width,
+                           final double height ) {
         // Get the initial nested layout going, even without content.
         _drawingPane = new Pane();
 
@@ -118,10 +121,9 @@ public final class GraphicalObjectPreviewPane extends StackPane {
     /**
      * This method updates the preview, based on a supplied graphical object.
      *
-     * @param graphicalObject
-     *            produces a {@link Node} to draw
-     * @param scaleFactorAdjustment
-     *            Adjustment to the scale factor; necessary in some contexts
+     * @param graphicalObject       produces a {@link Node} to draw
+     * @param scaleFactorAdjustment Adjustment to the scale factor; necessary in
+     *                              some contexts
      */
     public void updatePreview( final GraphicalObject graphicalObject,
                                final double scaleFactorAdjustment ) {
@@ -130,8 +132,8 @@ public final class GraphicalObjectPreviewPane extends StackPane {
         // getVectorGraphics it's good to skip the rest of the method otherwise.
         // TODO: Switch to more of a "fuzzyEQ" strategy here.
         final Bounds parentBounds = getParent().getBoundsInParent();
-        if ( ( ( ( float ) parentBounds.getHeight() ) == 0f )
-                || ( ( ( float ) parentBounds.getWidth() ) == 0f ) ) {
+        if ( ( ( ( float ) parentBounds.getHeight() ) == 0f ) || (
+                ( ( float ) parentBounds.getWidth() ) == 0f ) ) {
             return;
         }
 
@@ -140,7 +142,8 @@ public final class GraphicalObjectPreviewPane extends StackPane {
         _shapeFx = graphicalObject.getVectorGraphics( true );
         if ( _shapeFx == null ) {
             System.err.println( "WARNING: " + graphicalObject //$NON-NLS-1$
-                    + "\n\t returned null graphic from getVectorGraphics" ); //$NON-NLS-1$
+                                + "\n\t returned null graphic from "
+                                + "getVectorGraphics" ); //$NON-NLS-1$
             return;
         }
 
@@ -148,10 +151,12 @@ public final class GraphicalObjectPreviewPane extends StackPane {
         // but not an error.
         // TODO: Switch to more of a "fuzzyEQ" strategy here.
         final Bounds graphicalObjectGeometryBounds = _shapeFx.getLayoutBounds();
-        final double graphicalObjectGeometryHeight = graphicalObjectGeometryBounds.getHeight();
-        final double graphicalObjectGeometryWidth = graphicalObjectGeometryBounds.getWidth();
-        if ( ( ( ( float ) graphicalObjectGeometryHeight ) == 0f )
-                || ( ( ( float ) graphicalObjectGeometryWidth ) == 0f ) ) {
+        final double graphicalObjectGeometryHeight
+                = graphicalObjectGeometryBounds.getHeight();
+        final double graphicalObjectGeometryWidth
+                = graphicalObjectGeometryBounds.getWidth();
+        if ( ( ( ( float ) graphicalObjectGeometryHeight ) == 0f ) || (
+                ( ( float ) graphicalObjectGeometryWidth ) == 0f ) ) {
             return;
         }
 
@@ -164,13 +169,17 @@ public final class GraphicalObjectPreviewPane extends StackPane {
         // Now that we know whether we are overwriting the parent bounds or
         // using the cached bounds, it is safe to compute the maximum node
         // dimensions based on the known parent insets.
-        final double maxNodeWidth = _parentBounds.getWidth() - ( PARENT_INSETS * 2 );
-        final double maxNodeHeight = _parentBounds.getHeight() - ( PARENT_INSETS * 2 );
+        final double maxNodeWidth = _parentBounds.getWidth() - ( PARENT_INSETS
+                                                                 * 2 );
+        final double maxNodeHeight = _parentBounds.getHeight() - ( PARENT_INSETS
+                                                                   * 2 );
 
         // Pick the smaller of the height ratio and width ratio to use as the
         // pixel mapping from object geometry to on-screen preview node.
-        final double widthRatio = maxNodeWidth / FastMath.abs( graphicalObjectGeometryWidth );
-        final double heightRatio = maxNodeHeight / FastMath.abs( graphicalObjectGeometryHeight );
+        final double widthRatio = maxNodeWidth / FastMath.abs(
+                graphicalObjectGeometryWidth );
+        final double heightRatio = maxNodeHeight / FastMath.abs(
+                graphicalObjectGeometryHeight );
         double scaleFactor = FastMath.min( widthRatio, heightRatio );
 
         // This is a hack to deal with issues with Loudspeaker and Microphone
@@ -182,8 +191,9 @@ public final class GraphicalObjectPreviewPane extends StackPane {
         // Make sure we exit early if the resulting scale factor is zero.
         // TODO: Switch to more of a "fuzzyEQ" strategy here.
         if ( ( float ) scaleFactor == 0f ) {
-            new Throwable( "WARNING: zero-scaled graphical object geometry preview" ) //$NON-NLS-1$
-                    .printStackTrace();
+            new Throwable(
+                    "WARNING: zero-scaled graphical object geometry preview" ) //$NON-NLS-1$
+                                                                               .printStackTrace();
             return;
         }
 
@@ -215,5 +225,4 @@ public final class GraphicalObjectPreviewPane extends StackPane {
                                                     clipHeight );
         _drawingPane.setClip( outputClip );
     }
-
 }

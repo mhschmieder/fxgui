@@ -40,14 +40,13 @@ import javafx.stage.WindowEvent;
 public interface MainApplicationWindowHandler extends MacAppMenuEventHandler {
 
     void startSession();
-    
+
     boolean isInitialized();
 
-    void disposeAllResources();
-
     /**
-     * Like fileClose, but upon Cancel, consumes a WindowEvent to avoid exiting.
-     * 
+     * Like fileClose, but upon Cancel, consumes a WindowEvent to avoid
+     * exiting.
+     *
      * @param event The {@link WindowEvent} that triggered this window close
      */
     default void windowClose( final WindowEvent event ) {
@@ -64,8 +63,7 @@ public interface MainApplicationWindowHandler extends MacAppMenuEventHandler {
      * Take care of exit tasks that pertain to all applications, e.g. save User
      * Preferences and dispose of all resources.
      *
-     * @param exitPlatform
-     *            Flag for whether to also exit the Java Platform
+     * @param exitPlatform Flag for whether to also exit the Java Platform
      */
     default void exitApplication( final boolean exitPlatform ) {
         // Dispose of all resources allocated by the main application window.
@@ -79,4 +77,6 @@ public interface MainApplicationWindowHandler extends MacAppMenuEventHandler {
             Platform.exit();
         }
     }
+
+    void disposeAllResources();
 }

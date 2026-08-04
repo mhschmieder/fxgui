@@ -41,6 +41,8 @@ import com.mhschmieder.jcommons.util.ClientProperties;
 import com.mhschmieder.jgraphics.input.ScrollingSensitivity;
 import com.mhschmieder.jphysics.PhysicsConstants;
 import com.mhschmieder.jphysics.measure.TemperatureUnit;
+import org.apache.commons.math3.util.FastMath;
+
 import javafx.application.Platform;
 import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.SimpleDoubleProperty;
@@ -51,15 +53,13 @@ import javafx.scene.layout.Background;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
-import org.apache.commons.math3.util.FastMath;
 
 public final class TemperaturePane extends VBox {
 
-    private Label            _temperatureLabel;
     public TemperatureSlider _temperatureSlider;
     public TemperatureEditor _temperatureEditor;
-
-    private DoubleProperty   temperatureK;
+    private Label _temperatureLabel;
+    private DoubleProperty temperatureK;
 
     // Cache the number converter so its units and extrema can be changed later
     // when the Temperature Unit changes.
@@ -74,49 +74,16 @@ public final class TemperaturePane extends VBox {
         initPane( clientProperties );
     }
 
-    private void bindProperties() {
-        // Bidirectionally bind the slider to an editable text field restricted
-        // to the slider range.
-        // NOTE: This is OK because we embed unit conversion in DoubleEditor.
-        _temperatureSlider.valueProperty().bindBidirectional( _temperatureEditor.valueProperty() );
-
-        // NOTE: Sliders sync to the exact value of JavaFX Bean Properties,
-        // only passing through the unit conversion.
-        temperatureKProperty().addListener( ( observableValue, oldValue, newValue ) -> {
-            _temperatureSlider.setTemperatureK( newValue.doubleValue() );
-        } );
-
-        // NOTE: Sliders might switch presentation units, whereas JavaFX Bean
-        // Properties are specified with a single unchanging unit, so we have to
-        // be careful to only sync the cached Temperature property to the slider
-        // when a real magnitude change occurred vs. a Temperature Unit change.
-        _temperatureSlider.valueProperty().addListener( ( observableValue, oldValue, newValue ) -> {
-            final double storedValue = getTemperatureK();
-            final double sliderValue = _temperatureSlider.getTemperatureK();
-            final double epsilon = 1e-10;
-
-            // Make sure we don't set dirty flag because of round-off
-            // errors in slider value when changing units, but wrap this
-            // in a JavaFX runLater thread to ensure all FX event code
-            // precedes the custom selection.
-            if ( ( FastMath.abs( storedValue - sliderValue ) >= epsilon ) ) {
-                Platform.runLater( () -> setTemperatureK( sliderValue ) );
-            }
-        } );
-    }
-
-    public double getTemperatureK() {
-        return temperatureK.get();
-    }
-
     private void initPane( final ClientProperties clientProperties ) {
         // Make a bolded label to clearly identify the functionality.
-        _temperatureLabel = GuiUtilities.getColumnHeader( "Temperature" ); //$NON-NLS-1$
+        _temperatureLabel
+                = GuiUtilities.getColumnHeader( "Temperature" ); //$NON-NLS-1$
 
         // Create a default Temperature Slider.
         _temperatureSlider = new TemperatureSlider( clientProperties );
 
-        // Conform the associated textField (text field) to the slider attributes.
+        // Conform the associated textField (text field) to the slider
+        // attributes.
         _temperatureEditor = ControlFactory.makeTemperatureEditor(
                 clientProperties );
         _temperatureEditor.setPrefWidth( 100d );
@@ -132,7 +99,9 @@ public final class TemperaturePane extends VBox {
         // PhysicsConstants.TEMPERATURE_MINIMUM_K,
         // PhysicsConstants.TEMPERATURE_MAXIMUM_K );
 
-        getChildren().addAll( _temperatureLabel, _temperatureSlider, _temperatureEditor );
+        getChildren().addAll( _temperatureLabel,
+                              _temperatureSlider,
+                              _temperatureEditor );
 
         setAlignment( Pos.CENTER );
         setPadding( new Insets( 6.0d ) );
@@ -142,8 +111,7 @@ public final class TemperaturePane extends VBox {
     }
 
     public void reset() {
-        _temperatureSlider.setTemperatureK(
-                NaturalEnvironmentProperties.TEMPERATURE_K_DEFAULT );
+        _temperatureSlider.setTemperatureK( NaturalEnvironmentProperties.TEMPERATURE_K_DEFAULT );
     }
 
     public void setForegroundFromBackground( final Color backColor ) {
@@ -152,8 +120,8 @@ public final class TemperaturePane extends VBox {
                 backColor );
         setBackground( background );
 
-        final Color foregroundColor = ColorUtilities.getForegroundFromBackground(
-                backColor );
+        final Color foregroundColor
+                = ColorUtilities.getForegroundFromBackground( backColor );
         _temperatureLabel.setTextFill( foregroundColor );
     }
 
@@ -172,15 +140,10 @@ public final class TemperaturePane extends VBox {
     /**
      * Set the new Scrolling Sensitivity for the Temperature Sliders.
      *
-     * @param scrollingSensitivity
-     *            The sensitivity of the mouse scroll wheel
+     * @param scrollingSensitivity The sensitivity of the mouse scroll wheel
      */
     public void setScrollingSensitivity( final ScrollingSensitivity scrollingSensitivity ) {
         _temperatureSlider.setScrollingSensitivity( scrollingSensitivity );
-    }
-
-    public void setTemperatureK( final double pTemperatureK ) {
-        temperatureK.set( pTemperatureK );
     }
 
     // Set and bind the Temperature property reference.
@@ -191,6 +154,55 @@ public final class TemperaturePane extends VBox {
 
         // Bind the data model to the respective GUI components.
         bindProperties();
+    }
+
+    private void bindProperties() {
+        // Bidirectionally bind the slider to an editable text field restricted
+        // to the slider range.
+        // NOTE: This is OK because we embed unit conversion in DoubleEditor.
+        _temperatureSlider.valueProperty()
+                          .bindBidirectional( _temperatureEditor.valueProperty() );
+
+        // NOTE: Sliders sync to the exact value of JavaFX Bean Properties,
+        // only passing through the unit conversion.
+        temperatureKProperty().addListener( ( observableValue, oldValue,
+                                              newValue ) -> {
+            _temperatureSlider.setTemperatureK( newValue.doubleValue() );
+        } );
+
+        // NOTE: Sliders might switch presentation units, whereas JavaFX Bean
+        // Properties are specified with a single unchanging unit, so we have to
+        // be careful to only sync the cached Temperature property to the slider
+        // when a real magnitude change occurred vs. a Temperature Unit change.
+        _temperatureSlider.valueProperty()
+                          .addListener( ( observableValue, oldValue,
+                                          newValue ) -> {
+                              final double storedValue = getTemperatureK();
+                              final double sliderValue
+                                      = _temperatureSlider.getTemperatureK();
+                              final double epsilon = 1e-10;
+
+                              // Make sure we don't set dirty flag because of
+                              // round-off
+                              // errors in slider value when changing units,
+                              // but wrap this
+                              // in a JavaFX runLater thread to ensure all FX
+                              // event code
+                              // precedes the custom selection.
+                              if ( ( FastMath.abs( storedValue - sliderValue )
+                                     >= epsilon ) ) {
+                                  Platform.runLater( () -> setTemperatureK(
+                                          sliderValue ) );
+                              }
+                          } );
+    }
+
+    public double getTemperatureK() {
+        return temperatureK.get();
+    }
+
+    public void setTemperatureK( final double pTemperatureK ) {
+        temperatureK.set( pTemperatureK );
     }
 
     public DoubleProperty temperatureKProperty() {
@@ -231,7 +243,8 @@ public final class TemperaturePane extends VBox {
         // value and max values change, and therefore it becomes clamped as the
         // not-yet-converted old value may not be within the new range, and thus
         // it fires an event, setting the dirty flag.
-        final double temperatureMaximum = 10.0d * PhysicsConstants.TEMPERATURE_MAXIMUM_K;
+        final double temperatureMaximum = 10.0d
+                                          * PhysicsConstants.TEMPERATURE_MAXIMUM_K;
         final double temperatureMinimum = -temperatureMaximum;
         _temperatureEditor.setMinimumValue( temperatureMinimum );
         _temperatureEditor.setMaximumValue( temperatureMaximum );
@@ -249,5 +262,4 @@ public final class TemperaturePane extends VBox {
         // minimum allowed, when the user's cached unit is the default unit.
         Platform.runLater( () -> _temperatureEditor.setValue( _temperatureSlider.getValue() ) );
     }
-
 }

@@ -42,25 +42,23 @@ import java.net.URL;
  */
 public final class HelpUtilities {
 
-    public static NoticeBox getGraphicsImportHelp(
-            final SystemType systemType ) {
+    public static NoticeBox getGraphicsImportHelp( final SystemType systemType ) {
         // Get the URL associated with the JAR-loaded HTML-based Help file.
         final URL graphicsImportHelpUrl = getGraphicsImportHelpAsUrl();
 
         // Make a Notice Box to display the local Help until dismissed.
-        final String graphicsImportHelpBanner = MessageFactory
-                .getGraphicsImportHelpBanner();
+        final String graphicsImportHelpBanner
+                = MessageFactory.getGraphicsImportHelpBanner();
 
-        return new NoticeBox(
-                systemType,
-                graphicsImportHelpBanner,
-                graphicsImportHelpUrl );
+        return new NoticeBox( systemType,
+                              graphicsImportHelpBanner,
+                              graphicsImportHelpUrl );
     }
 
-    @SuppressWarnings("nls")
+    @SuppressWarnings( "nls" )
     public static URL getGraphicsImportHelpAsUrl() {
         // Get the URL associated with the JAR-loaded HTML-based Help file.
         return HelpUtilities.class.getResource(
-                "/html/GraphicsImportHelp.html" );
+                "/html/GraphicsImportHelp" + ".html" );
     }
 }

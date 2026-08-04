@@ -35,7 +35,8 @@ import com.mhschmieder.jgui.layout.JxTitledVectorizationPanel;
 
 /**
  * This is an abstract parent class for Swing panels that form the main content
- * layout region for a legacy Java 2D API Rendered Graphics presentation wrapper.
+ * layout region for a legacy Java 2D API Rendered Graphics presentation
+ * wrapper.
  */
 public abstract class RenderedGraphicsTitledVectorizationPanel
         extends JxTitledVectorizationPanel {
@@ -61,17 +62,15 @@ public abstract class RenderedGraphicsTitledVectorizationPanel
         }
     }
 
-    private final void initPanel() {}
-
-    // NOTE: It is up to the subclasses to decide which sub-panel to hide/show.
-    public void setAuxiliaryPanelVisible( final boolean visible ) {}
+    private final void initPanel() {
+    }
 
     /**
      * Cache the Rendered Graphics Options for the next Vector Graphics Export.
      *
-     * @param renderedGraphicsExportOptions
-     *            The Rendered Graphics Export Options for which components to
-     *            include in the Vector Graphics File
+     * @param renderedGraphicsExportOptions The Rendered Graphics Export Options
+     *                                      for which components to include in
+     *                                      the Vector Graphics File
      */
     public final void setRenderedGraphicsExportOptions( final RenderedGraphicsExportOptions renderedGraphicsExportOptions ) {
         _renderedGraphicsExportOptions = renderedGraphicsExportOptions;
@@ -80,15 +79,21 @@ public abstract class RenderedGraphicsTitledVectorizationPanel
         setTitle( renderedGraphicsExportOptions.getTitle() );
     }
 
-    // NOTE: It is up to the subclasses to decide which sub-panel to hide/show.
-    public void setInformationTablesVisible( final boolean visible ) {}
-
-    // NOTE: It is up to the subclasses to decide which sub-panel to hide/show.
-    public void setOptionalItemVisible( final boolean visible ) {}
-
     public final void updateExportOptionsView( final RenderedGraphicsExportOptions renderedGraphicsExportOptions ) {
         setAuxiliaryPanelVisible( renderedGraphicsExportOptions.isExportAuxiliaryPanel() );
         setInformationTablesVisible( renderedGraphicsExportOptions.isExportInformationTables() );
         setOptionalItemVisible( renderedGraphicsExportOptions.isExportOptionalItem() );
+    }
+
+    // NOTE: It is up to the subclasses to decide which sub-panel to hide/show.
+    public void setAuxiliaryPanelVisible( final boolean visible ) {
+    }
+
+    // NOTE: It is up to the subclasses to decide which sub-panel to hide/show.
+    public void setInformationTablesVisible( final boolean visible ) {
+    }
+
+    // NOTE: It is up to the subclasses to decide which sub-panel to hide/show.
+    public void setOptionalItemVisible( final boolean visible ) {
     }
 }

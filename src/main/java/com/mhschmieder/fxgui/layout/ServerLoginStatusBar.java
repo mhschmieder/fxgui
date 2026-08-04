@@ -34,6 +34,7 @@ import com.mhschmieder.fxcontrols.util.RegionUtilities;
 import com.mhschmieder.fxgraphics.image.ImageUtilities;
 import com.mhschmieder.fxgraphics.paint.ColorUtilities;
 import com.mhschmieder.fxgui.util.GuiUtilities;
+
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.Label;
@@ -47,22 +48,24 @@ public final class ServerLoginStatusBar extends StackPane {
 
     // protected static final String LONG_LOAD_STATUS_HEADER = "Loading Stored
     // Traces... "; //$NON-NLS-1$
-    protected static final String SERVER_LOGIN_STATUS_HEADER = "Server Login Status: "; //$NON-NLS-1$
+    protected static final String SERVER_LOGIN_STATUS_HEADER
+            = "Server Login Status: "; //$NON-NLS-1$
 
     // private HBox _longLoadStatusBar;
     // private ImageView _longLoadIcon;
     // private Label _longLoadStatusLabel;
 
-    private HBox                  _loggedInStatusBar;
-    private ImageView             _loggedInIcon;
-    private Label                 _loggedInStatusLabel;
+    private HBox _loggedInStatusBar;
+    private ImageView _loggedInIcon;
+    private Label _loggedInStatusLabel;
 
-    private HBox                  _loggedOutStatusBar;
-    private ImageView             _loggedOutIcon;
-    private Label                 _loggedOutStatusLabel;
+    private HBox _loggedOutStatusBar;
+    private ImageView _loggedOutIcon;
+    private Label _loggedOutStatusLabel;
 
     // TODO: Add long load status message to parameter list.
-    public ServerLoginStatusBar( final String loggedInMessage, final String loggedOutMessage ) {
+    public ServerLoginStatusBar( final String loggedInMessage,
+                                 final String loggedOutMessage ) {
         // Always call the superclass constructor first!
         super();
 
@@ -74,8 +77,9 @@ public final class ServerLoginStatusBar extends StackPane {
         }
     }
 
-    @SuppressWarnings("nls")
-    private void initPane( final String loggedInMessage, final String loggedOutMessage ) {
+    @SuppressWarnings( "nls" )
+    private void initPane( final String loggedInMessage,
+                           final String loggedOutMessage ) {
         // final String longLoadMessage = "Projects with Stored IFFT Traces May
         // Take a While to Load... Please Wait...";
         // _longLoadStatusBar = new HBox();
@@ -91,21 +95,25 @@ public final class ServerLoginStatusBar extends StackPane {
         // _longLoadStatusBar.setSpacing( 12d );
 
         _loggedInStatusBar = new HBox();
-        _loggedInIcon = ImageUtilities.createIcon( "/icons/sketchdock/LoggedInBlue16.png" );
-        _loggedInStatusLabel = GuiUtilities
-                .getStatusLabel( SERVER_LOGIN_STATUS_HEADER + loggedInMessage );
+        _loggedInIcon = ImageUtilities.createIcon(
+                "/icons/sketchdock/LoggedInBlue16.png" );
+        _loggedInStatusLabel = GuiUtilities.getStatusLabel(
+                SERVER_LOGIN_STATUS_HEADER + loggedInMessage );
 
-        _loggedInStatusBar.getChildren().addAll( _loggedInIcon, _loggedInStatusLabel );
+        _loggedInStatusBar.getChildren()
+                          .addAll( _loggedInIcon, _loggedInStatusLabel );
 
         _loggedInStatusBar.setPadding( new Insets( 3.0d, 12d, 3.0d, 12d ) );
         _loggedInStatusBar.setSpacing( 16d );
 
         _loggedOutStatusBar = new HBox();
-        _loggedOutIcon = ImageUtilities.createIcon( "/icons/sketchdock/LoggedOutRed16.png" );
-        _loggedOutStatusLabel = GuiUtilities
-                .getStatusLabel( SERVER_LOGIN_STATUS_HEADER + loggedOutMessage );
+        _loggedOutIcon = ImageUtilities.createIcon(
+                "/icons/sketchdock/LoggedOutRed16.png" );
+        _loggedOutStatusLabel = GuiUtilities.getStatusLabel(
+                SERVER_LOGIN_STATUS_HEADER + loggedOutMessage );
 
-        _loggedOutStatusBar.getChildren().addAll( _loggedOutIcon, _loggedOutStatusLabel );
+        _loggedOutStatusBar.getChildren()
+                           .addAll( _loggedOutIcon, _loggedOutStatusLabel );
 
         _loggedOutStatusBar.setPadding( new Insets( 3.0d, 12d, 3.0d, 12d ) );
         _loggedOutStatusBar.setSpacing( 12d );
@@ -126,14 +134,16 @@ public final class ServerLoginStatusBar extends StackPane {
 
     public void setForegroundFromBackground( final Color backColor ) {
         // Set the new Background first, so it sets context for CSS derivations.
-        final Background background = RegionUtilities.makeRegionBackground( backColor );
+        final Background background = RegionUtilities.makeRegionBackground(
+                backColor );
         setBackground( background );
 
         // _longLoadStatusBar.setBackground( background );
         _loggedInStatusBar.setBackground( background );
         _loggedOutStatusBar.setBackground( background );
 
-        final Color foregroundColor = ColorUtilities.getForegroundFromBackground( backColor );
+        final Color foregroundColor
+                = ColorUtilities.getForegroundFromBackground( backColor );
 
         // _longLoadStatusLabel.setTextFill( Color.RED );
         _loggedInStatusLabel.setTextFill( foregroundColor );
@@ -169,5 +179,4 @@ public final class ServerLoginStatusBar extends StackPane {
             _loggedOutStatusBar.setVisible( true );
         }
     }
-
 }

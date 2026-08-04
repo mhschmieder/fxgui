@@ -36,60 +36,38 @@ import com.mhschmieder.fxgui.stage.DataRequestStatusViewer;
 import com.mhschmieder.jcommons.net.DataServerResponse;
 import com.mhschmieder.jcommons.net.HttpServletRequestProperties;
 import com.mhschmieder.jcommons.util.ClientProperties;
+
 import javafx.concurrent.Task;
 
 /**
  * Base class for service commonality between server data requests, enhanced to
- * allow for tracking via a JavaFX ControlsFX TaskProgressViewer based component.
+ * allow for tracking via a JavaFX ControlsFX TaskProgressViewer based
+ * component.
  */
 public class TrackableDataRequestService extends DataRequestService {
 
-    /** Cache the task status viewer so we can tell it to add new tasks. */
+    /**
+     * Cache the task status viewer so we can tell it to add new tasks.
+     */
     protected DataRequestStatusViewer dataRequestStatusViewer;
 
     public TrackableDataRequestService( final HttpServletRequestProperties pServerRequestProperties,
                                         final ClientProperties pClientProperties,
                                         final DataRequestStatusViewer pDataRequestStatusViewer ) {
-        super( pServerRequestProperties, 
-               pClientProperties );
+        super( pServerRequestProperties, pClientProperties );
 
         dataRequestStatusViewer = pDataRequestStatusViewer;
-        
+
         // Add callbacks for the Service API status tracking.
         addCallbacks();
     }
 
-    @Override
-    protected Task< DataServerResponse > createTask() {
-        // Create a new task based on the current Data Request Type.
-        final DataRequestTask dataRequestTask = makeDataRequestTask();
-
-        // Add this task to the Task Progress View via its GUI host.
-        dataRequestStatusViewer.addTask( dataRequestTask );
-
-        return dataRequestTask;
-    }
-    
-    /**
-     * Returns a general DataRequestTask that holds the task parameters.
-     * <p>
-     * NOTE: This method should be overridden by implementing classes,
-     *  to make and return a more specific task class instance.
-     * 
-     * @return A general DataRequestTask that holds the task parameters
-     */
-    protected DataRequestTask makeDataRequestTask() {
-        return new DataRequestTask( httpServletRequestProperties,
-                                    dataRequestParameters,
-                                    clientProperties );
-    }
-    
     /**
      * Add callbacks for the Service API status tracking, to handle the most
      * useful status values such as: scheduled, cancelled, failed, succeeded.
      * <p>
-     * NOTE: This is meant to cover boilerplate behavior to avoid copy/paste
-     *  in downstream clients, especially regarding the Task Progress Viewer.
+     * NOTE: This is meant to cover boilerplate behavior to avoid copy/paste in
+     * downstream clients, especially regarding the Task Progress Viewer.
      */
     protected void addCallbacks() {
         // NOTE: Switched from "onRunning" to "onScheduled" as that is the
@@ -109,12 +87,12 @@ public class TrackableDataRequestService extends DataRequestService {
                 dataRequestStatusViewer.show();
             }
         } );
-        
+
         setOnCancelled( t -> {
             // Hide the Task Status Viewer after the cancellation.
             dataRequestStatusViewer.hide();
         } );
-        
+
         setOnFailed( t -> {
             // Hide the Task Progress Viewer after a data request failure.
             dataRequestStatusViewer.hide();
@@ -127,11 +105,36 @@ public class TrackableDataRequestService extends DataRequestService {
             final String statusMessage = exception.toString();
             DialogUtilities.showFileReadErrorAlert( statusMessage );
         } );
-        
+
         setOnSucceeded( t -> {
             // Hide the Task Status Box pop-up after the data request returns
             // successfully, if no errors are displayed in the Task Box.
             dataRequestStatusViewer.hide();
         } );
+    }
+
+    @Override
+    protected Task< DataServerResponse > createTask() {
+        // Create a new task based on the current Data Request Type.
+        final DataRequestTask dataRequestTask = makeDataRequestTask();
+
+        // Add this task to the Task Progress View via its GUI host.
+        dataRequestStatusViewer.addTask( dataRequestTask );
+
+        return dataRequestTask;
+    }
+
+    /**
+     * Returns a general DataRequestTask that holds the task parameters.
+     * <p>
+     * NOTE: This method should be overridden by implementing classes, to make
+     * and return a more specific task class instance.
+     *
+     * @return A general DataRequestTask that holds the task parameters
+     */
+    protected DataRequestTask makeDataRequestTask() {
+        return new DataRequestTask( httpServletRequestProperties,
+                                    dataRequestParameters,
+                                    clientProperties );
     }
 }

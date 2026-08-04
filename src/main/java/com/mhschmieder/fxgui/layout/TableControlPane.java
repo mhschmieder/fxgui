@@ -31,6 +31,7 @@
 package com.mhschmieder.fxgui.layout;
 
 import com.mhschmieder.jcommons.util.ClientProperties;
+
 import javafx.geometry.Insets;
 import javafx.geometry.Orientation;
 import javafx.geometry.Pos;
@@ -58,7 +59,9 @@ public final class TableControlPane extends BorderPane {
         _deleteRowButton = deleteRowButton;
 
         try {
-            initPane( clientProperties, orientation, deleteButtonDisabledDefault );
+            initPane( clientProperties,
+                      orientation,
+                      deleteButtonDisabledDefault );
         }
         catch ( final Exception ex ) {
             ex.printStackTrace();
@@ -91,5 +94,4 @@ public final class TableControlPane extends BorderPane {
 
         setPadding( new Insets( 0.0d ) );
     }
-
 }

@@ -33,6 +33,7 @@ package com.mhschmieder.fxgui.layout;
 import com.mhschmieder.fxcontrols.control.ControlUtilities;
 import com.mhschmieder.jcommons.util.ClientProperties;
 import com.mhschmieder.jmath.geometry.euclidean.Orientation;
+
 import javafx.application.Platform;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -47,7 +48,7 @@ public class OrientationPane extends BorderPane {
     public ToggleGroup _orientationToggleGroup;
     public RadioButton _orientationHzRadioButton;
     public RadioButton _orientationVtRadioButton;
-    public CheckBox    _orientationInvertedCheckBox;
+    public CheckBox _orientationInvertedCheckBox;
 
     public OrientationPane( final ClientProperties clientProperties,
                             final boolean useInvertedButton ) {
@@ -62,28 +63,21 @@ public class OrientationPane extends BorderPane {
         }
     }
 
-    public final Orientation getOrientation() {
-        return _orientationHzRadioButton.isSelected()
-            ? Orientation.HORIZONTAL
-            : _orientationVtRadioButton.isSelected()
-                ? Orientation.VERTICAL
-                : Orientation.defaultValue();
-    }
-
     private final void initPane( final ClientProperties clientProperties,
                                  final boolean useInvertedbutton ) {
         _orientationToggleGroup = new ToggleGroup();
-        _orientationHzRadioButton = ControlUtilities.getRadioButton(
-                Orientation.HORIZONTAL.label(),
-                _orientationToggleGroup,
-                true );
-        _orientationVtRadioButton = ControlUtilities.getRadioButton(
-                Orientation.VERTICAL.label(),
-                _orientationToggleGroup,
-                false );
+        _orientationHzRadioButton
+                =
+                ControlUtilities.getRadioButton( Orientation.HORIZONTAL.label(),
+                                                   _orientationToggleGroup,
+                                                   true );
+        _orientationVtRadioButton
+                = ControlUtilities.getRadioButton( Orientation.VERTICAL.label(),
+                                                   _orientationToggleGroup,
+                                                   false );
 
-        _orientationInvertedCheckBox = ControlUtilities.getCheckBox(
-                "Inverted", false );
+        _orientationInvertedCheckBox = ControlUtilities.getCheckBox( "Inverted",
+                                                                     false );
 
         final GridPane gridPane = new GridPane();
         gridPane.setHgap( 10.0d );
@@ -101,41 +95,53 @@ public class OrientationPane extends BorderPane {
         setLeft( gridPane );
 
         _orientationToggleGroup.selectedToggleProperty()
-                .addListener( ( observable, oldToggle, newToggle ) -> {
-                    // If no toggle button selected, re-select the previous
-                    // button, but wrap this in a JavaFX runLater thread to
-                    // ensure all FX event code precedes the custom selection.
-                    if ( ( newToggle == null ) ) {
-                        Platform.runLater( () -> _orientationToggleGroup
-                                .selectToggle( oldToggle ) );
-                        return;
-                    }
-                } );
+                               .addListener( ( observable, oldToggle,
+                                               newToggle ) -> {
+                                   // If no toggle button selected, re-select
+                                   // the previous
+                                   // button, but wrap this in a JavaFX
+                                   // runLater thread to
+                                   // ensure all FX event code precedes the
+                                   // custom selection.
+                                   if ( ( newToggle == null ) ) {
+                                       Platform.runLater( () -> _orientationToggleGroup.selectToggle(
+                                               oldToggle ) );
+                                       return;
+                                   }
+                               } );
+    }
+
+    public final Orientation getOrientation() {
+        return _orientationHzRadioButton.isSelected()
+               ? Orientation.HORIZONTAL
+               : _orientationVtRadioButton.isSelected()
+                 ? Orientation.VERTICAL
+                 : Orientation.defaultValue();
+    }
+
+    public final void setOrientation( final Orientation orientation ) {
+        switch ( orientation ) {
+            case HORIZONTAL:
+                _orientationHzRadioButton.setSelected( true );
+                break;
+            case VERTICAL:
+                _orientationVtRadioButton.setSelected( true );
+                break;
+            default:
+                break;
+        }
     }
 
     public final boolean isInverted() {
         return _orientationInvertedCheckBox.isSelected();
     }
 
-    public final void saveEdits() {
-        // NOTE: Currently there is nothing to do as all the data is saved in
-        // the controls themselves.
-    }
-
     public final void setInverted( final boolean inverted ) {
         _orientationInvertedCheckBox.setSelected( inverted );
     }
 
-    public final void setOrientation( final Orientation orientation ) {
-        switch ( orientation ) {
-        case HORIZONTAL:
-            _orientationHzRadioButton.setSelected( true );
-            break;
-        case VERTICAL:
-            _orientationVtRadioButton.setSelected( true );
-            break;
-        default:
-            break;
-        }
+    public final void saveEdits() {
+        // NOTE: Currently there is nothing to do as all the data is saved in
+        // the controls themselves.
     }
 }

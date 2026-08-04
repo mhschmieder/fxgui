@@ -38,11 +38,12 @@ import com.mhschmieder.jcommons.net.NetworkUtilities;
 import com.mhschmieder.jcommons.security.LoginCredentials;
 import com.mhschmieder.jcommons.util.ClientProperties;
 import com.mhschmieder.jcommons.util.DataUpdateType;
+
+import java.net.HttpURLConnection;
+
 import javafx.concurrent.Task;
 import javafx.geometry.Rectangle2D;
 import javafx.stage.Screen;
-
-import java.net.HttpURLConnection;
 
 /**
  * Base class for task commonality between server data requests.
@@ -50,19 +51,17 @@ import java.net.HttpURLConnection;
 public class DataRequestTask extends Task< DataServerResponse > {
 
     /**
+     * Cache the Client Properties (System Type, Locale, etc.).
+     */
+    public final ClientProperties clientProperties;
+    /**
      * Cache the Server Request Properties (Build ID, Request Type, etc.).
      */
     protected final HttpServletRequestProperties httpServletRequestProperties;
-    
     /**
      * Cache the Data Request Parameters (Login Credentials, Data Type, etc.).
      */
     protected final DataRequestParameters dataRequestParameters;
-
-    /**
-     * Cache the Client Properties (System Type, Locale, etc.).
-     */
-    public final ClientProperties clientProperties;
 
     public DataRequestTask( final HttpServletRequestProperties pServerRequestProperties,
                             final DataRequestParameters pDataRequestParameters,
@@ -98,21 +97,27 @@ public class DataRequestTask extends Task< DataServerResponse > {
             //  fields and only resets the ones that change per data request?
             // TODO: Throw exceptions with these messages instead, so we can
             //  consolidate the handling to the failure callback?
-            final HttpURLConnection httpURLConnection = NetworkUtilities
-                    .getHttpURLConnection( httpServletRequestProperties.httpServletUrl );
+            final HttpURLConnection httpURLConnection
+                    = NetworkUtilities.getHttpURLConnection(
+                    httpServletRequestProperties.httpServletUrl );
             if ( httpURLConnection == null ) {
-                serverStatusMessage = "Server Connection Error: Data Service Not Found"; 
+                serverStatusMessage
+                        = "Server Connection Error: Data Service Not Found";
                 dataServerResponse.setServerStatusMessage( serverStatusMessage );
                 return dataServerResponse;
             }
             updateMessage( "Data Service Found" );
             updateProgress( 1.0d, numberOfSubTasks );
 
-            // Get the user's screen size, for Full Screen Mode and user statistics.
-            // TODO: Also get and cache the minimum point, which may not be zero.
-            // NOTE: This query is done on-the-fly as the user may switch screens
+            // Get the user's screen size, for Full Screen Mode and user
+            // statistics.
+            // TODO: Also get and cache the minimum point, which may not be
+            //  zero.
+            // NOTE: This query is done on-the-fly as the user may switch
+            // screens
             //  between server calls.
-            final Rectangle2D visualBounds = Screen.getPrimary().getVisualBounds();
+            final Rectangle2D visualBounds = Screen.getPrimary()
+                                                   .getVisualBounds();
             final double screenWidth = visualBounds.getWidth();
             final double screenHeight = visualBounds.getHeight();
 
@@ -132,8 +137,9 @@ public class DataRequestTask extends Task< DataServerResponse > {
 
             // Request a data update from the server.
             updateMessage( "Connecting to Server" ); //$NON-NLS-1$
-            serverStatusMessage = NetworkUtilities.connectToServlet( httpURLConnection,
-                                                                     "data update" );
+            serverStatusMessage = NetworkUtilities.connectToServlet(
+                    httpURLConnection,
+                    "data update" );
             if ( serverStatusMessage != null ) {
                 dataServerResponse.setServerStatusMessage( serverStatusMessage );
                 return dataServerResponse;
@@ -143,7 +149,8 @@ public class DataRequestTask extends Task< DataServerResponse > {
             updateProgress( 2.0d, numberOfSubTasks );
 
             // Send the optional data request input parameters to the server.
-            serverStatusMessage = sendDataRequestInputParameters( httpURLConnection );
+            serverStatusMessage = sendDataRequestInputParameters(
+                    httpURLConnection );
             if ( serverStatusMessage != null ) {
                 dataServerResponse.setServerStatusMessage( serverStatusMessage );
                 return dataServerResponse;
@@ -157,11 +164,12 @@ public class DataRequestTask extends Task< DataServerResponse > {
             updateMessage( "Waiting for Data Response from Server" );
             // updateProgress( 3.0d, numberOfSubTasks );
             updateProgress( -1d, numberOfSubTasks );
-            dataServerResponse = NetworkUtilities
-                    .getDataServerResponse( httpURLConnection );
-            if ( ( dataServerResponse == null )
-                    || ( dataServerResponse.getServerStatusMessage() != null )
-                    || ( dataServerResponse.getServletErrorMessage() != null ) ) {
+            dataServerResponse = NetworkUtilities.getDataServerResponse(
+                    httpURLConnection );
+            if ( ( dataServerResponse == null ) || (
+                    dataServerResponse.getServerStatusMessage() != null ) || (
+                         dataServerResponse.getServletErrorMessage()
+                         != null ) ) {
                 return dataServerResponse;
             }
             updateMessage( "Data Response Received" );
@@ -170,8 +178,10 @@ public class DataRequestTask extends Task< DataServerResponse > {
             updateMessage( "Loading Data Response from Server" );
             updateProgress( 4.0d, numberOfSubTasks );
             final StringBuilder messageBuilder = new StringBuilder();
-            final byte[] serverResponseData = IoUtilities
-                    .saveRemoteStreamToByteArray( httpURLConnection, messageBuilder );
+            final byte[] serverResponseData
+                    =
+                    IoUtilities.saveRemoteStreamToByteArray( httpURLConnection,
+                                                               messageBuilder );
             if ( messageBuilder.length() > 0 ) {
                 dataServerResponse.setServerStatusMessage( messageBuilder.toString() );
                 return dataServerResponse;
@@ -198,61 +208,60 @@ public class DataRequestTask extends Task< DataServerResponse > {
 
         return dataServerResponse;
     }
-   
+
     /**
      * Returns the text to use for updating the Title of this Task.
      * <p>
      * NOTE: This default implementation is generic and should be overridden.
-     * 
+     *
      * @return The text to use for updating the Title of this Task
      */
     protected String getTaskTitle() {
         return "Data Update";
     }
-  
+
     /**
      * Returns the Request Type name that this task will pass to the server.
-     * 
+     *
      * @return The Request Type name that this task will pass to the server
      */
     protected final String getDataRequestType() {
         return dataRequestParameters.getDataRequestType();
     }
-    
-    public final DataUpdateType getDataUpdateType() {
-        return dataRequestParameters.getDataUpdateType();
-    }
-    
+
     protected final LoginCredentials getLoginCredentials() {
         return dataRequestParameters.getLoginCredentials();
     }
-    
+
     /**
      * Adds data request properties to the HTTP Request.
      * <p>
-     * NOTE: The base class implementation is blank, as most data requests
-     *  will use the file-based approach, but some requests are trivial
-     *  enough to instead tag a few custom HTTP parameters to the URL.
-     * 
+     * NOTE: The base class implementation is blank, as most data requests will
+     * use the file-based approach, but some requests are trivial enough to
+     * instead tag a few custom HTTP parameters to the URL.
+     *
      * @param httpURLConnection The HTTP URL Connection for the Request
      */
     public final void addDataRequestProperties( final HttpURLConnection httpURLConnection ) {
         dataRequestParameters.addDataRequestProperties( httpURLConnection );
     }
-    
+
     /**
      * Returns a server status message related to the sending of data request
      * input parameters to the HTTP Request, or null if no message received,
      * such as when this method is not needed due to no input parameters.
      * <p>
      * NOTE: Not all data  requests send additional input parameters.
-     * 
+     *
      * @param httpURLConnection The HTTP URL Connection for the Request
-     * 
      * @return The server status message, or null if no input parameters sent
      */
     public final String sendDataRequestInputParameters( final HttpURLConnection httpURLConnection ) {
-        return dataRequestParameters
-                .sendDataRequestInputParameters( httpURLConnection );
-   }
+        return dataRequestParameters.sendDataRequestInputParameters(
+                httpURLConnection );
+    }
+
+    public final DataUpdateType getDataUpdateType() {
+        return dataRequestParameters.getDataUpdateType();
+    }
 }

@@ -35,6 +35,7 @@ import com.mhschmieder.fxcontrols.model.DrawingLimitsProperties;
 import com.mhschmieder.fxcontrols.model.Extents2DProperties;
 import com.mhschmieder.jcommons.util.ClientProperties;
 import com.mhschmieder.jphysics.measure.DistanceUnit;
+
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.CheckBox;
@@ -42,7 +43,7 @@ import javafx.scene.layout.GridPane;
 
 public final class DrawingLimitsPane extends GridPane {
 
-    public CheckBox         _autoSyncCheckBox;
+    public CheckBox _autoSyncCheckBox;
     public Extents2DPane _extents2DPane;
 
     // Cache a reference to the global Drawing Limits.
@@ -73,41 +74,25 @@ public final class DrawingLimitsPane extends GridPane {
         }
     }
 
-    private void bindProperties() {
-        // Load the event handler for the Auto-Sync Check Box.
-        _autoSyncCheckBox.selectedProperty()
-                .addListener( ( observableValue,
-                                oldValue,
-                                newValue ) -> setDrawingLimitsToAutoSyncBoundary( newValue )
-
-                );
-
-        // The Auto-Sync flag is a simple boolean so can be bi-directionally
-        // bound to its corresponding check box.
-        _autoSyncCheckBox.selectedProperty().bindBidirectional( drawingLimitsProperties.autoSyncProperty() );
-
-        // Bind Extents Pane enablement to the associated Auto-Sync Check Box.
-        _extents2DPane.disableProperty().bind( _autoSyncCheckBox.selectedProperty() );
-    }
-
     private void initPane( final ClientProperties pClientProperties,
                            final String autoSyncLabel,
                            final boolean initialAutoSync,
                            final double extentsSizeMinimumMeters,
                            final double extentsSizeMaximumMeters,
                            final String propertiesCategory ) {
-        _autoSyncCheckBox = ControlUtilities.getCheckBox( autoSyncLabel, initialAutoSync );
+        _autoSyncCheckBox = ControlUtilities.getCheckBox( autoSyncLabel,
+                                                          initialAutoSync );
 
         _extents2DPane = new Extents2DPane( pClientProperties,
-                                        extentsSizeMinimumMeters,
-                                        extentsSizeMaximumMeters,
-                                        propertiesCategory );
+                                            extentsSizeMinimumMeters,
+                                            extentsSizeMaximumMeters,
+                                            propertiesCategory );
 
         setHgap( 6.0d );
         setVgap( 6.0d );
 
         add( _autoSyncCheckBox, 0, 0 );
-        add(_extents2DPane, 0, 1 );
+        add( _extents2DPane, 0, 1 );
 
         setAlignment( Pos.CENTER );
         setPadding( new Insets( 6.0d ) );
@@ -122,9 +107,40 @@ public final class DrawingLimitsPane extends GridPane {
         setDrawingLimitsToAutoSyncBoundary( drawingLimitsProperties.isAutoSync() );
     }
 
+    /*
+     * Conditionally set the Drawing Limits to match the current Auto-Sync
+     * Boundary.
+     * <p>
+     * TODO: Switch to unidirectional binding and unbinding of the four
+     * individual boundary properties instead? This is easy to try and to test.
+     */
+    protected void setDrawingLimitsToAutoSyncBoundary( final boolean autoSync ) {
+        if ( ( drawingLimitsProperties != null ) && ( autoSyncBoundary
+                                                      != null ) ) {
+            if ( autoSync ) {
+                // Check to see if anything changed, as the Rectangle class was
+                // implemented by Oracle to automatically set its dirty flag
+                // when its property setters are called, even if no change.
+                if ( ( drawingLimitsProperties.getX()
+                       != autoSyncBoundary.getX() ) || (
+                             drawingLimitsProperties.getY()
+                             != autoSyncBoundary.getY() ) || (
+                             drawingLimitsProperties.getWidth()
+                             != autoSyncBoundary.getWidth() ) || (
+                             drawingLimitsProperties.getHeight()
+                             != autoSyncBoundary.getHeight() ) ) {
+                    drawingLimitsProperties.setExtents( autoSyncBoundary.getX(),
+                                                        autoSyncBoundary.getY(),
+                                                        autoSyncBoundary.getWidth(),
+                                                        autoSyncBoundary.getHeight() );
+                }
+            }
+        }
+    }
+
     // Set and bind the Drawing Limits reference.
     // NOTE: This should be done only once, to avoid breaking bindings.
-    public void setDrawingLimits( final DrawingLimitsProperties pDrawingLimitsProperties) {
+    public void setDrawingLimits( final DrawingLimitsProperties pDrawingLimitsProperties ) {
         // Cache the Drawing Limits reference.
         drawingLimitsProperties = pDrawingLimitsProperties;
 
@@ -135,30 +151,23 @@ public final class DrawingLimitsPane extends GridPane {
         bindProperties();
     }
 
-    /*
-     * Conditionally set the Drawing Limits to match the current Auto-Sync
-     * Boundary.
-     * <p>
-     * TODO: Switch to unidirectional binding and unbinding of the four
-     * individual boundary properties instead? This is easy to try and to test.
-     */
-    protected void setDrawingLimitsToAutoSyncBoundary( final boolean autoSync ) {
-        if ( ( drawingLimitsProperties != null ) && ( autoSyncBoundary != null ) ) {
-            if ( autoSync ) {
-                // Check to see if anything changed, as the Rectangle class was
-                // implemented by Oracle to automatically set its dirty flag
-                // when its property setters are called, even if no change.
-                if ( ( drawingLimitsProperties.getX() != autoSyncBoundary.getX() )
-                        || ( drawingLimitsProperties.getY() != autoSyncBoundary.getY() )
-                        || ( drawingLimitsProperties.getWidth() != autoSyncBoundary.getWidth() )
-                        || ( drawingLimitsProperties.getHeight() != autoSyncBoundary.getHeight() ) ) {
-                    drawingLimitsProperties.setExtents( autoSyncBoundary.getX(),
-                                              autoSyncBoundary.getY(),
-                                              autoSyncBoundary.getWidth(),
-                                              autoSyncBoundary.getHeight() );
-                }
-            }
-        }
+    private void bindProperties() {
+        // Load the event handler for the Auto-Sync Check Box.
+        _autoSyncCheckBox.selectedProperty()
+                         .addListener( ( observableValue, oldValue,
+                                         newValue ) -> setDrawingLimitsToAutoSyncBoundary(
+                                               newValue )
+
+                                     );
+
+        // The Auto-Sync flag is a simple boolean so can be bi-directionally
+        // bound to its corresponding check box.
+        _autoSyncCheckBox.selectedProperty()
+                         .bindBidirectional( drawingLimitsProperties.autoSyncProperty() );
+
+        // Bind Extents Pane enablement to the associated Auto-Sync Check Box.
+        _extents2DPane.disableProperty()
+                      .bind( _autoSyncCheckBox.selectedProperty() );
     }
 
     /*

@@ -36,6 +36,7 @@ import com.mhschmieder.fxcontrols.model.ProjectProperties;
 import com.mhschmieder.fxcontrols.util.RegionUtilities;
 import com.mhschmieder.fxgui.util.GuiUtilities;
 import com.mhschmieder.jcommons.util.ClientProperties;
+
 import javafx.geometry.HPos;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -50,34 +51,27 @@ import javafx.scene.paint.Color;
 
 public final class ProjectPropertiesPane extends VBox {
 
-    private Label projectNameLabel;
-    private TextEditor projectNameEditor;
-
-    private Label projectTypeLabel;
-    private TextEditor projectTypeEditor;
-
-    private Label projectLocationLabel;
-    private TextEditor projectLocationEditor;
-
-    private Label projectAuthorLabel;
-    private TextEditor projectAuthorEditor;
-
-    private Label projectDateLabel;
-    private DatePicker projectDatePicker;
-
     protected TextArea projectNotes;
-
     // Declare a local cache of the Project Properties model.
     protected ProjectProperties projectProperties;
-
     // Cache the Project Category for reference during label creation.
     protected String projectCategory;
+    private Label projectNameLabel;
+    private TextEditor projectNameEditor;
+    private Label projectTypeLabel;
+    private TextEditor projectTypeEditor;
+    private Label projectLocationLabel;
+    private TextEditor projectLocationEditor;
+    private Label projectAuthorLabel;
+    private TextEditor projectAuthorEditor;
+    private Label projectDateLabel;
+    private DatePicker projectDatePicker;
 
     public ProjectPropertiesPane( final String pProjectCategory,
                                   final ClientProperties pClientProperties ) {
         // Always call the superclass constructor first!
         super();
-        
+
         projectCategory = pProjectCategory;
 
         try {
@@ -92,11 +86,14 @@ public final class ProjectPropertiesPane extends VBox {
         createControls( pClientProperties );
 
         // Make a Grid Pane to host the full group of labels and controls.
-        final GridPane propertiesPane = LayoutFactory.makeGridPane(
-                Pos.CENTER,
-                new Insets( 3.0d, 3.0d, 3.0d, 3.0d ),
-                6.0d,
-                12.0d );
+        final GridPane propertiesPane = LayoutFactory.makeGridPane( Pos.CENTER,
+                                                                    new Insets(
+                                                                            3.0d,
+                                                                            3.0d,
+                                                                            3.0d,
+                                                                            3.0d ),
+                                                                    6.0d,
+                                                                    12.0d );
 
         final Label projectPropertiesHeader = GuiUtilities.getInfoLabel(
                 projectCategory + " Properties" );
@@ -114,11 +111,12 @@ public final class ProjectPropertiesPane extends VBox {
         propertiesPane.add( projectDateLabel, 0, 5 );
         propertiesPane.add( projectDatePicker, 1, 5 );
 
-        final GridPane textAreaPane = com.mhschmieder.fxgui.util.GuiUtilities
-                .getLabeledTextAreaPane(
-                        projectCategory + " Notes",
-                        projectNotes,
-                        pClientProperties );
+        final GridPane textAreaPane
+                =
+                com.mhschmieder.fxgui.util.GuiUtilities.getLabeledTextAreaPane(
+                projectCategory + " Notes",
+                projectNotes,
+                pClientProperties );
 
         // Create a grid to host the nested panes.
         final GridPane grid = new GridPane();
@@ -147,50 +145,41 @@ public final class ProjectPropertiesPane extends VBox {
     public void createControls( final ClientProperties pClientProperties ) {
         projectNameLabel = makePropertySheetLabel( "Name" );
         projectNameEditor = makePropertySheetEditor(
-                projectCategory
-                        + " Name, which May be Different from "
-                        + projectCategory
-                        + " Filename",
-                pClientProperties );
+                projectCategory + " Name, which May be Different from "
+                + projectCategory + " Filename", pClientProperties );
 
         projectTypeLabel = makePropertySheetLabel( "Type" );
-        projectTypeEditor  = makePropertySheetEditor(
-                projectCategory
-                        + " Type for the "
-                        + projectCategory
-                        + "; Often with Domain-specific Terminology",
+        projectTypeEditor = makePropertySheetEditor(
+                projectCategory + " Type for the " + projectCategory
+                + "; Often with Domain-specific Terminology",
                 pClientProperties );
 
         projectLocationLabel = makePropertySheetLabel( "Location" );
         projectLocationEditor = makePropertySheetEditor(
-                projectCategory
-                        + " Location for the "
-                        + projectCategory
-                        + "; Often with Domain-specific Terminology",
+                projectCategory + " Location for the " + projectCategory
+                + "; Often with Domain-specific Terminology",
                 pClientProperties );
 
         projectAuthorLabel = makePropertySheetLabel( "Author" );
         projectAuthorEditor = makePropertySheetEditor(
-                projectCategory
-                        + " Author for the "
-                        + projectCategory
-                        + "; Often with Domain-specific Terminology",
+                projectCategory + " Author for the " + projectCategory
+                + "; Often with Domain-specific Terminology",
                 pClientProperties );
 
         projectDateLabel = makePropertySheetLabel( "Date" );
 
         // TODO: Use CSS to style this control more to our liking.
-        // TODO: Start playing with options for Chronology as well, if pertinent.
+        // TODO: Start playing with options for Chronology as well, if
+        //  pertinent.
         projectDatePicker = new DatePicker();
         projectDatePicker.setShowWeekNumbers( true );
         projectDatePicker.setTooltip( new Tooltip(
-                "The Date that the "
-                        + projectCategory
-                        + "Was Created or Edited" ) );
+                "The Date that the " + projectCategory
+                + "Was Created or Edited" ) );
 
         projectNotes = ControlUtilities.getNotesEditor( 12 );
     }
-    
+
     private Label makePropertySheetLabel( final String pProperty ) {
         final double labelWidth = 160.0d;
 
@@ -199,13 +188,12 @@ public final class ProjectPropertiesPane extends VBox {
         label.setAlignment( Pos.CENTER_LEFT );
         label.setPrefWidth( labelWidth );
         GridPane.setHalignment( label, HPos.LEFT );
-        
+
         return label;
     }
-    
-    private TextEditor makePropertySheetEditor( 
-            final String pTooltipText,
-            final ClientProperties pClientProperties) {
+
+    private TextEditor makePropertySheetEditor( final String pTooltipText,
+                                                final ClientProperties pClientProperties ) {
         final double controlWidth = 280.0d;
 
         // NOTE: We give editors a bit of extra height due to font size
@@ -215,14 +203,13 @@ public final class ProjectPropertiesPane extends VBox {
         //  based on locality etc. vs. hard-coding their displayed text as here.
         final double editorHeight = 26.0d;
 
-        final TextEditor textEditor = new TextEditor(
-                "",
-                pTooltipText,
-                true,
-                pClientProperties );
+        final TextEditor textEditor = new TextEditor( "",
+                                                      pTooltipText,
+                                                      true,
+                                                      pClientProperties );
         textEditor.setPrefWidth( controlWidth );
         textEditor.setPrefHeight( editorHeight );
-        
+
         return textEditor;
     }
 
@@ -230,37 +217,18 @@ public final class ProjectPropertiesPane extends VBox {
         // Bidirectionally bind the Project Properties to their associated text
         // input controls' value properties (which reflect committed edits).
         // TODO: Do something similar for TextArea, to better handle control?
-        projectNameEditor.valueProperty().bindBidirectional(
-                projectProperties.projectNameProperty() );
-        projectTypeEditor.valueProperty().bindBidirectional(
-                projectProperties.projectTypeProperty() );
-        projectLocationEditor.valueProperty().bindBidirectional(
-                projectProperties.projectLocationProperty() );
-        projectAuthorEditor.valueProperty().bindBidirectional(
-                projectProperties.projectAuthorProperty() );
-        projectDatePicker.valueProperty().bindBidirectional(
-                projectProperties.projectDateProperty() );
-        projectNotes.textProperty().bindBidirectional(
-                projectProperties.projectNotesProperty() );
-    }
-
-    private void unbindProperties() {
-        // Bidirectionally unbind the Project Properties from their
-        // associated text input controls' value properties (which reflect
-        // committed edits).
-        // TODO: Do something similar for TextArea, to better handle control?
-        projectNameEditor.valueProperty().unbindBidirectional(
-                projectProperties.projectNameProperty() );
-        projectTypeEditor.valueProperty().unbindBidirectional(
-                projectProperties.projectTypeProperty() );
-        projectLocationEditor.valueProperty().unbindBidirectional(
-                projectProperties.projectLocationProperty() );
-        projectAuthorEditor.valueProperty().unbindBidirectional(
-                projectProperties.projectAuthorProperty() );
-        projectDatePicker.valueProperty().unbindBidirectional(
-                projectProperties.projectDateProperty() );
-        projectNotes.textProperty().unbindBidirectional(
-                projectProperties.projectNotesProperty() );
+        projectNameEditor.valueProperty()
+                         .bindBidirectional( projectProperties.projectNameProperty() );
+        projectTypeEditor.valueProperty()
+                         .bindBidirectional( projectProperties.projectTypeProperty() );
+        projectLocationEditor.valueProperty()
+                             .bindBidirectional( projectProperties.projectLocationProperty() );
+        projectAuthorEditor.valueProperty()
+                           .bindBidirectional( projectProperties.projectAuthorProperty() );
+        projectDatePicker.valueProperty()
+                         .bindBidirectional( projectProperties.projectDateProperty() );
+        projectNotes.textProperty()
+                    .bindBidirectional( projectProperties.projectNotesProperty() );
     }
 
     // Reset all fields to the default values, regardless of state.
@@ -287,8 +255,7 @@ public final class ProjectPropertiesPane extends VBox {
      *
      * @param pProjectTypeLabel the custom text to use for Project Type
      */
-    public final void setProjectTypeLabel(
-            final String pProjectTypeLabel ) {
+    public final void setProjectTypeLabel( final String pProjectTypeLabel ) {
         projectLocationLabel.setText( pProjectTypeLabel );
     }
 
@@ -299,8 +266,7 @@ public final class ProjectPropertiesPane extends VBox {
      *
      * @param pProjectLocationLabel the custom text to use for Project Location
      */
-    public final void setProjectLocationLabel(
-            final String pProjectLocationLabel ) {
+    public final void setProjectLocationLabel( final String pProjectLocationLabel ) {
         projectLocationLabel.setText( pProjectLocationLabel );
     }
 
@@ -311,8 +277,7 @@ public final class ProjectPropertiesPane extends VBox {
      *
      * @param pProjectAuthorLabel the custom text to use for Project Author
      */
-    public final void setProjectAuthorLabel(
-            final String pProjectAuthorLabel ) {
+    public final void setProjectAuthorLabel( final String pProjectAuthorLabel ) {
         projectAuthorLabel.setText( pProjectAuthorLabel );
     }
 
@@ -333,6 +298,25 @@ public final class ProjectPropertiesPane extends VBox {
 
         // Bind the data model to the respective GUI components.
         bindProperties();
+    }
+
+    private void unbindProperties() {
+        // Bidirectionally unbind the Project Properties from their
+        // associated text input controls' value properties (which reflect
+        // committed edits).
+        // TODO: Do something similar for TextArea, to better handle control?
+        projectNameEditor.valueProperty()
+                         .unbindBidirectional( projectProperties.projectNameProperty() );
+        projectTypeEditor.valueProperty()
+                         .unbindBidirectional( projectProperties.projectTypeProperty() );
+        projectLocationEditor.valueProperty()
+                             .unbindBidirectional( projectProperties.projectLocationProperty() );
+        projectAuthorEditor.valueProperty()
+                           .unbindBidirectional( projectProperties.projectAuthorProperty() );
+        projectDatePicker.valueProperty()
+                         .unbindBidirectional( projectProperties.projectDateProperty() );
+        projectNotes.textProperty()
+                    .unbindBidirectional( projectProperties.projectNotesProperty() );
     }
 
     public void setForegroundFromBackground( final Color backColor ) {

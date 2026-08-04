@@ -38,15 +38,17 @@ import com.mhschmieder.fxgui.layout.DrawingLimitsPane;
 import com.mhschmieder.jcommons.branding.ProductBranding;
 import com.mhschmieder.jcommons.util.ClientProperties;
 import com.mhschmieder.jphysics.measure.DistanceUnit;
+
 import javafx.scene.Node;
 import javafx.scene.control.ToolBar;
 
 public final class DrawingLimitsStage extends XStage {
 
-    public static final String DRAWING_LIMITS_FRAME_TITLE_DEFAULT  = "Drawing Limits"; //$NON-NLS-1$
+    public static final String DRAWING_LIMITS_FRAME_TITLE_DEFAULT
+            = "Drawing Limits"; //$NON-NLS-1$
 
     // Default frame dimensions.
-    private static final double DRAWING_LIMITS_FRAME_WIDTH_DEFAULT  = 680.0d;
+    private static final double DRAWING_LIMITS_FRAME_WIDTH_DEFAULT = 680.0d;
     private static final double DRAWING_LIMITS_FRAME_HEIGHT_DEFAULT = 280.0d;
 
     // Declare the actions.
@@ -93,6 +95,16 @@ public final class DrawingLimitsStage extends XStage {
                    false );
     }
 
+    // Add the Tool Bar for this Stage.
+    @Override
+    public ToolBar loadToolBar() {
+        // Build the Tool Bar for this Stage.
+        toolBar = new PredictToolBar( clientProperties, simulationActions );
+
+        // Return the Tool Bar so the superclass can use it.
+        return toolBar;
+    }
+
     // Load the relevant actions for this Stage.
     @Override
     protected void loadActions() {
@@ -104,23 +116,12 @@ public final class DrawingLimitsStage extends XStage {
     protected Node loadContent() {
         // Instantiate and return the custom Content Node.
         drawingLimitsPane = new DrawingLimitsPane( clientProperties,
-                                                    autoSyncLabel,
-                                                    true,
-                                                    -Double.MAX_VALUE,
-                                                    Double.MAX_VALUE,
-                                                    "Drawing Limits" );
+                                                   autoSyncLabel,
+                                                   true,
+                                                   -Double.MAX_VALUE,
+                                                   Double.MAX_VALUE,
+                                                   "Drawing Limits" );
         return drawingLimitsPane;
-    }
-
-    // Add the Tool Bar for this Stage.
-    @Override
-    public ToolBar loadToolBar() {
-        // Build the Tool Bar for this Stage.
-        toolBar = new PredictToolBar( clientProperties, 
-                                      simulationActions );
-
-        // Return the Tool Bar so the superclass can use it.
-        return toolBar;
     }
 
     public void setAutoSyncBoundary( final Extents2DProperties pAutoSyncBoundary ) {
@@ -130,12 +131,12 @@ public final class DrawingLimitsStage extends XStage {
 
     // Set and propagate the Drawing Limits reference.
     // NOTE: This should be done only once, to avoid breaking bindings.
-    public void setDrawingLimits( final DrawingLimitsProperties pDrawingLimitsProperties) {
+    public void setDrawingLimits( final DrawingLimitsProperties pDrawingLimitsProperties ) {
         // Cache the Drawing Limits reference.
         drawingLimitsProperties = pDrawingLimitsProperties;
 
         // Forward this reference to the Drawing Limits Pane.
-        drawingLimitsPane.setDrawingLimits(pDrawingLimitsProperties);
+        drawingLimitsPane.setDrawingLimits( pDrawingLimitsProperties );
     }
 
     /**

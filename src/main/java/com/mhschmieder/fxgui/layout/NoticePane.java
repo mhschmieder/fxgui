@@ -32,6 +32,9 @@ package com.mhschmieder.fxgui.layout;
 
 import com.mhschmieder.fxcontrols.control.ControlFactory;
 import com.mhschmieder.fxgui.util.GuiUtilities;
+
+import java.net.URL;
+
 import javafx.beans.property.StringProperty;
 import javafx.scene.Node;
 import javafx.scene.control.TextArea;
@@ -41,15 +44,14 @@ import javafx.scene.text.Text;
 import javafx.scene.text.TextFlow;
 import javafx.scene.web.WebView;
 
-import java.net.URL;
-
 public class NoticePane extends VBox {
 
     // Cache the Title Bar so it can be used by hosting layouts to register
     // mouse clicks for dismissing the owning window (e.g.).
     public HBox _titleBar;
 
-    public NoticePane( final String bannerText, final String noticeHtmlContent ) {
+    public NoticePane( final String bannerText,
+                       final String noticeHtmlContent ) {
         // Always call the superclass constructor first!
         super();
 
@@ -61,6 +63,27 @@ public class NoticePane extends VBox {
         }
     }
 
+    protected final void initPane( final String bannerText,
+                                   final String noticeHtmlContent ) {
+        // Declare the main Web View for the primary content.
+        final WebView noticeWebView = ControlFactory.makeNoticeWebView(
+                noticeHtmlContent );
+
+        // Initialize the remaining layout, which is common/shared.
+        initLayout( bannerText, noticeWebView );
+    }
+
+    protected final void initLayout( final String bannerText,
+                                     final Node contentNode ) {
+        // Make sure the text area itself can receive mouse pick events.
+        contentNode.setPickOnBounds( true );
+
+        // Use the main pane to host the Banner Label and the Notice Text Area.
+        _titleBar = GuiUtilities.getBanner( bannerText );
+
+        getChildren().addAll( _titleBar, contentNode );
+    }
+
     public NoticePane( final String bannerText,
                        final String noticeTextContent,
                        final int numberOfColumns,
@@ -69,11 +92,29 @@ public class NoticePane extends VBox {
         super();
 
         try {
-            initPane( bannerText, noticeTextContent, numberOfColumns, numberOfRows );
+            initPane( bannerText,
+                      noticeTextContent,
+                      numberOfColumns,
+                      numberOfRows );
         }
         catch ( final Exception ex ) {
             ex.printStackTrace();
         }
+    }
+
+    protected final void initPane( final String bannerText,
+                                   final String noticeTextContent,
+                                   final int numberOfColumns,
+                                   final int numberOfRows ) {
+        // Declare the main Text Area for the primary content.
+        final TextArea noticeTextArea = ControlFactory.makeNoticeTextArea(
+                noticeTextContent,
+                false,
+                numberOfColumns,
+                numberOfRows );
+
+        // Initialize the remaining layout, which is common/shared.
+        initLayout( bannerText, noticeTextArea );
     }
 
     public NoticePane( final String bannerText,
@@ -91,6 +132,24 @@ public class NoticePane extends VBox {
         }
     }
 
+    protected final void initPane( final String bannerText,
+                                   final StringProperty notice,
+                                   final int numberOfColumns,
+                                   final int numberOfRows ) {
+        // Declare the main Text Area for the primary content.
+        final TextArea noticeTextArea = ControlFactory.makeNoticeTextArea(
+                notice.get(),
+                true,
+                numberOfColumns,
+                numberOfRows );
+
+        // Bind the textField to the referenced observable string property.
+        noticeTextArea.textProperty().bindBidirectional( notice );
+
+        // Initialize the remaining layout, which is common/shared.
+        initLayout( bannerText, noticeTextArea );
+    }
+
     public NoticePane( final String bannerText,
                        final Text noticeText,
                        final int numberOfColumns,
@@ -106,7 +165,22 @@ public class NoticePane extends VBox {
         }
     }
 
-    public NoticePane( final String bannerText, final URL noticeUrl ) {
+    protected final void initPane( final String bannerText,
+                                   final Text noticeText,
+                                   final int numberOfColumns,
+                                   final int numberOfRows ) {
+        // Declare an alternate Text Flow for Rich Text content.
+        final TextFlow noticeTextFlow = ControlFactory.makeNoticeTextFlow(
+                noticeText,
+                numberOfColumns,
+                numberOfRows );
+
+        // Initialize the remaining layout, which is common/shared.
+        initLayout( bannerText, noticeTextFlow );
+    }
+
+    public NoticePane( final String bannerText,
+                       final URL noticeUrl ) {
         // Always call the superclass constructor first!
         super();
 
@@ -118,66 +192,11 @@ public class NoticePane extends VBox {
         }
     }
 
-    protected final void initLayout( final String bannerText, final Node contentNode ) {
-        // Make sure the text area itself can receive mouse pick events.
-        contentNode.setPickOnBounds( true );
-
-        // Use the main pane to host the Banner Label and the Notice Text Area.
-        _titleBar = GuiUtilities.getBanner( bannerText );
-
-        getChildren().addAll( _titleBar, contentNode );
-    }
-
-    protected final void initPane( final String bannerText, final String noticeHtmlContent ) {
+    protected final void initPane( final String bannerText,
+                                   final URL noticeUrl ) {
         // Declare the main Web View for the primary content.
-        final WebView noticeWebView = ControlFactory.makeNoticeWebView( noticeHtmlContent );
-
-        // Initialize the remaining layout, which is common/shared.
-        initLayout( bannerText, noticeWebView );
-    }
-
-    protected final void initPane( final String bannerText,
-                                   final String noticeTextContent,
-                                   final int numberOfColumns,
-                                   final int numberOfRows ) {
-        // Declare the main Text Area for the primary content.
-        final TextArea noticeTextArea = ControlFactory
-                .makeNoticeTextArea( noticeTextContent, false, numberOfColumns, numberOfRows );
-
-        // Initialize the remaining layout, which is common/shared.
-        initLayout( bannerText, noticeTextArea );
-    }
-
-    protected final void initPane( final String bannerText,
-                                   final StringProperty notice,
-                                   final int numberOfColumns,
-                                   final int numberOfRows ) {
-        // Declare the main Text Area for the primary content.
-        final TextArea noticeTextArea = ControlFactory
-                .makeNoticeTextArea( notice.get(), true, numberOfColumns, numberOfRows );
-
-        // Bind the textField to the referenced observable string property.
-        noticeTextArea.textProperty().bindBidirectional( notice );
-
-        // Initialize the remaining layout, which is common/shared.
-        initLayout( bannerText, noticeTextArea );
-    }
-
-    protected final void initPane( final String bannerText,
-                                   final Text noticeText,
-                                   final int numberOfColumns,
-                                   final int numberOfRows ) {
-        // Declare an alternate Text Flow for Rich Text content.
-        final TextFlow noticeTextFlow = ControlFactory
-                .makeNoticeTextFlow( noticeText, numberOfColumns, numberOfRows );
-
-        // Initialize the remaining layout, which is common/shared.
-        initLayout( bannerText, noticeTextFlow );
-    }
-
-    protected final void initPane( final String bannerText, final URL noticeUrl ) {
-        // Declare the main Web View for the primary content.
-        final WebView noticeWebView = ControlFactory.makeNoticeWebView( noticeUrl );
+        final WebView noticeWebView = ControlFactory.makeNoticeWebView(
+                noticeUrl );
 
         // NOTE: We're having problems with horizontal scroll bars showing up
         // on Windows 10, if not also on Mac OS, unless we down-scale the font.
@@ -188,5 +207,4 @@ public class NoticePane extends VBox {
         // Initialize the remaining layout, which is common/shared.
         initLayout( bannerText, noticeWebView );
     }
-
 }// class NoticePane

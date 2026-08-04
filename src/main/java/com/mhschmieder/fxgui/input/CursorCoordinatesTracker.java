@@ -34,31 +34,36 @@ import com.mhschmieder.fxgraphics.input.MouseToolManager;
 import com.mhschmieder.jcommons.text.TextUtilities;
 import com.mhschmieder.jgraphics.input.MouseToolMode;
 import com.mhschmieder.jphysics.measure.DistanceUnit;
-import javafx.scene.chart.ValueAxis;
 
 import java.text.NumberFormat;
+
+import javafx.scene.chart.ValueAxis;
 
 /**
  * A specialized Tracker Label Group used to manage Cursor Coordinates display.
  */
 public class CursorCoordinatesTracker extends TrackerLabelGroup {
 
-    /** Flag for determining whether to show cursor coordinates. */
-    protected boolean _showCursorCoordinates;
-
-    /** Cache for restoring previous cursor coordinates setting. */
-    protected boolean _cachedShowCursorCoordinates;
-
-    /** Cache a local copy of the Mouse Tool Manager to check mouse context. */
+    /**
+     * Cache a local copy of the Mouse Tool Manager to check mouse context.
+     */
     public MouseToolManager _mouseToolManager;
-
-    /** Number format cache used for locale-specific number formatting. */
+    /**
+     * Number format cache used for locale-specific number formatting.
+     */
     public NumberFormat _numberFormat;
-
     /**
      * Keep track of what Distance Unit we're using to display coordinates.
      */
     public DistanceUnit _distanceUnit;
+    /**
+     * Flag for determining whether to show cursor coordinates.
+     */
+    protected boolean _showCursorCoordinates;
+    /**
+     * Cache for restoring previous cursor coordinates setting.
+     */
+    protected boolean _cachedShowCursorCoordinates;
 
     public CursorCoordinatesTracker( final MouseToolManager mouseToolManager,
                                      final NumberFormat numberFormat,
@@ -67,7 +72,7 @@ public class CursorCoordinatesTracker extends TrackerLabelGroup {
                                      final ValueAxis< Number > yAxis ) {
         // Always call the superclass constructor first!
         super( xAxis, yAxis );
-        
+
         _mouseToolManager = mouseToolManager;
         _numberFormat = numberFormat;
         _distanceUnit = distanceUnit;
@@ -75,7 +80,15 @@ public class CursorCoordinatesTracker extends TrackerLabelGroup {
         _showCursorCoordinates = false;
         _cachedShowCursorCoordinates = false;
     }
-    
+
+    /**
+     * Toggles the cursor coordinates display to on if off, and vice-versa.
+     */
+    public void toggleShowCursorCoordinates() {
+        // Toggle the "Show Cursor Coordinates" state.
+        setShowCursorCoordinates( !isShowCursorCoordinates() );
+    }
+
     /**
      * Returns {@code true} if the cursor coordinates are to be drawn.
      *
@@ -88,25 +101,13 @@ public class CursorCoordinatesTracker extends TrackerLabelGroup {
     /**
      * Controls whether the cursor coordinates are drawn.
      *
-     * @param showCursorCoordinates
-     *            If {@code true}, the cursor coordinates are drawn.
+     * @param showCursorCoordinates If {@code true}, the cursor coordinates are
+     *                              drawn.
      */
     public void setShowCursorCoordinates( final boolean showCursorCoordinates ) {
         _showCursorCoordinates = showCursorCoordinates;
     }
 
-    /**
-     * Toggles the cursor coordinates display to on if off, and vice-versa.
-     */
-    public void toggleShowCursorCoordinates() {
-        // Toggle the "Show Cursor Coordinates" state.
-        setShowCursorCoordinates( !isShowCursorCoordinates() );
-    }
-
-    public void cacheShowCursorCoordinates() {
-        _cachedShowCursorCoordinates = _showCursorCoordinates;
-    }
-    
     public void cacheAndShowCursorCoordinates() {
         // Cache the Show Cursor Coordinates preference, to restore after
         // confirming a Paste action (for example).
@@ -115,6 +116,10 @@ public class CursorCoordinatesTracker extends TrackerLabelGroup {
         // Temporarily override "Show Cursor Coordinates" and show the mouse
         // location as the basis of the pasted object set (for example).
         setShowCursorCoordinates( true );
+    }
+
+    public void cacheShowCursorCoordinates() {
+        _cachedShowCursorCoordinates = _showCursorCoordinates;
     }
 
     /**
@@ -131,7 +136,7 @@ public class CursorCoordinatesTracker extends TrackerLabelGroup {
             setVisible( false );
         }
     }
-    
+
     @Override
     public void updateTrackerLabel( final double displayX,
                                     final double displayY,
@@ -142,29 +147,29 @@ public class CursorCoordinatesTracker extends TrackerLabelGroup {
             setVisible( false );
             return;
         }
-        
+
         super.updateTrackerLabel( displayX, displayY, localX, localY );
     }
-    
+
     @Override
     public String getTrackerLabelText( final double localX,
                                        final double localY ) {
         // Update the displayed cursor coordinates in the current Distance Unit.
-        String sCursorCoordinates = TextUtilities
-                .getFormattedQuantityPair( localX,
-                                           localY,
-                                           _numberFormat,
-                                           _distanceUnit.abbreviation() );
+        String sCursorCoordinates = TextUtilities.getFormattedQuantityPair(
+                localX,
+                localY,
+                _numberFormat,
+                _distanceUnit.abbreviation() );
 
         // If in Paste Confirmation Mode, prepend a special context message.
         if ( MouseToolMode.PASTE.equals( _mouseToolManager._mouseMode ) ) {
             sCursorCoordinates = "Click to confirm paste coordinates:\n"
-                    + sCursorCoordinates;
+                                 + sCursorCoordinates;
         }
-        
+
         return sCursorCoordinates;
     }
-    
+
     public void updateDistanceUnit( final DistanceUnit distanceUnit ) {
         // Cache the new Distance Unit to use for displaying coordinates.
         _distanceUnit = distanceUnit;

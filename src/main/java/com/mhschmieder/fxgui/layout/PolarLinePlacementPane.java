@@ -36,6 +36,7 @@ import com.mhschmieder.jcommons.util.ClientProperties;
 import com.mhschmieder.jgraphics.input.ScrollingSensitivity;
 import com.mhschmieder.jphysics.measure.AngleUnit;
 import com.mhschmieder.jphysics.measure.DistanceUnit;
+
 import javafx.geometry.Insets;
 import javafx.geometry.Point2D;
 import javafx.scene.Node;
@@ -43,10 +44,10 @@ import javafx.scene.layout.HBox;
 
 public final class PolarLinePlacementPane extends HBox {
 
-    protected GraphicalObjectPreviewPane _previewPane;
     public CartesianPositionPane _inclinometerPositionPane;
     public PolarPositionPane _startPolarPositionPane;
-    public PolarPositionPane             _endPolarPositionPane;
+    public PolarPositionPane _endPolarPositionPane;
+    protected GraphicalObjectPreviewPane _previewPane;
 
     public PolarLinePlacementPane( final ClientProperties pClientProperties ) {
         // Always call the superclass constructor first!
@@ -62,21 +63,29 @@ public final class PolarLinePlacementPane extends HBox {
 
     private void initPane( final ClientProperties pClientProperties ) {
         _previewPane = new GraphicalObjectPreviewPane( 80, 100 );
-        final Node previewBorderNode = GuiUtilities.getTitledBorderWrappedNode( _previewPane,
-                                                                                "Preview" ); //$NON-NLS-1$
+        final Node previewBorderNode = GuiUtilities.getTitledBorderWrappedNode(
+                _previewPane,
+                "Preview" ); //$NON-NLS-1$
 
-        _inclinometerPositionPane = new CartesianPositionPane( pClientProperties );
-        final Node inclinometerPositionBorderNode = GuiUtilities
-                .getTitledBorderWrappedNode( _inclinometerPositionPane,
-                                             "RangeFinder-Inclinometer Position" ); //$NON-NLS-1$
+        _inclinometerPositionPane
+                = new CartesianPositionPane( pClientProperties );
+        final Node inclinometerPositionBorderNode
+                = GuiUtilities.getTitledBorderWrappedNode(
+                _inclinometerPositionPane,
+                "RangeFinder-Inclinometer Position" ); //$NON-NLS-1$
 
         _startPolarPositionPane = new PolarPositionPane( pClientProperties );
-        final Node startPolarPositionBorderNode = GuiUtilities
-                .getTitledBorderWrappedNode( _startPolarPositionPane, "First Point" ); //$NON-NLS-1$
+        final Node startPolarPositionBorderNode
+                = GuiUtilities.getTitledBorderWrappedNode(
+                _startPolarPositionPane,
+                "First Point" ); //$NON-NLS-1$
 
         _endPolarPositionPane = new PolarPositionPane( pClientProperties );
-        final Node endPolarPositionBorderNode = GuiUtilities
-                .getTitledBorderWrappedNode( _endPolarPositionPane, "Second Point" ); //$NON-NLS-1$
+        final Node endPolarPositionBorderNode
+                =
+                GuiUtilities.getTitledBorderWrappedNode( _endPolarPositionPane,
+                                                           "Second Point" );
+        //$NON-NLS-1$
 
         setSpacing( 6 );
         setPadding( new Insets( 3 ) );
@@ -93,11 +102,6 @@ public final class PolarLinePlacementPane extends HBox {
         _endPolarPositionPane.saveEdits();
     }
 
-    protected void setEndPolarPosition( final PolarLine polarLine ) {
-        _endPolarPositionPane.setPolarPosition( polarLine.getEndAngleDegrees(),
-                                                polarLine.getEndDistance() );
-    }
-
     public void setGesturesEnabled( final boolean gesturesEnabled ) {
         // Forward this method to the Start Polar Position Pane.
         _startPolarPositionPane.setGesturesEnabled( gesturesEnabled );
@@ -106,17 +110,10 @@ public final class PolarLinePlacementPane extends HBox {
         _endPolarPositionPane.setGesturesEnabled( gesturesEnabled );
     }
 
-    protected void setInclinometerPosition( final PolarLine polarLine ) {
-        _inclinometerPositionPane
-                .setCartesianPosition2D( polarLine.getInclinometerPositionX(),
-                                         polarLine.getInclinometerPositioneY() );
-    }
-
     /**
      * Set the new Scrolling Sensitivity for all of the sliders.
      *
-     * @param scrollingSensitivity
-     *            The sensitivity of the mouse scroll wheel
+     * @param scrollingSensitivity The sensitivity of the mouse scroll wheel
      */
     public void setScrollingSensitivity( final ScrollingSensitivity scrollingSensitivity ) {
         // Forward this method to the Start Polar Position Pane.
@@ -126,14 +123,11 @@ public final class PolarLinePlacementPane extends HBox {
         _endPolarPositionPane.setScrollingSensitivity( scrollingSensitivity );
     }
 
-    protected void setStartPolarPosition( final PolarLine polarLine ) {
-        _startPolarPositionPane.setPolarPosition( polarLine.getStartAngleDegrees(),
-                                                  polarLine.getStartDistance() );
-    }
-
     public void updatePolarLineModel( final PolarLine polarLine ) {
-        final Point2D inclinometerPosition2D = _inclinometerPositionPane.getCartesianPosition2D();
-        final double startAngleDegrees = _startPolarPositionPane.getRotationAngle();
+        final Point2D inclinometerPosition2D
+                = _inclinometerPositionPane.getCartesianPosition2D();
+        final double startAngleDegrees
+                = _startPolarPositionPane.getRotationAngle();
         final double startDistance = _startPolarPositionPane.getDistance();
         final double endAngleDegrees = _endPolarPositionPane.getRotationAngle();
         final double endDistance = _endPolarPositionPane.getDistance();
@@ -148,11 +142,44 @@ public final class PolarLinePlacementPane extends HBox {
         updatePreview( polarLine );
     }
 
+    public void updatePreview( final PolarLine polarLineCurrent ) {
+        // Forward this to the preview pane, at the origin.
+        final PolarLine polarLine = new PolarLine( polarLineCurrent );
+        final double x1 = 0.0d;
+        final double y1 = 0.0d;
+        final double x2 = polarLine.getX2() - polarLine.getX1();
+        final double y2 = polarLine.getY2() - polarLine.getY1();
+        polarLine.setLine( x1, y1, x2, y2 );
+
+        _previewPane.updatePreview( polarLine, 2.0d );
+    }
+
     public void updatePolarLineView( final PolarLine polarLine ) {
         // Make sure the positioning parameters are in sync with the data model
         // as they could change outside this textField, such as via mouse
         // move/rotate in the Sound Field.
         updatePositioning( polarLine );
+    }
+
+    public void updatePositioning( final PolarLine polarLine ) {
+        setInclinometerPosition( polarLine );
+        setStartPolarPosition( polarLine );
+        setEndPolarPosition( polarLine );
+    }
+
+    protected void setEndPolarPosition( final PolarLine polarLine ) {
+        _endPolarPositionPane.setPolarPosition( polarLine.getEndAngleDegrees(),
+                                                polarLine.getEndDistance() );
+    }
+
+    protected void setInclinometerPosition( final PolarLine polarLine ) {
+        _inclinometerPositionPane.setCartesianPosition2D( polarLine.getInclinometerPositionX(),
+                                                          polarLine.getInclinometerPositioneY() );
+    }
+
+    protected void setStartPolarPosition( final PolarLine polarLine ) {
+        _startPolarPositionPane.setPolarPosition( polarLine.getStartAngleDegrees(),
+                                                  polarLine.getStartDistance() );
     }
 
     public void toggleGestures() {
@@ -175,24 +202,4 @@ public final class PolarLinePlacementPane extends HBox {
         _startPolarPositionPane.updateDistanceUnit( distanceUnit );
         _endPolarPositionPane.updateDistanceUnit( distanceUnit );
     }
-
-    public void updatePositioning( final PolarLine polarLine ) {
-        setInclinometerPosition( polarLine );
-        setStartPolarPosition( polarLine );
-        setEndPolarPosition( polarLine );
-    }
-
-    public void updatePreview( final PolarLine polarLineCurrent ) {
-        // Forward this to the preview pane, at the origin.
-        final PolarLine polarLine =
-                                                      new PolarLine( polarLineCurrent );
-        final double x1 = 0.0d;
-        final double y1 = 0.0d;
-        final double x2 = polarLine.getX2() - polarLine.getX1();
-        final double y2 = polarLine.getY2() - polarLine.getY1();
-        polarLine.setLine( x1, y1, x2, y2 );
-
-        _previewPane.updatePreview( polarLine, 2.0d );
-    }
-
 }

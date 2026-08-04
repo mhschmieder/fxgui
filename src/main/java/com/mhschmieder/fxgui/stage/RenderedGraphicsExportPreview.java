@@ -42,6 +42,9 @@ import com.mhschmieder.jcommons.util.ClientProperties;
 import com.mhschmieder.jvectorexport.eps.EpsExportUtilities;
 import com.mhschmieder.jvectorexport.pdf.PdfReportUtilities;
 import com.mhschmieder.jvectorexport.svg.SvgExportUtilities;
+
+import java.io.File;
+
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.geometry.Insets;
@@ -51,8 +54,6 @@ import javafx.scene.control.CheckBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.stage.Modality;
-
-import java.io.File;
 
 /**
  * This Preview window is for use with Rendered Graphics Export actions, mostly
@@ -65,24 +66,26 @@ import java.io.File;
  */
 public final class RenderedGraphicsExportPreview extends ExportPreview {
 
-    public static final String                      RENDERED_GRAPHICS_EXPORT_PREVIEW_TITLE_DEFAULT 
+    public static final String RENDERED_GRAPHICS_EXPORT_PREVIEW_TITLE_DEFAULT
             = "Rendered Graphics Export Preview";
 
     // Declare the main content pane.
     public RenderedGraphicsExportPreviewPane _renderedGraphicsExportPreviewPane;
 
     // Cache the Rendered Graphics Export Options.
-    protected RenderedGraphicsExportOptions         _renderedGraphicsExportOptions;
+    protected RenderedGraphicsExportOptions _renderedGraphicsExportOptions;
 
     // Cache the option button labels.
-    protected String                                _auxiliaryLabel;
-    protected String                                _informationTablesLabel;
-    protected String                                _optionalItemLabel;
+    protected String _auxiliaryLabel;
+    protected String _informationTablesLabel;
+    protected String _optionalItemLabel;
 
-    // Maintain a Swing Component reference for Rendered Graphics Export actions.
-    protected RenderedGraphicsTitledVectorizationPanel _renderedGraphicsExportSource;
+    // Maintain a Swing Component reference for Rendered Graphics Export
+    // actions.
+    protected RenderedGraphicsTitledVectorizationPanel
+            _renderedGraphicsExportSource;
 
-    @SuppressWarnings("nls")
+    @SuppressWarnings( "nls" )
     public RenderedGraphicsExportPreview( final String auxiliaryLabel,
                                           final String informationTablesLabel,
                                           final String optionalItemLabel,
@@ -111,6 +114,16 @@ public final class RenderedGraphicsExportPreview extends ExportPreview {
         }
     }
 
+    @SuppressWarnings( "nls" )
+    private void initStage() {
+        // First have the superclass initialize its content.
+        initStage( "/icons/fatCow/FileExtensionEps16.png",
+                   1000d,
+                   1000d,
+                   true,
+                   true );
+    }
+
     @Override
     public FileStatus exportToEps( final File tempFile,
                                    final File file,
@@ -122,7 +135,7 @@ public final class RenderedGraphicsExportPreview extends ExportPreview {
 
         // Cache the current Rendered Graphics Export Options on the target
         // layout panel.
-        _renderedGraphicsExportSource.setRenderedGraphicsExportOptions( 
+        _renderedGraphicsExportSource.setRenderedGraphicsExportOptions(
                 _renderedGraphicsExportOptions );
 
         // Unless we add a GUI field for creator, set this app as default
@@ -144,13 +157,14 @@ public final class RenderedGraphicsExportPreview extends ExportPreview {
         //  specify North American Letter paper size and then convert.
         //
         // TODO: Expose the Color Mode as a user choice in the Export Options?
-        final boolean fileSaved = EpsExportUtilities
-                .createDocument( tempFile,
-                                 _renderedGraphicsExportSource,
-                                 _renderedGraphicsExportSource.getTitle(),
-                                 creator );
+        final boolean fileSaved = EpsExportUtilities.createDocument( tempFile,
+                                                                     _renderedGraphicsExportSource,
+                                                                     _renderedGraphicsExportSource.getTitle(),
+                                                                     creator );
 
-        return fileSaved ? FileStatus.EXPORTED : FileStatus.NOT_SAVED;
+        return fileSaved
+               ? FileStatus.EXPORTED
+               : FileStatus.NOT_SAVED;
     }
 
     @Override
@@ -164,7 +178,7 @@ public final class RenderedGraphicsExportPreview extends ExportPreview {
 
         // Cache the current Rendered Graphics Export Options on the target
         // layout panel.
-        _renderedGraphicsExportSource.setRenderedGraphicsExportOptions( 
+        _renderedGraphicsExportSource.setRenderedGraphicsExportOptions(
                 _renderedGraphicsExportOptions );
 
         // Until we add a GUI field for author, set this app as default author.
@@ -184,13 +198,14 @@ public final class RenderedGraphicsExportPreview extends ExportPreview {
         //  specify North American Letter paper size and then convert.
         //
         // TODO: Expose the Color Mode as a user choice in the Export Options?
-        final boolean fileSaved = PdfReportUtilities
-                .createDocument( tempFile,
-                                 _renderedGraphicsExportSource,
-                                 _renderedGraphicsExportSource.getTitle(),
-                                 author );
+        final boolean fileSaved = PdfReportUtilities.createDocument( tempFile,
+                                                                     _renderedGraphicsExportSource,
+                                                                     _renderedGraphicsExportSource.getTitle(),
+                                                                     author );
 
-        return fileSaved ? FileStatus.EXPORTED : FileStatus.NOT_SAVED;
+        return fileSaved
+               ? FileStatus.EXPORTED
+               : FileStatus.NOT_SAVED;
     }
 
     @Override
@@ -204,7 +219,7 @@ public final class RenderedGraphicsExportPreview extends ExportPreview {
 
         // Cache the current Rendered Graphics Export Options on the target
         // layout panel.
-        _renderedGraphicsExportSource.setRenderedGraphicsExportOptions( 
+        _renderedGraphicsExportSource.setRenderedGraphicsExportOptions(
                 _renderedGraphicsExportOptions );
 
         // Write the SVG contents indirectly to the supplied file via
@@ -216,57 +231,68 @@ public final class RenderedGraphicsExportPreview extends ExportPreview {
         //  specify North American Letter paper size and then convert.
         //
         // TODO: Expose the Color Mode as a user choice in the Export Options?
-        final boolean fileSaved = SvgExportUtilities
-                .createDocument( tempFile,
-                                 _renderedGraphicsExportSource,
-                                 _renderedGraphicsExportSource.getTitle() );
+        final boolean fileSaved = SvgExportUtilities.createDocument( tempFile,
+                                                                     _renderedGraphicsExportSource,
+                                                                     _renderedGraphicsExportSource.getTitle() );
 
-        return fileSaved ? FileStatus.EXPORTED : FileStatus.NOT_SAVED;
+        return fileSaved
+               ? FileStatus.EXPORTED
+               : FileStatus.NOT_SAVED;
+    }
+
+    @Override
+    public RenderedGraphicsExportOptions getRenderedGraphicsExportOptions() {
+        return _renderedGraphicsExportOptions;
     }
 
     @Override
     protected Button getCancelButton() {
-        final Button cancelButton = LabeledControlFactory.getCancelExportButton();
+        final Button cancelButton
+                = LabeledControlFactory.getCancelExportButton();
         return cancelButton;
     }
 
     @Override
     protected Button getExportButton() {
-        final Button exportButton = LabeledControlFactory.getExportGraphicsButton( 
-                "Export Rendered Graphics Using Contents of Preview" ); //$NON-NLS-1$
+        final Button exportButton
+                = LabeledControlFactory.getExportGraphicsButton(
+                "Export Rendered Graphics Using Contents of Preview" );
+        //$NON-NLS-1$
         return exportButton;
     }
 
     @Override
     protected VBox getExportOptionsBox() {
-        final CheckBox auxiliaryCheckBox = ControlUtilities
-                .getCheckBox( _auxiliaryLabel,
-                              _renderedGraphicsExportOptions.isExportAuxiliaryPanel() );
-        final CheckBox informationTablesCheckBox = ControlUtilities
-                .getCheckBox( _informationTablesLabel,
-                              _renderedGraphicsExportOptions.isExportInformationTables() );
-        final CheckBox optionalItemCheckBox = ControlUtilities
-                .getCheckBox( _optionalItemLabel,
-                              _renderedGraphicsExportOptions.isExportOptionalItem() );
+        final CheckBox auxiliaryCheckBox = ControlUtilities.getCheckBox(
+                _auxiliaryLabel,
+                _renderedGraphicsExportOptions.isExportAuxiliaryPanel() );
+        final CheckBox informationTablesCheckBox = ControlUtilities.getCheckBox(
+                _informationTablesLabel,
+                _renderedGraphicsExportOptions.isExportInformationTables() );
+        final CheckBox optionalItemCheckBox = ControlUtilities.getCheckBox(
+                _optionalItemLabel,
+                _renderedGraphicsExportOptions.isExportOptionalItem() );
 
         // NOTE: We only show Export Options where there is at least one choice
         //  for refined scope. Otherwise the user has nothing to choose.
-        final ObservableList< Node > exportOptionsNodes = FXCollections.observableArrayList();
+        final ObservableList< Node > exportOptionsNodes
+                = FXCollections.observableArrayList();
 
-        final boolean hasAuxiliary = ( _auxiliaryLabel != null )
-                && ( _auxiliaryLabel.trim().length() > 0 );
+        final boolean hasAuxiliary = ( _auxiliaryLabel != null ) && (
+                _auxiliaryLabel.trim().length() > 0 );
         final boolean hasInformationTables = ( _informationTablesLabel != null )
-                && ( _informationTablesLabel.trim().length() > 0 );
-        final boolean hasOptionalItem = ( _optionalItemLabel != null )
-                && ( _optionalItemLabel.trim().length() > 0 );
+                                             && ( _informationTablesLabel.trim()
+                                                                         .length()
+                                                  > 0 );
+        final boolean hasOptionalItem = ( _optionalItemLabel != null ) && (
+                _optionalItemLabel.trim().length() > 0 );
         if ( hasAuxiliary ) {
             exportOptionsNodes.add( auxiliaryCheckBox );
 
             // Bind the Export Auxiliary Radio Button to its associated
             // property.
             auxiliaryCheckBox.selectedProperty()
-                    .bindBidirectional( _renderedGraphicsExportOptions
-                            .exportAuxiliaryPanelProperty() );
+                             .bindBidirectional( _renderedGraphicsExportOptions.exportAuxiliaryPanelProperty() );
         }
         if ( hasInformationTables ) {
             exportOptionsNodes.add( informationTablesCheckBox );
@@ -274,8 +300,8 @@ public final class RenderedGraphicsExportPreview extends ExportPreview {
             // Bind the Export Information Tables Button to its associated
             // property.
             informationTablesCheckBox.selectedProperty()
-                    .bindBidirectional( _renderedGraphicsExportOptions
-                            .exportInformationTablesProperty() );
+                                     .bindBidirectional(
+                                             _renderedGraphicsExportOptions.exportInformationTablesProperty() );
         }
         if ( hasOptionalItem ) {
             exportOptionsNodes.add( optionalItemCheckBox );
@@ -283,8 +309,8 @@ public final class RenderedGraphicsExportPreview extends ExportPreview {
             // Bind the Export Optional Item Radio Button to its associated
             // property.
             optionalItemCheckBox.selectedProperty()
-                    .bindBidirectional( _renderedGraphicsExportOptions
-                            .exportOptionalItemProperty() );
+                                .bindBidirectional(
+                                        _renderedGraphicsExportOptions.exportOptionalItemProperty() );
         }
 
         final VBox exportOptionsBox = new VBox();
@@ -296,19 +322,13 @@ public final class RenderedGraphicsExportPreview extends ExportPreview {
         return exportOptionsBox;
     }
 
-    @SuppressWarnings("nls")
-    private void initStage() {
-        // First have the superclass initialize its content.
-        initStage( "/icons/fatCow/FileExtensionEps16.png", 1000d, 1000d, true, true );
-    }
-
     @Override
-    protected Node loadContent() {
-        // Instantiate and return the custom Content Node.
-        _renderedGraphicsExportPreviewPane = new RenderedGraphicsExportPreviewPane( 
-                clientProperties,
-                _renderedGraphicsExportOptions );
-        return _renderedGraphicsExportPreviewPane;
+    public boolean fileExport() {
+        // Forward to the stock Rendered Graphics Export handler.
+        return fileExportRenderedGraphics( this,
+                                           _defaultDirectory,
+                                           clientProperties,
+                                           getGraphicsCategory() );
     }
 
     @Override
@@ -318,43 +338,38 @@ public final class RenderedGraphicsExportPreview extends ExportPreview {
         super.setForegroundFromBackground( backColor );
 
         // Forward this method to the Rendered Graphics Export Preview Pane.
-        _renderedGraphicsExportPreviewPane.setForegroundFromBackground( backColor );
-    }
-    
-    @Override 
-    public boolean fileExport() {
-        // Forward to the stock Rendered Graphics Export handler.
-        return fileExportRenderedGraphics( this,   
-                                           _defaultDirectory, 
-                                           clientProperties, 
-                                           getGraphicsCategory() );
+        _renderedGraphicsExportPreviewPane.setForegroundFromBackground(
+                backColor );
     }
 
-    @Override 
-    public RenderedGraphicsExportOptions getRenderedGraphicsExportOptions() {
-        return _renderedGraphicsExportOptions;
-    }
-
-    /**
-     * This method sets the container reference for exported graphics.
-     *
-     * @param renderedGraphicsExportSource
-     *            The Swing container for the layout group to be exported
-     */
-    public void setRenderedGraphicsExportSource( 
-            final RenderedGraphicsTitledVectorizationPanel renderedGraphicsExportSource ) {
-        // Cache the Graphics Export Source locally, for reference by file
-        // actions.
-        _renderedGraphicsExportSource = renderedGraphicsExportSource;
-
-        // Forward this method to the Rendered Graphics Export Preview Pane.
+    @Override
+    protected Node loadContent() {
+        // Instantiate and return the custom Content Node.
         _renderedGraphicsExportPreviewPane
-                .setRenderedGraphicsExportSource( renderedGraphicsExportSource );
+                = new RenderedGraphicsExportPreviewPane( clientProperties,
+                                                         _renderedGraphicsExportOptions );
+        return _renderedGraphicsExportPreviewPane;
     }
 
     @Override
     public void updateView() {
         // Forward this method to the Rendered Graphics Export Preview Pane.
         _renderedGraphicsExportPreviewPane.updateExportOptionsView();
+    }
+
+    /**
+     * This method sets the container reference for exported graphics.
+     *
+     * @param renderedGraphicsExportSource The Swing container for the layout
+     *                                     group to be exported
+     */
+    public void setRenderedGraphicsExportSource( final RenderedGraphicsTitledVectorizationPanel renderedGraphicsExportSource ) {
+        // Cache the Graphics Export Source locally, for reference by file
+        // actions.
+        _renderedGraphicsExportSource = renderedGraphicsExportSource;
+
+        // Forward this method to the Rendered Graphics Export Preview Pane.
+        _renderedGraphicsExportPreviewPane.setRenderedGraphicsExportSource(
+                renderedGraphicsExportSource );
     }
 }

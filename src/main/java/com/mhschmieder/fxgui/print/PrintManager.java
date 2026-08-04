@@ -33,6 +33,7 @@ package com.mhschmieder.fxgui.print;
 import com.mhschmieder.fxcontrols.util.MessageFactory;
 import com.mhschmieder.fxgui.dialog.DialogUtilities;
 import com.mhschmieder.jcommons.util.SystemType;
+
 import javafx.print.PrinterJob;
 import javafx.scene.Node;
 import javafx.scene.transform.Scale;
@@ -47,32 +48,34 @@ import javafx.stage.Window;
 public class PrintManager {
 
     /**
-     * Cache the {@link PrinterJob} to maintain it as always-active, as this is
-     * required for Page Setup to work and also is more efficient overall.
-     */
-    protected PrinterJob printerJob;
-    
-    /**
-     * Cache the Window Owner at construction time, as it can't change after that.
+     * Cache the Window Owner at construction time, as it can't change after
+     * that.
      * <p>
      * For most print activity, this is ignored if running on macOS.
      */
     protected final Window windowOwner;
+    /**
+     * Cache the {@link PrinterJob} to maintain it as always-active, as this is
+     * required for Page Setup to work and also is more efficient overall.
+     */
+    protected PrinterJob printerJob;
 
     /**
-     * Constructs a PrintManager instance with a cached Window Owner for dialogs.
+     * Constructs a PrintManager instance with a cached Window Owner for
+     * dialogs.
      * <p>
      * For most print activity, Window Owner is ignored if running on macOS.
-     * 
+     *
      * @param pWindowOwner The {@link Window} owner for any launched dialogs
      */
     public PrintManager( final Window pWindowOwner ) {
-        // NOTE: Nothing else to do as the Printer Job instance is made on demand.
+        // NOTE: Nothing else to do as the Printer Job instance is made on
+        // demand.
         windowOwner = pWindowOwner;
     }
 
     public final void pageSetup( final SystemType systemType ) {
-        final String printCategory = "Page Setup"; 
+        final String printCategory = "Page Setup";
         final boolean printJobVerified = verifyPrinterJob( printCategory );
         if ( !printJobVerified ) {
             return;
@@ -85,10 +88,9 @@ public class PrintManager {
         // NOTE: On Windows, however, there was no side effect in using
         //  this window as the dialog's owner, and not doing so causes it to
         //  go to the upper left of the screen, and thus hard to notice.
-        final Window windowOwnerModified = SystemType.MACOS.equals( 
-                systemType )
-            ? null
-            : windowOwner;
+        final Window windowOwnerModified = SystemType.MACOS.equals( systemType )
+                                           ? null
+                                           : windowOwner;
 
         try {
             // NOTE: This runs internally on a separate synced thread.
@@ -96,6 +98,40 @@ public class PrintManager {
         }
         catch ( final IllegalStateException ise ) {
             ise.printStackTrace();
+        }
+    }
+
+    public final boolean verifyPrinterJob( final String printCategory ) {
+        // NOTE: We need an always active Printer Job in order to support Page
+        //  Setup and Printing. Note that a printer may come on-line while the
+        //  application is running, and that each printer job is good once only.
+        if ( printerJob == null ) {
+            createPrintJob();
+        }
+
+        // If the Printer Job is still null, alert the user that there are no
+        // printers available to the application.
+        if ( printerJob == null ) {
+            final String noPrinterAvailableErrorMessage
+                    = MessageFactory.getNoPrinterAvailableMessage();
+            final String masthead
+                    = MessageFactory.getPrintServicesProblemMasthead();
+            DialogUtilities.showErrorAlert( noPrinterAvailableErrorMessage,
+                                            masthead,
+                                            printCategory );
+
+            return false;
+        }
+
+        return true;
+    }
+
+    public final void createPrintJob() {
+        try {
+            printerJob = PrinterJob.createPrinterJob();
+        }
+        catch ( final SecurityException se ) {
+            se.printStackTrace();
         }
     }
 
@@ -114,10 +150,9 @@ public class PrintManager {
         // NOTE: On Windows, however, there was no side effect in using
         //  this window as the dialog's owner, and not doing so causes it to
         //  go to the upper left of the screen, and thus hard to notice.
-        final Window windowOwnerModified = SystemType.MACOS.equals( 
-                systemType )
-            ? null
-            : windowOwner;
+        final Window windowOwnerModified = SystemType.MACOS.equals( systemType )
+                                           ? null
+                                           : windowOwner;
 
         boolean printConfirmed = false;
         try {
@@ -131,7 +166,7 @@ public class PrintManager {
             if ( printConfirmed ) {
                 // Print the requested page(s).
                 // TODO: Find a way to indicate and generate multiple pages.
-               print( printNode, printCategory );
+                print( printNode, printCategory );
             }
             else {
                 // Make sure the printer doesn't lock out new jobs.
@@ -144,14 +179,14 @@ public class PrintManager {
                              final String printCategory ) {
         // Print the main Content Node, which excludes not only the Frame Title
         // Bar, but also the Menu Bar, Tool Bar, Status Bar, Action Button Bar.
-        final Scale printJobScale = PrintUtilities.getPrintJobScale( printerJob, 
+        final Scale printJobScale = PrintUtilities.getPrintJobScale( printerJob,
                                                                      printNode );
         try {
             // Scale the Print Job to fit the printed page.
             printNode.getTransforms().add( printJobScale );
         }
-        catch ( final UnsupportedOperationException | ClassCastException | NullPointerException
-                | IllegalArgumentException e ) {
+        catch ( final UnsupportedOperationException | ClassCastException |
+                      NullPointerException | IllegalArgumentException e ) {
             e.printStackTrace();
         }
 
@@ -174,28 +209,19 @@ public class PrintManager {
             // permanently scaled on the screen as well.
             printNode.getTransforms().remove( printJobScale );
         }
-        catch ( final UnsupportedOperationException | ClassCastException
-                | NullPointerException e ) {
+        catch ( final UnsupportedOperationException | ClassCastException |
+                      NullPointerException e ) {
             e.printStackTrace();
         }
     }
 
     public final void print( final WebEngine webEngine ) {
-        // NOTE: An application window has no insight into how to layout 
+        // NOTE: An application window has no insight into how to layout
         //  WebView content, so we invoke WebKit's own printing layout engine.
         webEngine.print( printerJob );
 
         // Prepare for the next Print Job so the Printer isn't hung.
         renewPrintJob();
-    }
-
-    public final void createPrintJob() {
-        try {
-             printerJob = PrinterJob.createPrinterJob();
-        }
-        catch ( final SecurityException se ) {
-            se.printStackTrace();
-        }
     }
 
     // Prepare for the next Print Job so the Printer isn't hung.
@@ -206,29 +232,5 @@ public class PrintManager {
 
         // Make a new print job, or we can only print once per session.
         createPrintJob();
-    }
-    
-    public final boolean verifyPrinterJob( final String printCategory ) {
-        // NOTE: We need an always active Printer Job in order to support Page
-        //  Setup and Printing. Note that a printer may come on-line while the
-        //  application is running, and that each printer job is good once only.
-        if ( printerJob == null ) {
-            createPrintJob();
-        }
-
-        // If the Printer Job is still null, alert the user that there are no
-        // printers available to the application.
-        if ( printerJob == null ) {
-            final String noPrinterAvailableErrorMessage = MessageFactory
-                    .getNoPrinterAvailableMessage();
-            final String masthead = MessageFactory.getPrintServicesProblemMasthead();
-            DialogUtilities.showErrorAlert( noPrinterAvailableErrorMessage,
-                                            masthead, 
-                                            printCategory );
-
-            return false;
-        }
-
-        return true;
     }
 }

@@ -30,12 +30,12 @@
  */
 package com.mhschmieder.fxgui.stage;
 
-import javafx.stage.Popup;
-
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.prefs.Preferences;
+
+import javafx.stage.Popup;
 
 /**
  * This is a container class for collections of windows of various types and
@@ -46,13 +46,13 @@ import java.util.prefs.Preferences;
 public final class WindowManager {
 
     // Declare a cache for all Pop-Ups used by the application.
-    public final List< Popup >                  _popups;
+    public final List< Popup > _popups;
 
     // Declare a cache for all Object Property Editors and Insert Dialogs.
     public final List< ObjectPropertiesEditor > _objectPropertiesEditors;
 
     // Declare a cache for all secondary Stages used by the application.
-    public final List< XStage >                 _stages;
+    public final List< XStage > _stages;
 
     public WindowManager() {
         // Always call the superclass constructor first!
@@ -81,7 +81,8 @@ public final class WindowManager {
     public void clearAllPreferences() {
         // Clear User Preferences for all of the Object Properties Editors and
         // Insert Dialogs.
-        _objectPropertiesEditors.stream().forEach( XStage::clearAllPreferences );
+        _objectPropertiesEditors.stream()
+                                .forEach( XStage::clearAllPreferences );
 
         // Clear User Preferences for all of the secondary Stages.
         _stages.stream().forEach( XStage::clearAllPreferences );
@@ -105,11 +106,10 @@ public final class WindowManager {
      * Hide all of the Object Properties Editors and Insert Dialogs.
      */
     public void hideObjectPropertiesEditors() {
-        _objectPropertiesEditors.stream()
-                .forEach( objectPropertiesEditor -> {
-                    objectPropertiesEditor.hideAllWindows();
-                    objectPropertiesEditor.cancel();
-                } );
+        _objectPropertiesEditors.stream().forEach( objectPropertiesEditor -> {
+            objectPropertiesEditor.hideAllWindows();
+            objectPropertiesEditor.cancel();
+        } );
     }
 
     /**
@@ -125,38 +125,40 @@ public final class WindowManager {
      */
     public void loadAllPreferences() {
         // Load the User Preferences for each Object Properties Editor.
-        _objectPropertiesEditors.stream().forEach( 
-                ObjectPropertiesEditor::loadAllPreferences );
+        _objectPropertiesEditors.stream()
+                                .forEach( ObjectPropertiesEditor::loadAllPreferences );
 
         // Load the User Preferences for each individual Stage.
         _stages.stream().forEach( XStage::loadAllPreferences );
     }
 
     /**
-     * This method refreshes the Object Properties Editors when their
-     * properties are changed outside the textField, such as via mouse move/rotate.
+     * This method refreshes the Object Properties Editors when their properties
+     * are changed outside the textField, such as via mouse move/rotate.
      */
     public void refreshObjectPropertiesEditors() {
         // NOTE: There is no recursion here, so it is safe to run in parallel.
-        _objectPropertiesEditors.stream().filter( ObjectPropertiesEditor::isEditMode )
-                .forEach( ObjectPropertiesEditor::updatePositioning );
+        _objectPropertiesEditors.stream()
+                                .filter( ObjectPropertiesEditor::isEditMode )
+                                .forEach( ObjectPropertiesEditor::updatePositioning );
     }
 
     /**
      * This method restores the Window Layout Preferences for all Windows.
      *
-     * @param prefs
-     *            The @Preferences reference for the key/value pairs
+     * @param prefs The @Preferences reference for the key/value pairs
      */
     public void restoreAllWindowLayouts( final Preferences prefs ) {
         // Restore the Object Properties Editors' preferred Layouts.
-        _objectPropertiesEditors.stream().filter( ObjectPropertiesEditor::isResizable )
-                .forEach( objectPropertiesEditor -> objectPropertiesEditor
-                        .restoreAllWindowLayouts( prefs ) );
+        _objectPropertiesEditors.stream()
+                                .filter( ObjectPropertiesEditor::isResizable )
+                                .forEach( objectPropertiesEditor -> objectPropertiesEditor.restoreAllWindowLayouts(
+                                        prefs ) );
 
         // Restore the secondary Stages' preferred Window Layouts.
-        _stages.stream().filter( XStage::isResizable )
-                .forEach( stage -> stage.restoreAllWindowLayouts( prefs ) );
+        _stages.stream()
+               .filter( XStage::isResizable )
+               .forEach( stage -> stage.restoreAllWindowLayouts( prefs ) );
     }
 
     /**
@@ -164,8 +166,8 @@ public final class WindowManager {
      */
     public void saveAllPreferences() {
         // Save the User Preferences for each Object Properties Editor.
-        _objectPropertiesEditors.stream().forEach( 
-                ObjectPropertiesEditor::saveAllPreferences );
+        _objectPropertiesEditors.stream()
+                                .forEach( ObjectPropertiesEditor::saveAllPreferences );
 
         // Save the User Preferences for each individual Stage.
         _stages.stream().forEach( XStage::saveAllPreferences );
@@ -174,36 +176,40 @@ public final class WindowManager {
     /**
      * This method saves the Window Layout Preferences for all Windows.
      *
-     * @param prefs
-     *            The @Preferences reference for the key/value pairs
+     * @param prefs The @Preferences reference for the key/value pairs
      */
     public void saveAllWindowLayouts( final Preferences prefs ) {
         // Save the Object Properties Editors' preferred Window Layouts.
-        _objectPropertiesEditors.stream().forEach( objectPropertiesEditor 
-                -> objectPropertiesEditor.saveAllWindowLayouts( prefs ) );
+        _objectPropertiesEditors.stream()
+                                .forEach( objectPropertiesEditor -> objectPropertiesEditor.saveAllWindowLayouts(
+                                        prefs ) );
 
         // Save the individual stages' preferred Window Layouts.
-        _stages.stream().forEach( stage -> stage.saveAllWindowLayouts( prefs ) );
+        _stages.stream()
+               .forEach( stage -> stage.saveAllWindowLayouts( prefs ) );
     }
 
     /**
      * Update the Frame Titles with the dirty flag, where appropriate.
      *
-     * @param documentFile
-     *            The full file path of the document whose name is to be
-     *            displayed
-     * @param documentModified
-     *            The state of whether the document has been modified since last
-     *            saved
+     * @param documentFile     The full file path of the document whose name is
+     *                         to be displayed
+     * @param documentModified The state of whether the document has been
+     *                         modified since last saved
      */
-    public void updateFrameTitles( final File documentFile, final boolean documentModified ) {
+    public void updateFrameTitles( final File documentFile,
+                                   final boolean documentModified ) {
         // Update the Object Properties Editors' Frame Titles.
-        _objectPropertiesEditors.stream().filter( ObjectPropertiesEditor::isFrameTitleManager )
-                .forEach( objectPropertiesEditor -> objectPropertiesEditor
-                        .updateFrameTitles( documentFile, documentModified ) );
+        _objectPropertiesEditors.stream()
+                                .filter( ObjectPropertiesEditor::isFrameTitleManager )
+                                .forEach( objectPropertiesEditor -> objectPropertiesEditor.updateFrameTitles(
+                                        documentFile,
+                                        documentModified ) );
 
         // Update the Stages' Frame Titles.
-        _stages.stream().filter( XStage::isFrameTitleManager )
-                .forEach( stage -> stage.updateFrameTitles( documentFile, documentModified ) );
+        _stages.stream()
+               .filter( XStage::isFrameTitleManager )
+               .forEach( stage -> stage.updateFrameTitles( documentFile,
+                                                           documentModified ) );
     }
 }

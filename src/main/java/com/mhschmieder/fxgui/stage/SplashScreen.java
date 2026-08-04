@@ -34,6 +34,7 @@ import com.mhschmieder.fxgraphics.image.ImageUtilities;
 import com.mhschmieder.fxgui.util.GuiUtilities;
 import com.mhschmieder.jcommons.branding.ProductBranding;
 import com.mhschmieder.jcommons.util.SystemType;
+
 import javafx.scene.Scene;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -61,7 +62,10 @@ public final class SplashScreen extends Stage {
         initModality( modality );
 
         try {
-            initStage( splashScreenImage, backgroundLoading, systemType, productBranding );
+            initStage( splashScreenImage,
+                       backgroundLoading,
+                       systemType,
+                       productBranding );
         }
         catch ( final Exception ex ) {
             ex.printStackTrace();
@@ -74,7 +78,8 @@ public final class SplashScreen extends Stage {
                               final ProductBranding productBranding ) {
         // Place the Splash Screen Image in an ImageView container, so it can be
         // displayed and scaled.
-        _splashImageView = ImageUtilities.getImageView( splashScreenImage, backgroundLoading );
+        _splashImageView = ImageUtilities.getImageView( splashScreenImage,
+                                                        backgroundLoading );
 
         // Create a root pane to host the Splash Screen Image.
         final BorderPane root = new BorderPane();
@@ -102,5 +107,4 @@ public final class SplashScreen extends Stage {
             hide();
         } );
     }
-
 }

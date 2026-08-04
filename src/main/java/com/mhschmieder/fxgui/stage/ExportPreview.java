@@ -34,6 +34,7 @@ import com.mhschmieder.fxcontrols.action.BackgroundColorChoices;
 import com.mhschmieder.fxgraphics.paint.ColorConstants;
 import com.mhschmieder.jcommons.branding.ProductBranding;
 import com.mhschmieder.jcommons.util.ClientProperties;
+
 import javafx.collections.ObservableList;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -58,11 +59,11 @@ public abstract class ExportPreview extends XStage {
     protected ButtonBar _actionButtonBar;
 
     // Declare the main action buttons.
-    protected Button    _exportButton;
-    protected Button    _cancelButton;
+    protected Button _exportButton;
+    protected Button _cancelButton;
 
     // For the sake of post-processing, keep track of user cancellation.
-    private boolean     _canceled;
+    private boolean _canceled;
 
     public ExportPreview( final Modality modality,
                           final String title,
@@ -96,7 +97,10 @@ public abstract class ExportPreview extends XStage {
                                  final boolean resizable,
                                  final boolean hasExportOptions ) {
         // First have the superclass initialize its content.
-        initStage( jarRelativeIconFilename, defaultWidth, defaultHeight, resizable );
+        initStage( jarRelativeIconFilename,
+                   defaultWidth,
+                   defaultHeight,
+                   resizable );
 
         // Build the main action button bar, and register its callbacks.
         // NOTE: We can customize the text, but are taking advantage of a
@@ -122,7 +126,8 @@ public abstract class ExportPreview extends XStage {
         // _exportButton.setDefaultButton( true );
 
         // Add the Export Preview's Action Buttons to the Action Button Bar.
-        final ObservableList< Node > actionButtons = _actionButtonBar.getButtons();
+        final ObservableList< Node > actionButtons
+                = _actionButtonBar.getButtons();
         actionButtons.add( _exportButton );
         actionButtons.add( _cancelButton );
 
@@ -155,7 +160,8 @@ public abstract class ExportPreview extends XStage {
         // Detect the ENTER key while the Export Button has focus, and use it to
         // trigger its action (standard expected behavior).
         _exportButton.setOnKeyReleased( keyEvent -> {
-            final KeyCombination keyCombo = new KeyCodeCombination( KeyCode.ENTER );
+            final KeyCombination keyCombo
+                    = new KeyCodeCombination( KeyCode.ENTER );
             if ( keyCombo.match( keyEvent ) ) {
                 // Move the focus one level up, as the File Chooser does not
                 // consume its key events, and therefore can re-trigger this
@@ -173,7 +179,8 @@ public abstract class ExportPreview extends XStage {
         // Detect the ENTER key while the Cancel Button has focus, and use it to
         // trigger its action (standard expected behavior).
         _cancelButton.setOnKeyReleased( keyEvent -> {
-            final KeyCombination keyCombo = new KeyCodeCombination( KeyCode.ENTER );
+            final KeyCombination keyCombo
+                    = new KeyCodeCombination( KeyCode.ENTER );
             if ( keyCombo.match( keyEvent ) ) {
                 // Trigger the Cancel action.
                 cancel();
@@ -203,14 +210,6 @@ public abstract class ExportPreview extends XStage {
         return null;
     }
 
-    public final boolean isCanceled() {
-        return _canceled;
-    }
-
-    public final void setCanceled( final boolean canceled ) {
-        _canceled = canceled;
-    }
-
     /**
      * Cancel Button callback.
      */
@@ -238,17 +237,24 @@ public abstract class ExportPreview extends XStage {
             setVisible( false, false );
         }
     }
-    
+
     /*
      * The File Export method must be overridden by subclasses, to take care
      * of domain-specific export actions, likely using FileActionHandler.
      */
     protected abstract boolean fileExport();
-    
+
+    public final boolean isCanceled() {
+        return _canceled;
+    }
+
+    public final void setCanceled( final boolean canceled ) {
+        _canceled = canceled;
+    }
+
     @Override
     public String getDefaultBackgroundColor() {
-        return BackgroundColorChoices.getBackgroundColorName(
-                ColorConstants.WINDOW_BACKGROUND_COLOR );
+        return BackgroundColorChoices.getBackgroundColorName( ColorConstants.WINDOW_BACKGROUND_COLOR );
     }
 
     // Common open method for opening an textField in modal Insert Mode.

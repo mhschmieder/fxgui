@@ -41,11 +41,17 @@ import javafx.scene.layout.HBox;
  * copy/paste code for layout construction and styling that should be maintained
  * consistently across different GUI hierarchies and custom derived classes.
  *
- * @version 1.0
- *
  * @author Mark Schmieder
+ * @version 1.0
  */
 public final class LayoutFactory {
+
+    /**
+     * The default constructor is disabled, as this is a static utilities
+     * class.
+     */
+    private LayoutFactory() {
+    }
 
     /**
      * This method serves merely as a sanity check that the Maven integration
@@ -55,10 +61,8 @@ public final class LayoutFactory {
      * complex projects with dependencies (this project is quite simple and has
      * no dependencies at this time, until more functionality is added).
      *
-     * @param args
-     *            The command-line arguments for executing this class as the
-     *            main entry point for an application
-     *
+     * @param args The command-line arguments for executing this class as the
+     *             main entry point for an application
      * @since 1.0
      */
     public static void main( final String[] args ) {
@@ -66,27 +70,16 @@ public final class LayoutFactory {
     }
 
     /**
-     * The default constructor is disabled, as this is a static utilities class.
-     */
-    private LayoutFactory() {}
-
-    /**
      * Returns a {@link GridPane} with no initial contents, but with most layout
      * styling initialized to match the passed parameters.
      *
-     * @param alignment
-     *            The alignment of the grid within its width and height
-     * @param padding
-     *            The top, left, bottom, and right padding around the region's
-     *            content
-     * @param hgap
-     *            The width of the horizontal gaps between columns
-     * @param vgap
-     *            The height of the vertical gaps between rows
+     * @param alignment The alignment of the grid within its width and height
+     * @param padding   The top, left, bottom, and right padding around the
+     *                  region's content
+     * @param hgap      The width of the horizontal gaps between columns
+     * @param vgap      The height of the vertical gaps between rows
      * @return A {@link GridPane} with no initial contents, but with most layout
      *         styling initialized to match the passed parameters
-     *
-     * @version 1.0
      */
     public static GridPane makeGridPane( final Pos alignment,
                                          final Insets padding,

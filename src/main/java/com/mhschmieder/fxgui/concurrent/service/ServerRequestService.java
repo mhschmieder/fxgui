@@ -32,10 +32,11 @@ package com.mhschmieder.fxgui.concurrent.service;
 
 import com.mhschmieder.jcommons.net.HttpServletRequestProperties;
 import com.mhschmieder.jcommons.util.ClientProperties;
-import javafx.concurrent.Service;
 
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+
+import javafx.concurrent.Service;
 
 /**
  * Abstract base class for service commonality between server requests.

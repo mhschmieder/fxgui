@@ -36,12 +36,13 @@ import com.mhschmieder.jcommons.util.ClientProperties;
 import com.mhschmieder.jgraphics.input.ScrollingSensitivity;
 import com.mhschmieder.jphysics.measure.AngleUnit;
 import com.mhschmieder.jphysics.measure.DistanceUnit;
+
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 
 public class PolarPositionPane extends BorderPane {
 
-    public AnglePane      _anglePane;
+    public AnglePane _anglePane;
     public DistanceEditor _distanceEditor;
 
     public PolarPositionPane( final ClientProperties clientProperties ) {
@@ -56,24 +57,29 @@ public class PolarPositionPane extends BorderPane {
         }
     }
 
+    private final void initPane( final ClientProperties clientProperties ) {
+        _anglePane = new AnglePane( clientProperties,
+                                    "Angle",
+                                    true ); //$NON-NLS-1$
+
+        _distanceEditor = new DistanceEditor( clientProperties,
+                                              "0",
+                                              null ); //$NON-NLS-1$
+
+        final HBox distanceEditorPane = GuiUtilities.getLabeledTextFieldPane(
+                "Radial Distance", //$NON-NLS-1$
+                _distanceEditor );
+
+        setTop( _anglePane );
+        setBottom( distanceEditorPane );
+    }
+
     public final double getDistance() {
         return _distanceEditor.getDistanceMeters();
     }
 
     public final double getRotationAngle() {
         return _anglePane.getAngleDegrees();
-    }
-
-    private final void initPane( final ClientProperties clientProperties ) {
-        _anglePane = new AnglePane( clientProperties, "Angle", true ); //$NON-NLS-1$
-
-        _distanceEditor = new DistanceEditor( clientProperties, "0", null ); //$NON-NLS-1$
-
-        final HBox distanceEditorPane = GuiUtilities.getLabeledTextFieldPane( "Radial Distance", //$NON-NLS-1$
-                                                                              _distanceEditor );
-
-        setTop( _anglePane );
-        setBottom( distanceEditorPane );
     }
 
     public final void saveEdits() {
@@ -86,7 +92,8 @@ public class PolarPositionPane extends BorderPane {
         _anglePane.setGesturesEnabled( gesturesEnabled );
     }
 
-    public final void setPolarPosition( final double rotationAngle, final double distance ) {
+    public final void setPolarPosition( final double rotationAngle,
+                                        final double distance ) {
         // Forward this method to the subsidiary components.
         _anglePane.setAngleDegrees( rotationAngle );
         _distanceEditor.setDistanceMeters( distance );
@@ -95,8 +102,7 @@ public class PolarPositionPane extends BorderPane {
     /**
      * Set the new Scrolling Sensitivity for all of the sliders.
      *
-     * @param scrollingSensitivity
-     *            The sensitivity of the mouse scroll wheel
+     * @param scrollingSensitivity The sensitivity of the mouse scroll wheel
      */
     public final void setScrollingSensitivity( final ScrollingSensitivity scrollingSensitivity ) {
         // Forward this method to the Angle Pane.
@@ -117,5 +123,4 @@ public class PolarPositionPane extends BorderPane {
         // Forward this method to the subcomponents.
         _distanceEditor.updateDistanceUnit( distanceUnit );
     }
-
 }

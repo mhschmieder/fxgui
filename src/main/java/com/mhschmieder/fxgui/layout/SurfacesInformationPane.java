@@ -36,6 +36,7 @@ import com.mhschmieder.fxcontrols.util.RegionUtilities;
 import com.mhschmieder.fxgraphics.paint.ColorUtilities;
 import com.mhschmieder.fxgui.util.GuiUtilities;
 import com.mhschmieder.jcommons.util.ClientProperties;
+
 import javafx.collections.ObservableList;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -49,18 +50,27 @@ import javafx.scene.paint.Color;
  */
 public final class SurfacesInformationPane extends VBox {
 
-    public static final String  SURFACE_LABEL_LABEL    = "Surface";                             //$NON-NLS-1$
+    public static final String SURFACE_LABEL_LABEL = "Surface";
+    //$NON-NLS-1$
 
     // Declare default formatted data for each label.
-    private static final String SURFACE1_LABEL_DEFAULT = SURFACE_LABEL_LABEL + " 1 = Bypassed"; //$NON-NLS-1$
-    private static final String SURFACE2_LABEL_DEFAULT = SURFACE_LABEL_LABEL + " 2 = Bypassed"; //$NON-NLS-1$
-    private static final String SURFACE3_LABEL_DEFAULT = SURFACE_LABEL_LABEL + " 3 = Bypassed"; //$NON-NLS-1$
-    private static final String SURFACE4_LABEL_DEFAULT = SURFACE_LABEL_LABEL + " 4 = Bypassed"; //$NON-NLS-1$
+    private static final String SURFACE1_LABEL_DEFAULT = SURFACE_LABEL_LABEL
+                                                         + " 1 = Bypassed";
+    //$NON-NLS-1$
+    private static final String SURFACE2_LABEL_DEFAULT = SURFACE_LABEL_LABEL
+                                                         + " 2 = Bypassed";
+    //$NON-NLS-1$
+    private static final String SURFACE3_LABEL_DEFAULT = SURFACE_LABEL_LABEL
+                                                         + " 3 = Bypassed";
+    //$NON-NLS-1$
+    private static final String SURFACE4_LABEL_DEFAULT = SURFACE_LABEL_LABEL
+                                                         + " 4 = Bypassed";
+    //$NON-NLS-1$
 
-    private Label               _surface1Label;
-    private Label               _surface2Label;
-    private Label               _surface3Label;
-    private Label               _surface4Label;
+    private Label _surface1Label;
+    private Label _surface2Label;
+    private Label _surface3Label;
+    private Label _surface4Label;
 
     // Keep a cached copy of the Region2D reference, as it is global per
     // session and can be used to update status and Surface Materials.
@@ -84,7 +94,10 @@ public final class SurfacesInformationPane extends VBox {
         _surface3Label = GuiUtilities.getStatusLabel( SURFACE3_LABEL_DEFAULT );
         _surface4Label = GuiUtilities.getStatusLabel( SURFACE4_LABEL_DEFAULT );
 
-        getChildren().addAll( _surface1Label, _surface2Label, _surface3Label, _surface4Label );
+        getChildren().addAll( _surface1Label,
+                              _surface2Label,
+                              _surface3Label,
+                              _surface4Label );
         setAlignment( Pos.CENTER_LEFT );
 
         setPadding( new Insets( 6.0d ) );
@@ -99,10 +112,12 @@ public final class SurfacesInformationPane extends VBox {
 
     public void setForegroundFromBackground( final Color backColor ) {
         // Set the new Background first, so it sets context for CSS derivations.
-        final Background background = RegionUtilities.makeRegionBackground( backColor );
+        final Background background = RegionUtilities.makeRegionBackground(
+                backColor );
         setBackground( background );
 
-        final Color foregroundColor = ColorUtilities.getForegroundFromBackground( backColor );
+        final Color foregroundColor
+                = ColorUtilities.getForegroundFromBackground( backColor );
         _surface1Label.setTextFill( foregroundColor );
         _surface2Label.setTextFill( foregroundColor );
         _surface3Label.setTextFill( foregroundColor );
@@ -117,17 +132,13 @@ public final class SurfacesInformationPane extends VBox {
 
         // Load the invalidation listener for the "Surface Name Changed"
         // binding.
-        _region2DProperties.surfaceNameChangedProperty().addListener(
-            invalidationListener -> updateLabels() );
+        _region2DProperties.surfaceNameChangedProperty()
+                           .addListener( invalidationListener -> updateLabels() );
 
         // Load the invalidation listener for the "Surface Value Changed"
         // binding.
-        _region2DProperties.surfaceValueChangedProperty().addListener(
-            invalidationListener -> updateLabels() );
-    }
-
-    public void updateView() {
-        updateLabels();
+        _region2DProperties.surfaceValueChangedProperty()
+                           .addListener( invalidationListener -> updateLabels() );
     }
 
     // Update the cached Surface Materials and Bypassed/Enabled status.
@@ -138,37 +149,64 @@ public final class SurfacesInformationPane extends VBox {
         final SurfaceProperties surface1Properties
                 = numberedSurfaceProperties.get( 0 );
         final String sSurface1Status = surface1Properties.isSurfaceBypassed()
-            ? "Bypassed" //$NON-NLS-1$
-            : surface1Properties.getSurfaceMaterial().abbreviation();
-        final String surface1Label = "Surface " + surface1Properties.getSurfaceNumber() + ": " //$NON-NLS-1$ //$NON-NLS-2$
-                + surface1Properties.getSurfaceName() + " = " + sSurface1Status; //$NON-NLS-1$
+                                       ? "Bypassed"
+                                       //$NON-NLS-1$
+                                       : surface1Properties.getSurfaceMaterial()
+                                                           .abbreviation();
+        final String surface1Label = "Surface "
+                                     + surface1Properties.getSurfaceNumber()
+                                     + ": " //$NON-NLS-1$ //$NON-NLS-2$
+                                     + surface1Properties.getSurfaceName()
+                                     + " = " + sSurface1Status; //$NON-NLS-1$
 
-        final SurfaceProperties surface2Properties = numberedSurfaceProperties.get( 1 );
+        final SurfaceProperties surface2Properties
+                = numberedSurfaceProperties.get( 1 );
         final String sSurface2Status = surface2Properties.isSurfaceBypassed()
-            ? "Bypassed" //$NON-NLS-1$
-            : surface2Properties.getSurfaceMaterial().abbreviation();
-        final String surface2Label = "Surface " + surface2Properties.getSurfaceNumber() + ": " //$NON-NLS-1$ //$NON-NLS-2$
-                + surface2Properties.getSurfaceName() + " = " + sSurface2Status; //$NON-NLS-1$
+                                       ? "Bypassed"
+                                       //$NON-NLS-1$
+                                       : surface2Properties.getSurfaceMaterial()
+                                                           .abbreviation();
+        final String surface2Label = "Surface "
+                                     + surface2Properties.getSurfaceNumber()
+                                     + ": " //$NON-NLS-1$ //$NON-NLS-2$
+                                     + surface2Properties.getSurfaceName()
+                                     + " = " + sSurface2Status; //$NON-NLS-1$
 
-        final SurfaceProperties surface3Properties = numberedSurfaceProperties.get( 2 );
+        final SurfaceProperties surface3Properties
+                = numberedSurfaceProperties.get( 2 );
         final String sSurface3Status = surface3Properties.isSurfaceBypassed()
-            ? "Bypassed" //$NON-NLS-1$
-            : surface3Properties.getSurfaceMaterial().abbreviation();
-        final String surface3Label = "Surface " + surface3Properties.getSurfaceNumber() + ": " //$NON-NLS-1$ //$NON-NLS-2$
-                + surface3Properties.getSurfaceName() + " = " + sSurface3Status; //$NON-NLS-1$
+                                       ? "Bypassed"
+                                       //$NON-NLS-1$
+                                       : surface3Properties.getSurfaceMaterial()
+                                                           .abbreviation();
+        final String surface3Label = "Surface "
+                                     + surface3Properties.getSurfaceNumber()
+                                     + ": " //$NON-NLS-1$ //$NON-NLS-2$
+                                     + surface3Properties.getSurfaceName()
+                                     + " = " + sSurface3Status; //$NON-NLS-1$
 
-        final SurfaceProperties surface4Properties = numberedSurfaceProperties.get( 3 );
+        final SurfaceProperties surface4Properties
+                = numberedSurfaceProperties.get( 3 );
         final String sSurface4Status = surface4Properties.isSurfaceBypassed()
-            ? "Bypassed" //$NON-NLS-1$
-            : surface4Properties.getSurfaceMaterial().abbreviation();
-        final String surface4Label = "Surface " + surface4Properties.getSurfaceNumber() + ": " //$NON-NLS-1$ //$NON-NLS-2$
-                + surface4Properties.getSurfaceName() + " = " + sSurface4Status; //$NON-NLS-1$
+                                       ? "Bypassed"
+                                       //$NON-NLS-1$
+                                       : surface4Properties.getSurfaceMaterial()
+                                                           .abbreviation();
+        final String surface4Label = "Surface "
+                                     + surface4Properties.getSurfaceNumber()
+                                     + ": " //$NON-NLS-1$ //$NON-NLS-2$
+                                     + surface4Properties.getSurfaceName()
+                                     + " = " + sSurface4Status; //$NON-NLS-1$
 
         // Update the associated labels in the information pane.
         _surface1Label.setText( surface1Label );
         _surface2Label.setText( surface2Label );
         _surface3Label.setText( surface3Label );
         _surface4Label.setText( surface4Label );
+    }
+
+    public void updateView() {
+        updateLabels();
     }
 
     public String[] getSurfaceInformation() {

@@ -39,24 +39,27 @@ import com.mhschmieder.jcommons.util.ClientProperties;
 import com.mhschmieder.jgraphics.input.ScrollingSensitivity;
 import com.mhschmieder.jphysics.measure.AngleUnit;
 import com.mhschmieder.jphysics.measure.DistanceUnit;
+
+import java.util.List;
+
 import javafx.collections.ObservableList;
 import javafx.geometry.Insets;
 import javafx.scene.Node;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 
-import java.util.List;
-
 public final class CartesianLinePane extends VBox {
 
     public LinearObjectPropertiesPane _linearObjectPropertiesPane;
     public CartesianLinePlacementPane _cartesianLinePlacementPane;
-
-    /** Layer Collection reference. */
+    /**
+     * Client Properties (System Type, Locale, etc.).
+     */
+    public ClientProperties _clientProperties;
+    /**
+     * Layer Collection reference.
+     */
     private List< Layer > _layerCollection;
-
-    /** Client Properties (System Type, Locale, etc.). */
-    public ClientProperties                  _clientProperties;
 
     public CartesianLinePane( final ClientProperties pClientProperties,
                               final GraphicalObjectCollection< CartesianLine > cartesianLineCollection,
@@ -73,9 +76,9 @@ public final class CartesianLinePane extends VBox {
         _layerCollection = LayerManagement.makeLayerCollection();
 
         try {
-            initPane( cartesianLineCollection, 
+            initPane( cartesianLineCollection,
                       cartesianLineType,
-                      projectorType, 
+                      projectorType,
                       projectionZonesType,
                       projectionZonesUsageContext );
         }
@@ -84,54 +87,45 @@ public final class CartesianLinePane extends VBox {
         }
     }
 
-    public String getNewCartesianLineLabelDefault() {
-        // Forward this method to the Linear Object Properties Pane.
-        return _linearObjectPropertiesPane.getNewLinearObjectLabelDefault();
-    }
-
-    public String getUniqueCartesianLineLabel( final String cartesianLineLabelCandidate ) {
-        // Forward this method to the Linear Object Properties Pane.
-        return _linearObjectPropertiesPane
-                .getUniqueLinearObjectLabel( cartesianLineLabelCandidate );
-    }
-
-    public LinearObjectProperties getLinearObjectProperties() {
-        // Forward this method to the Linear Object Properties Pane.
-        return _linearObjectPropertiesPane.getLinearObjectProperties();
-    }
-
     private void initPane( final GraphicalObjectCollection< CartesianLine > cartesianLineCollection,
                            final String cartesianLineType,
                            final String projectorType,
                            final String projectionZonesType,
                            final String projectionZonesUsageContext ) {
         final String cartesianLineLabelDefault = cartesianLineType;
-        _linearObjectPropertiesPane = new LinearObjectPropertiesPane( _clientProperties,
-                                                                      cartesianLineLabelDefault,
-                                                                      cartesianLineCollection,
-                                                                      projectorType,
-                                                                      projectionZonesType,
-                                                                      projectionZonesUsageContext );
+        _linearObjectPropertiesPane = new LinearObjectPropertiesPane(
+                _clientProperties,
+                cartesianLineLabelDefault,
+                cartesianLineCollection,
+                projectorType,
+                projectionZonesType,
+                projectionZonesUsageContext );
 
-        _cartesianLinePlacementPane = new CartesianLinePlacementPane( _clientProperties );
+        _cartesianLinePlacementPane = new CartesianLinePlacementPane(
+                _clientProperties );
 
         setSpacing( 12 );
         setPadding( new Insets( 6 ) );
 
         final ObservableList< Node > layout = getChildren();
-        layout.addAll( _linearObjectPropertiesPane, _cartesianLinePlacementPane );
+        layout.addAll( _linearObjectPropertiesPane,
+                       _cartesianLinePlacementPane );
 
         // Make sure the Placement Pane always gets grow priority.
         VBox.setVgrow( _cartesianLinePlacementPane, Priority.ALWAYS );
 
         // If the Projector status changes in any way, update the Preview.
-        _linearObjectPropertiesPane._linearObjectPropertiesControls._useAsProjectorCheckBox
-                .selectedProperty().addListener( ( observable, oldValue, newValue ) -> {
-                    final CartesianLine cartesianLine = new CartesianLine();
-                    updateCartesianLineModel( cartesianLine );
-                } );
-        _linearObjectPropertiesPane._linearObjectPropertiesControls._projectionZonesSelector
-                .setOnAction( evt -> {
+        _linearObjectPropertiesPane._linearObjectPropertiesControls._useAsProjectorCheckBox.selectedProperty()
+                                                                                           .addListener(
+                                                                                                   ( observable, oldValue, newValue ) -> {
+                                                                                                       final CartesianLine
+                                                                                                               cartesianLine
+                                                                                                               = new CartesianLine();
+                                                                                                       updateCartesianLineModel(
+                                                                                                               cartesianLine );
+                                                                                                   } );
+        _linearObjectPropertiesPane._linearObjectPropertiesControls._projectionZonesSelector.setOnAction(
+                evt -> {
                     final CartesianLine cartesianLine = new CartesianLine();
                     updateCartesianLineModel( cartesianLine );
                 } );
@@ -144,52 +138,129 @@ public final class CartesianLinePane extends VBox {
         // until we move the coordinate system transform code to a utility
         // class, so that we don't prematurely apply changes and prevent
         // reversion to a previous state.
-        _cartesianLinePlacementPane._startCartesianPositionPane._xPositionEditor
-                .focusedProperty().addListener( ( observable, oldValue, newValue ) -> {
-                    final CartesianLine cartesianLine = new CartesianLine();
-                    updateCartesianLineModel( cartesianLine );
-                } );
-        _cartesianLinePlacementPane._startCartesianPositionPane._yPositionEditor
-                .focusedProperty().addListener( ( observable, oldValue, newValue ) -> {
-                    final CartesianLine cartesianLine = new CartesianLine();
-                    updateCartesianLineModel( cartesianLine );
-                } );
-        _cartesianLinePlacementPane._endPositionPane._cartesianPositionPane._xPositionEditor
-                .focusedProperty().addListener( ( observable, oldValue, newValue ) -> {
-                    final CartesianLine cartesianLine = new CartesianLine();
-                    updateCartesianLineModel( cartesianLine );
-                    updateCartesianLineView( cartesianLine );
-                } );
-        _cartesianLinePlacementPane._endPositionPane._cartesianPositionPane._yPositionEditor
-                .focusedProperty().addListener( ( observable, oldValue, newValue ) -> {
-                    final CartesianLine cartesianLine = new CartesianLine();
-                    updateCartesianLineModel( cartesianLine );
-                    updateCartesianLineView( cartesianLine );
-                } );
-        _cartesianLinePlacementPane._endPositionPane._polarPositionPane._anglePane._angleEditor
-                .focusedProperty().addListener( ( observable, oldValue, newValue ) -> {
-                    final CartesianLine cartesianLine = new CartesianLine();
-                    updateCartesianLineModel( cartesianLine );
-                    updateCartesianLineView( cartesianLine );
-                } );
-        _cartesianLinePlacementPane._endPositionPane._polarPositionPane._anglePane._angleSlider
-                .valueProperty().addListener( ( observable, oldValue, newValue ) -> {
-                    final CartesianLine cartesianLine = new CartesianLine();
-                    updateCartesianLineModel( cartesianLine );
-                    updateCartesianLineView( cartesianLine );
-                } );
-        _cartesianLinePlacementPane._endPositionPane._polarPositionPane._distanceEditor
-                .focusedProperty().addListener( ( observable, oldValue, newValue ) -> {
-                    final CartesianLine cartesianLine = new CartesianLine();
-                    updateCartesianLineModel( cartesianLine );
-                    updateCartesianLineView( cartesianLine );
-                } );
+        _cartesianLinePlacementPane._startCartesianPositionPane._xPositionEditor.focusedProperty()
+                                                                                .addListener(
+                                                                                        ( observable, oldValue, newValue ) -> {
+                                                                                            final CartesianLine
+                                                                                                    cartesianLine
+                                                                                                    = new CartesianLine();
+                                                                                            updateCartesianLineModel(
+                                                                                                    cartesianLine );
+                                                                                        } );
+        _cartesianLinePlacementPane._startCartesianPositionPane._yPositionEditor.focusedProperty()
+                                                                                .addListener(
+                                                                                        ( observable, oldValue, newValue ) -> {
+                                                                                            final CartesianLine
+                                                                                                    cartesianLine
+                                                                                                    = new CartesianLine();
+                                                                                            updateCartesianLineModel(
+                                                                                                    cartesianLine );
+                                                                                        } );
+        _cartesianLinePlacementPane._endPositionPane._cartesianPositionPane._xPositionEditor.focusedProperty()
+                                                                                            .addListener(
+                                                                                                    ( observable, oldValue, newValue ) -> {
+                                                                                                        final CartesianLine
+                                                                                                                cartesianLine
+                                                                                                                = new CartesianLine();
+                                                                                                        updateCartesianLineModel(
+                                                                                                                cartesianLine );
+                                                                                                        updateCartesianLineView(
+                                                                                                                cartesianLine );
+                                                                                                    } );
+        _cartesianLinePlacementPane._endPositionPane._cartesianPositionPane._yPositionEditor.focusedProperty()
+                                                                                            .addListener(
+                                                                                                    ( observable, oldValue, newValue ) -> {
+                                                                                                        final CartesianLine
+                                                                                                                cartesianLine
+                                                                                                                = new CartesianLine();
+                                                                                                        updateCartesianLineModel(
+                                                                                                                cartesianLine );
+                                                                                                        updateCartesianLineView(
+                                                                                                                cartesianLine );
+                                                                                                    } );
+        _cartesianLinePlacementPane._endPositionPane._polarPositionPane._anglePane._angleEditor.focusedProperty()
+                                                                                               .addListener(
+                                                                                                       ( observable, oldValue, newValue ) -> {
+                                                                                                           final CartesianLine
+                                                                                                                   cartesianLine
+                                                                                                                   = new CartesianLine();
+                                                                                                           updateCartesianLineModel(
+                                                                                                                   cartesianLine );
+                                                                                                           updateCartesianLineView(
+                                                                                                                   cartesianLine );
+                                                                                                       } );
+        _cartesianLinePlacementPane._endPositionPane._polarPositionPane._anglePane._angleSlider.valueProperty()
+                                                                                               .addListener(
+                                                                                                       ( observable, oldValue, newValue ) -> {
+                                                                                                           final CartesianLine
+                                                                                                                   cartesianLine
+                                                                                                                   = new CartesianLine();
+                                                                                                           updateCartesianLineModel(
+                                                                                                                   cartesianLine );
+                                                                                                           updateCartesianLineView(
+                                                                                                                   cartesianLine );
+                                                                                                       } );
+        _cartesianLinePlacementPane._endPositionPane._polarPositionPane._distanceEditor.focusedProperty()
+                                                                                       .addListener(
+                                                                                               ( observable, oldValue, newValue ) -> {
+                                                                                                   final CartesianLine
+                                                                                                           cartesianLine
+                                                                                                           = new CartesianLine();
+                                                                                                   updateCartesianLineModel(
+                                                                                                           cartesianLine );
+                                                                                                   updateCartesianLineView(
+                                                                                                           cartesianLine );
+                                                                                               } );
+    }
+
+    public void updateCartesianLineModel( final CartesianLine cartesianLine ) {
+        // Get all of the Linear Object properties.
+        final LinearObjectProperties linearObjectProperties
+                = getLinearObjectProperties();
+        cartesianLine.setLabel( linearObjectProperties.getLabel() );
+
+        // Cache the current Layer selection via Layer Name lookup.
+        final String layerName = linearObjectProperties.getLayerName();
+        final Layer layer = LayerManagement.getLayerByName( _layerCollection,
+                                                            layerName );
+        cartesianLine.setLayer( layer );
+
+        // Update the Projector values.
+        cartesianLine.setUseAsProjector( linearObjectProperties.isUseAsProjector() );
+        cartesianLine.setNumberOfProjectionZones( linearObjectProperties.getNumberOfProjectionZones() );
+
+        // Forward this method to the Cartesian Line Placement Pane.
+        _cartesianLinePlacementPane.updateCartesianLineModel( cartesianLine );
+    }
+
+    public LinearObjectProperties getLinearObjectProperties() {
+        // Forward this method to the Linear Object Properties Pane.
+        return _linearObjectPropertiesPane.getLinearObjectProperties();
+    }
+
+    public void updateCartesianLineView( final CartesianLine cartesianLine ) {
+        // Forward this method to the Linear Object Properties Pane.
+        _linearObjectPropertiesPane.updateLinearObjectView( cartesianLine );
+
+        // Forward this method to the Cartesian Line Placement Pane.
+        _cartesianLinePlacementPane.updateCartesianLineView( cartesianLine );
+    }
+
+    public String getNewCartesianLineLabelDefault() {
+        // Forward this method to the Linear Object Properties Pane.
+        return _linearObjectPropertiesPane.getNewLinearObjectLabelDefault();
+    }
+
+    public String getUniqueCartesianLineLabel( final String cartesianLineLabelCandidate ) {
+        // Forward this method to the Linear Object Properties Pane.
+        return _linearObjectPropertiesPane.getUniqueLinearObjectLabel(
+                cartesianLineLabelCandidate );
     }
 
     public boolean isCartesianLineLabelUnique( final String cartesianLineLabelCandidate ) {
         // Forward this method to the Linear Object Properties Pane.
-        return _linearObjectPropertiesPane
-                .isLinearObjectLabelUnique( cartesianLineLabelCandidate );
+        return _linearObjectPropertiesPane.isLinearObjectLabelUnique(
+                cartesianLineLabelCandidate );
     }
 
     public void saveEdits() {
@@ -213,45 +284,17 @@ public final class CartesianLinePane extends VBox {
     /**
      * Set the new Scrolling Sensitivity for all of the sliders.
      *
-     * @param scrollingSensitivity
-     *            The sensitivity of the mouse scroll wheel
+     * @param scrollingSensitivity The sensitivity of the mouse scroll wheel
      */
     public void setScrollingSensitivity( final ScrollingSensitivity scrollingSensitivity ) {
         // Forward this method to the Cartesian Line Placement Pane.
-        _cartesianLinePlacementPane.setScrollingSensitivity( scrollingSensitivity );
-    }
-
-    public void updateCartesianLineModel( final CartesianLine cartesianLine ) {
-        // Get all of the Linear Object properties.
-        final LinearObjectProperties linearObjectProperties = getLinearObjectProperties();
-        cartesianLine.setLabel( linearObjectProperties.getLabel() );
-
-        // Cache the current Layer selection via Layer Name lookup.
-        final String layerName = linearObjectProperties.getLayerName();
-        final Layer layer = LayerManagement.getLayerByName(
-                _layerCollection, layerName );
-        cartesianLine.setLayer( layer );
-
-        // Update the Projector values.
-        cartesianLine.setUseAsProjector( linearObjectProperties.isUseAsProjector() );
-        cartesianLine
-                .setNumberOfProjectionZones( linearObjectProperties.getNumberOfProjectionZones() );
-
-        // Forward this method to the Cartesian Line Placement Pane.
-        _cartesianLinePlacementPane.updateCartesianLineModel( cartesianLine );
+        _cartesianLinePlacementPane.setScrollingSensitivity(
+                scrollingSensitivity );
     }
 
     public void updateLayerNameSelection( final CartesianLine cartesianLine ) {
         // Forward this method to the Linear Object Properties Pane.
         _linearObjectPropertiesPane.updateLayerNameSelection( cartesianLine );
-    }
-
-    public void updateCartesianLineView( final CartesianLine cartesianLine ) {
-        // Forward this method to the Linear Object Properties Pane.
-        _linearObjectPropertiesPane.updateLinearObjectView( cartesianLine );
-
-        // Forward this method to the Cartesian Line Placement Pane.
-        _cartesianLinePlacementPane.updateCartesianLineView( cartesianLine );
     }
 
     public void toggleGestures() {
@@ -272,14 +315,16 @@ public final class CartesianLinePane extends VBox {
     public void updateLayerNames( final boolean preserveSelectedLayerByIndex,
                                   final boolean preserveSelectedLayerByName ) {
         // Forward this method to the Linear Object Properties Pane.
-        _linearObjectPropertiesPane.updateLayerNames( preserveSelectedLayerByIndex,
-                                                   preserveSelectedLayerByName );
+        _linearObjectPropertiesPane.updateLayerNames(
+                preserveSelectedLayerByIndex,
+                preserveSelectedLayerByName );
     }
 
     public void updateLayerNames( final Layer currentLayer ) {
         final List< Layer > layerCollection = _layerCollection;
         final int currentLayerIndex = LayerManagement.getLayerIndex(
-                layerCollection, currentLayer );
+                layerCollection,
+                currentLayer );
 
         // Forward this method to the Linear Object Properties Pane.
         _linearObjectPropertiesPane.updateLayerNames( currentLayerIndex );

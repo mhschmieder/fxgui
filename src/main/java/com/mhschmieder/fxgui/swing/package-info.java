@@ -30,9 +30,5 @@
  */
 /**
  * This package contains the fxgui Library's Swing wrapper code.
- *
- * @version 1.0
- *
- * @author Mark Schmieder
  */
 package com.mhschmieder.fxgui.swing;

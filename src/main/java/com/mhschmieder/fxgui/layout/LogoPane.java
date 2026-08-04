@@ -34,6 +34,9 @@ import com.mhschmieder.fxcontrols.util.RegionUtilities;
 import com.mhschmieder.fxgraphics.image.ImageUtilities;
 import com.mhschmieder.fxgraphics.image.LogoUtilities;
 import com.mhschmieder.fxgraphics.paint.ColorUtilities;
+
+import java.awt.image.BufferedImage;
+
 import javafx.application.Platform;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -42,8 +45,6 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.Background;
 import javafx.scene.layout.HBox;
 import javafx.scene.paint.Color;
-
-import java.awt.image.BufferedImage;
 
 /**
  * This is a container used to provide more control over Logo positioning,
@@ -56,7 +57,7 @@ public final class LogoPane extends HBox {
     private ImageView _logoDark;
 
     // Use a Label to host the active Logo Image View.
-    private Label     _logoLabel;
+    private Label _logoLabel;
 
     public LogoPane( final String jarRelativeLightLogoUrl,
                      final String jarRelativeDarkLogoUrl ) {
@@ -71,26 +72,16 @@ public final class LogoPane extends HBox {
         }
     }
 
-    public BufferedImage getLogoForReport() {
-        // As reports are "white" paper-oriented export formats, use a dark logo.
-        return ImageUtilities.getBufferedImageSnapshot( _logoDark );
-    }
-
-    public double getLogoLeftMargin() {
-        final Insets logoMargin = HBox.getMargin( _logoLabel );
-        return ( logoMargin != null ) ? logoMargin.getLeft() : 0.0d;
-    }
-
     private void initPane( final String jarRelativeLightLogoUrl,
                            final String jarRelativeDarkLogoUrl ) {
         // Load the logos for dark and light backgrounds so that we can switch
         // between them when the host's background changes.
         _logoLight = LogoUtilities.getLogoImageView( Color.BLACK,
-                                                       jarRelativeLightLogoUrl,
-                                                       jarRelativeDarkLogoUrl );
+                                                     jarRelativeLightLogoUrl,
+                                                     jarRelativeDarkLogoUrl );
         _logoDark = LogoUtilities.getLogoImageView( Color.WHITE,
-                                                      jarRelativeLightLogoUrl,
-                                                      jarRelativeDarkLogoUrl );
+                                                    jarRelativeLightLogoUrl,
+                                                    jarRelativeDarkLogoUrl );
 
         // Make a Label to host the Logo Image Icon, to control sizing etc.
         _logoLabel = new Label();
@@ -110,22 +101,37 @@ public final class LogoPane extends HBox {
         // NOTE: We give the image a chance to load before binding to it.
         Platform.runLater( () -> {
             _logoLabel.minWidthProperty().bind( _logoLight.fitWidthProperty() );
-            _logoLabel.minHeightProperty().bind( _logoLight.fitHeightProperty() );
+            _logoLabel.minHeightProperty()
+                      .bind( _logoLight.fitHeightProperty() );
             minWidthProperty().bind( _logoLight.fitWidthProperty() );
             minHeightProperty().bind( _logoLight.fitHeightProperty() );
         } );
     }
 
+    public BufferedImage getLogoForReport() {
+        // As reports are "white" paper-oriented export formats, use a dark
+        // logo.
+        return ImageUtilities.getBufferedImageSnapshot( _logoDark );
+    }
+
+    public double getLogoLeftMargin() {
+        final Insets logoMargin = HBox.getMargin( _logoLabel );
+        return ( logoMargin != null )
+               ? logoMargin.getLeft()
+               : 0.0d;
+    }
+
     public void setForegroundFromBackground( final Color backColor ) {
         // Set the new Background first, so it sets context for CSS derivations.
-        final Background background = RegionUtilities.makeRegionBackground( backColor );
+        final Background background = RegionUtilities.makeRegionBackground(
+                backColor );
         setBackground( background );
 
         // Replace with light logo if switching to a dark background.
         // NOTE: We also set the label's background, for consistent insets.
-        final ImageView logo = ColorUtilities.isColorDark( backColor ) 
-                ? _logoLight 
-                : _logoDark;
+        final ImageView logo = ColorUtilities.isColorDark( backColor )
+                               ? _logoLight
+                               : _logoDark;
         _logoLabel.setBackground( background );
         _logoLabel.setGraphic( logo );
     }

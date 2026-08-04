@@ -30,11 +30,11 @@
  */
 package com.mhschmieder.fxgui.stage;
 
+import java.util.List;
+
 import javafx.geometry.Rectangle2D;
 import javafx.stage.Screen;
 import javafx.stage.Stage;
-
-import java.util.List;
 
 /**
  * This is a container class for collections of windows of various types and
@@ -42,9 +42,8 @@ import java.util.List;
  * as to avoid cut/paste errors and oversights. Primarily this will be used for
  * secondary windows (including pop-ups) that are owned by other windows.
  *
- * @version 1.0
- *
  * @author Mark Schmieder
+ * @version 1.0
  */
 public final class FxWindowManager {
 
@@ -52,8 +51,7 @@ public final class FxWindowManager {
      * Finds the screen where the Stage is and returns true if some parts of the
      * stage are out of the screen, and therefore not visible.
      *
-     * @param stage
-     *            The Stage to check for screen visibility
+     * @param stage The Stage to check for screen visibility
      * @return A flag for whether or not this Stage would be clipped or hidden
      *         due to appearing partially or fully on screens that are no longer
      *         available, plugged in, or turned on
@@ -65,8 +63,10 @@ public final class FxWindowManager {
         final double height = stage.getHeight();
         final double minX = stage.getX();
         final double minY = stage.getY();
-        final List< Screen > screenList =
-                                        Screen.getScreensForRectangle( minX, minY, width, height );
+        final List< Screen > screenList = Screen.getScreensForRectangle( minX,
+                                                                         minY,
+                                                                         width,
+                                                                         height );
 
         // If the Stage is not even partially visible on any of the screens, it
         // is considered completely out of bounds.
@@ -105,10 +105,11 @@ public final class FxWindowManager {
             }
         }
 
-        final boolean stageOutOfBounds = upperLeftOutOfBounds || upperRightOutOfBounds
-                || lowerLeftOutOfBounds || lowerRightOutOfBounds;
+        final boolean stageOutOfBounds = upperLeftOutOfBounds
+                                         || upperRightOutOfBounds
+                                         || lowerLeftOutOfBounds
+                                         || lowerRightOutOfBounds;
 
         return stageOutOfBounds;
     }
-
 }

@@ -55,7 +55,8 @@ public final class FileManagementUtilities {
             FileManagementUtilities.class.getName() );
 
     /**
-     * The default constructor is disabled, as this is a static utilities class.
+     * The default constructor is disabled, as this is a static utilities
+     * class.
      */
     private FileManagementUtilities() {
     }
@@ -68,18 +69,18 @@ public final class FileManagementUtilities {
      * various issues that can come up when trying to make a file that may or
      * may not already exist.
      *
-     * @param filePathname The pathname of the file to create
+     * @param filePathname    The pathname of the file to create
      * @param replaceIfExists {@code true} if the file should be overwritten if
-     *                               it already exists; {@code false} otherwise
-     * @param headlessMode {@code true} if no confirmation dialogs are wanted
+     *                        it already exists; {@code false} otherwise
+     * @param headlessMode    {@code true} if no confirmation dialogs are
+     *                        wanted
      * @return The {@link File} handle for the file requested
      */
     public static File makeFile( final String filePathname,
                                  final boolean replaceIfExists,
                                  final boolean headlessMode ) {
         final File file = new File( filePathname );
-        if ( !FileDiagnostics.checkFileExists(
-                filePathname, "", true ) ) {
+        if ( !FileDiagnostics.checkFileExists( filePathname, "", true ) ) {
             try {
                 final Path filePath = Paths.get( filePathname );
                 Files.createFile( filePath );
@@ -89,11 +90,13 @@ public final class FileManagementUtilities {
 
                 if ( !headlessMode ) {
                     final String message = "Could Not Create File: "
-                            + StringUtilities.quote( filePathname );
+                                           + StringUtilities.quote( filePathname );
                     final String masthead = "File Not Created";
                     final String title = "File Error";
 
-                    DialogUtilities.showWarningAlert( message, masthead, title );
+                    DialogUtilities.showWarningAlert( message,
+                                                      masthead,
+                                                      title );
                 }
 
                 return null;
@@ -101,8 +104,8 @@ public final class FileManagementUtilities {
         }
         else {
             if ( replaceIfExists ) {
-                if ( !headlessMode && !DialogUtilities
-                        .checkOverwriteExistingFile( file ) ) {
+                if ( !headlessMode
+                     && !DialogUtilities.checkOverwriteExistingFile( file ) ) {
                     return null;
                 }
             }
@@ -123,20 +126,20 @@ public final class FileManagementUtilities {
      * or may not already exist and that may or may not already have contents.
      *
      * @param directoryPathname The pathname of the directory to create
-     * @param replaceIfExists {@code true} if the directory and its contents
-     *                               should be deleted if already exists vs.
-     *                               retained and returned for additions;
-     *                               {@code false} to leave the directory as-is
-     * @param headlessMode {@code true} if no confirmation dialogs are wanted
+     * @param replaceIfExists   {@code true} if the directory and its contents
+     *                          should be deleted if already exists vs. retained
+     *                          and returned for additions; {@code false} to
+     *                          leave the directory as-is
+     * @param headlessMode      {@code true} if no confirmation dialogs are
+     *                          wanted
      * @return The {@link File} handle for the directory requested
      */
     public static File makeDirectory( final String directoryPathname,
                                       final boolean replaceIfExists,
                                       final boolean headlessMode ) {
-        return makeDirectory(
-                new File( directoryPathname ),
-                replaceIfExists,
-                headlessMode );
+        return makeDirectory( new File( directoryPathname ),
+                              replaceIfExists,
+                              headlessMode );
     }
 
     /**
@@ -147,23 +150,23 @@ public final class FileManagementUtilities {
      * various issues that can come up when trying to make a directory that may
      * or may not already exist and that may or may not already have contents.
      *
-     * @param directoryFile The directory to create
+     * @param directoryFile   The directory to create
      * @param replaceIfExists {@code true} if the directory and its contents
-     *                               should be deleted if already exists vs.
-     *                               retained and returned for additions;
-     *                               {@code false} to leave the directory as-is
-     * @param headlessMode {@code true} if no confirmation dialogs are wanted
+     *                        should be deleted if already exists vs. retained
+     *                        and returned for additions; {@code false} to leave
+     *                        the directory as-is
+     * @param headlessMode    {@code true} if no confirmation dialogs are
+     *                        wanted
      * @return The {@link File} handle for the directory requested
      */
     public static File makeDirectory( final File directoryFile,
                                       final boolean replaceIfExists,
                                       final boolean headlessMode ) {
         try {
-            return makeDirectory(
-                    Path.of( directoryFile.getPath() ),
-                    directoryFile,
-                    replaceIfExists,
-                    headlessMode );
+            return makeDirectory( Path.of( directoryFile.getPath() ),
+                                  directoryFile,
+                                  replaceIfExists,
+                                  headlessMode );
         }
         catch ( final Exception e ) {
             LOGGER.log( Level.ERROR, e.getMessage(), e );
@@ -179,53 +182,23 @@ public final class FileManagementUtilities {
      * various issues that can come up when trying to make a directory that may
      * or may not already exist and that may or may not already have contents.
      *
-     * @param directoryPath The {@link Path} encapsulation of the directory
+     * @param directoryPath   The {@link Path} encapsulation of the directory
+     * @param directoryFile   The directory to create
      * @param replaceIfExists {@code true} if the directory and its contents
-     *                               should be deleted if already exists vs.
-     *                               retained and returned for additions;
-     *                               {@code false} to leave the directory as-is
-     * @param headlessMode {@code true} if no confirmation dialogs are wanted
-     * @return The {@link File} handle for the directory requested
-     */
-    public static File makeDirectory( final Path directoryPath,
-                                      final boolean replaceIfExists,
-                                      final boolean headlessMode ) {
-        try {
-            return makeDirectory(
-                    directoryPath,
-                    directoryPath.toFile(),
-                    replaceIfExists,
-                    headlessMode );
-        }
-        catch ( final Exception e ) {
-            LOGGER.log( Level.ERROR, e.getMessage(), e );
-            return null;
-        }
-    }
-
-    /**
-     * Returns the {@link File} handle for the directory requested.
-     * <p>
-     * This serves as a "safety" wrapper to cover most usage contexts, to avoid
-     * copy/paste code and inconsistent or incomplete logic when dealing with
-     * various issues that can come up when trying to make a directory that may
-     * or may not already exist and that may or may not already have contents.
-     *
-     * @param directoryPath The {@link Path} encapsulation of the directory
-     * @param directoryFile The directory to create
-     * @param replaceIfExists {@code true} if the directory and its contents
-     *                               should be deleted if already exists vs.
-     *                               retained and returned for additions;
-     *                               {@code false} to leave the directory as-is
-     * @param headlessMode {@code true} if no confirmation dialogs are wanted
+     *                        should be deleted if already exists vs. retained
+     *                        and returned for additions; {@code false} to leave
+     *                        the directory as-is
+     * @param headlessMode    {@code true} if no confirmation dialogs are
+     *                        wanted
      * @return The {@link File} handle for the directory requested
      */
     public static File makeDirectory( final Path directoryPath,
                                       final File directoryFile,
                                       final boolean replaceIfExists,
                                       final boolean headlessMode ) {
-        if ( !FileDiagnostics.checkFileExists(
-                directoryFile.getPath(), "", true ) ) {
+        if ( !FileDiagnostics.checkFileExists( directoryFile.getPath(),
+                                               "",
+                                               true ) ) {
             try {
                 FileUtils.forceMkdir( directoryFile );
             }
@@ -234,11 +207,14 @@ public final class FileManagementUtilities {
 
                 if ( !headlessMode ) {
                     final String message = "Could Not Create Folder: "
-                            + StringUtilities.quote( directoryFile.getPath() );
+                                           + StringUtilities.quote(
+                            directoryFile.getPath() );
                     final String masthead = "Folder Not Created";
                     final String title = "File Error";
 
-                    DialogUtilities.showWarningAlert( message, masthead, title );
+                    DialogUtilities.showWarningAlert( message,
+                                                      masthead,
+                                                      title );
                 }
 
                 return null;
@@ -246,7 +222,7 @@ public final class FileManagementUtilities {
         }
         else {
             if ( !FileDiagnostics.isDirectoryEmpty( directoryFile )
-                    && replaceIfExists ) {
+                 && replaceIfExists ) {
                 if ( !headlessMode ) {
                     if ( !DialogUtilities.checkRemoveDirectoryContents(
                             directoryFile.getPath() ) ) {
@@ -258,19 +234,52 @@ public final class FileManagementUtilities {
                 if ( !FileUtilities.deleteDirectoryContents( directoryFile ) ) {
                     if ( !headlessMode ) {
                         final String message = "Could Not Delete Folder: "
-                                + StringUtilities.quote(
+                                               + StringUtilities.quote(
                                 directoryFile.getPath() );
                         final String masthead = "Folder Not Deleted";
                         final String title = "File Error";
 
-                        DialogUtilities.showWarningAlert(
-                                message, masthead, title );
+                        DialogUtilities.showWarningAlert( message,
+                                                          masthead,
+                                                          title );
                     }
                 }
             }
         }
 
         return directoryFile;
+    }
+
+    /**
+     * Returns the {@link File} handle for the directory requested.
+     * <p>
+     * This serves as a "safety" wrapper to cover most usage contexts, to avoid
+     * copy/paste code and inconsistent or incomplete logic when dealing with
+     * various issues that can come up when trying to make a directory that may
+     * or may not already exist and that may or may not already have contents.
+     *
+     * @param directoryPath   The {@link Path} encapsulation of the directory
+     * @param replaceIfExists {@code true} if the directory and its contents
+     *                        should be deleted if already exists vs. retained
+     *                        and returned for additions; {@code false} to leave
+     *                        the directory as-is
+     * @param headlessMode    {@code true} if no confirmation dialogs are
+     *                        wanted
+     * @return The {@link File} handle for the directory requested
+     */
+    public static File makeDirectory( final Path directoryPath,
+                                      final boolean replaceIfExists,
+                                      final boolean headlessMode ) {
+        try {
+            return makeDirectory( directoryPath,
+                                  directoryPath.toFile(),
+                                  replaceIfExists,
+                                  headlessMode );
+        }
+        catch ( final Exception e ) {
+            LOGGER.log( Level.ERROR, e.getMessage(), e );
+            return null;
+        }
     }
 
     public static void toggleStageVisible( final XStage stage ) {

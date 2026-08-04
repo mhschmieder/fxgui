@@ -34,6 +34,10 @@ import com.mhschmieder.fxcontrols.control.DataTableView;
 import com.mhschmieder.fxcontrols.control.DataTableViewerToolBar;
 import com.mhschmieder.jcommons.branding.ProductBranding;
 import com.mhschmieder.jcommons.util.ClientProperties;
+
+import java.io.File;
+import java.util.Collection;
+
 import javafx.geometry.Insets;
 import javafx.scene.Node;
 import javafx.scene.control.ScrollPane;
@@ -43,9 +47,6 @@ import javafx.scene.input.KeyCodeCombination;
 import javafx.scene.input.KeyCombination;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.VBox;
-
-import java.io.File;
-import java.util.Collection;
 
 public class DataTableViewer extends XStage {
 
@@ -57,10 +58,10 @@ public class DataTableViewer extends XStage {
 
     public DataTableViewer( final ProductBranding productBranding,
                             final ClientProperties pClientProperties ) {
-        this( "CSV Viewer", 
-              "csvViewer", 
-              "/icons/led24/DocExcelCsv16.png", 
-              productBranding, 
+        this( "CSV Viewer",
+              "csvViewer",
+              "/icons/led24/DocExcelCsv16.png",
+              productBranding,
               pClientProperties );
     }
 
@@ -70,11 +71,11 @@ public class DataTableViewer extends XStage {
                             final ProductBranding productBranding,
                             final ClientProperties pClientProperties ) {
         // Always call the superclass constructor first!
-        super( title, 
-               windowKeyPrefix, 
-               true, 
-               true, 
-               productBranding, 
+        super( title,
+               windowKeyPrefix,
+               true,
+               true,
+               productBranding,
                pClientProperties );
 
         try {
@@ -83,6 +84,11 @@ public class DataTableViewer extends XStage {
         catch ( final Exception ex ) {
             ex.printStackTrace();
         }
+    }
+
+    protected final void initStage( final String jarRelativeIconFilename ) {
+        // First have the superclass initialize its content.
+        initStage( jarRelativeIconFilename, 840d, 500d, true );
     }
 
     // Add the Tool Bar's event listeners.
@@ -100,8 +106,7 @@ public class DataTableViewer extends XStage {
         _toolBar._navigationButtons._forwardButton.setDisable( true );
 
         // Load the event handler for the Import Table Data Button.
-        _toolBar._fileActionButtons._fileImportTableDataButton.setOnAction( 
-                evt -> doImportTableData() );
+        _toolBar._fileActionButtons._fileImportTableDataButton.setOnAction( evt -> doImportTableData() );
 
         // Load the event handler for the File Page Setup Button.
         _toolBar._fileActionButtons._filePrintButton.setOnAction( evt -> doPageSetup() );
@@ -115,39 +120,43 @@ public class DataTableViewer extends XStage {
         // Load the event handler for the Navigate Forward Button.
         _toolBar._navigationButtons._forwardButton.setOnAction( evt -> doNavigateForward() );
 
-        // Detect the ENTER key while the Import Table Data Button has focus, 
+        // Detect the ENTER key while the Import Table Data Button has focus,
         // and use it to trigger its action (standard expected behavior).
-        _toolBar._fileActionButtons._fileImportTableDataButton.setOnKeyReleased( 
-            keyEvent -> {
-                final KeyCombination keyCombo = new KeyCodeCombination( KeyCode.ENTER );
-                if ( keyCombo.match( keyEvent ) ) {
-                    // Trigger the Import Table Data action.
-                    doImportTableData();
-    
-                    // Consume the ENTER key so it doesn't get processed
-                    // twice.
-                    keyEvent.consume();
-                }
-        } );
+        _toolBar._fileActionButtons._fileImportTableDataButton.setOnKeyReleased(
+                keyEvent -> {
+                    final KeyCombination keyCombo = new KeyCodeCombination(
+                            KeyCode.ENTER );
+                    if ( keyCombo.match( keyEvent ) ) {
+                        // Trigger the Import Table Data action.
+                        doImportTableData();
+
+                        // Consume the ENTER key so it doesn't get processed
+                        // twice.
+                        keyEvent.consume();
+                    }
+                } );
 
         // Detect the ENTER key while the File Page Setup Button has focus, and
         // use it to trigger its action (standard expected behavior).
-        _toolBar._fileActionButtons._filePageSetupButton.setOnKeyReleased( keyEvent -> {
-            final KeyCombination keyCombo = new KeyCodeCombination( KeyCode.ENTER );
-            if ( keyCombo.match( keyEvent ) ) {
-                // Trigger the File Page Setup action.
-                doPageSetup();
+        _toolBar._fileActionButtons._filePageSetupButton.setOnKeyReleased(
+                keyEvent -> {
+                    final KeyCombination keyCombo = new KeyCodeCombination(
+                            KeyCode.ENTER );
+                    if ( keyCombo.match( keyEvent ) ) {
+                        // Trigger the File Page Setup action.
+                        doPageSetup();
 
-                // Consume the ENTER key so it doesn't get processed
-                // twice.
-                keyEvent.consume();
-            }
-        } );
+                        // Consume the ENTER key so it doesn't get processed
+                        // twice.
+                        keyEvent.consume();
+                    }
+                } );
 
         // Detect the ENTER key while the File Print Button has focus, and use
         // it to trigger its action (standard expected behavior).
         _toolBar._fileActionButtons._filePrintButton.setOnKeyReleased( keyEvent -> {
-            final KeyCombination keyCombo = new KeyCodeCombination( KeyCode.ENTER );
+            final KeyCombination keyCombo
+                    = new KeyCodeCombination( KeyCode.ENTER );
             if ( keyCombo.match( keyEvent ) ) {
                 // Trigger the File Print action.
                 doPrint();
@@ -160,7 +169,8 @@ public class DataTableViewer extends XStage {
         // Detect the ENTER key while the Navigate Back Button has focus, and
         // use it to trigger its action (standard expected behavior).
         _toolBar._navigationButtons._backButton.setOnKeyReleased( keyEvent -> {
-            final KeyCombination keyCombo = new KeyCodeCombination( KeyCode.ENTER );
+            final KeyCombination keyCombo
+                    = new KeyCodeCombination( KeyCode.ENTER );
             if ( keyCombo.match( keyEvent ) ) {
                 // Trigger the Navigate Back action.
                 doNavigateBack();
@@ -173,7 +183,8 @@ public class DataTableViewer extends XStage {
         // Detect the ENTER key while the Navigate Forward Button has focus, and
         // use it to trigger its action (standard expected behavior).
         _toolBar._navigationButtons._forwardButton.setOnKeyReleased( keyEvent -> {
-            final KeyCombination keyCombo = new KeyCodeCombination( KeyCode.ENTER );
+            final KeyCombination keyCombo
+                    = new KeyCodeCombination( KeyCode.ENTER );
             if ( keyCombo.match( keyEvent ) ) {
                 // Trigger the Navigate Forward action.
                 doNavigateForward();
@@ -186,14 +197,21 @@ public class DataTableViewer extends XStage {
     }
 
     // TODO: Implement this.
-    protected final void doNavigateBack() {}
+    protected final void doNavigateBack() {
+    }
 
     // TODO: Implement this.
-    protected final void doNavigateForward() {}
+    protected final void doNavigateForward() {
+    }
 
-    protected final void initStage( final String jarRelativeIconFilename ) {
-        // First have the superclass initialize its content.
-        initStage( jarRelativeIconFilename, 840d, 500d, true );
+    // Add the Tool Bar for this Frame.
+    @Override
+    public final ToolBar loadToolBar() {
+        // Build the Tool Bar for this Stage.
+        _toolBar = new DataTableViewerToolBar( clientProperties );
+
+        // Return the Tool Bar so the superclass can use it.
+        return _toolBar;
     }
 
     @Override
@@ -212,30 +230,19 @@ public class DataTableViewer extends XStage {
         final BorderPane borderPane = new BorderPane();
         borderPane.setPadding( new Insets( 5.0d ) );
         borderPane.setCenter( vbox );
-        
+
         // The Scroll Pane is necessary as otherwise a table with many columns
         // will clip its right-most columns even if you widen this window.
         // NOTE: Don't fit to height and width as the scroll pane doesn't show
         //  up if both values are set, and one on its own doesn't do anything.
         final ScrollPane scrollPane = new ScrollPane( borderPane );
-        
+
         return scrollPane;
     }
 
-    // Add the Tool Bar for this Frame.
     @Override
-    public final ToolBar loadToolBar() {
-        // Build the Tool Bar for this Stage.
-        _toolBar = new DataTableViewerToolBar( clientProperties );
-
-        // Return the Tool Bar so the superclass can use it.
-        return _toolBar;
-    }
- 
-    @Override
-    public final void processTableData( 
-            final File file,
-            final Collection< Collection< String > > rows ) {
+    public final void processTableData( final File file,
+                                        final Collection< Collection< String > > rows ) {
         // Update the table view with the new data content.
         _tableView.updateTableView( rows );
 

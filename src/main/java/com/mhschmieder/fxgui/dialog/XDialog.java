@@ -30,12 +30,12 @@
  */
 package com.mhschmieder.fxgui.dialog;
 
+import java.util.Optional;
+
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.Dialog;
 import javafx.scene.control.DialogPane;
 import javafx.scene.layout.Background;
-
-import java.util.Optional;
 
 /**
  * {@code XDialog} is an abstract extension of the standard {@link Dialog} that
@@ -44,9 +44,8 @@ import java.util.Optional;
  * This is a placeholder implementation, as the full version needs my Commons
  * Library to be published first, for the SystemTytpe enumeration.
  *
- * @version 1.0
- *
  * @author Mark Schmieder
+ * @version 1.0
  */
 public abstract class XDialog extends Dialog< ButtonType > {
 
@@ -62,11 +61,8 @@ public abstract class XDialog extends Dialog< ButtonType > {
      * <p>
      * Creates a new {@code XDialog} instance.
      *
-     * @param title
-     *            The title bar text to use for the Dialog
-     * @param headerText
-     *            The Header Text to use as a simplified description
-     *
+     * @param title      The title bar text to use for the Dialog
+     * @param headerText The Header Text to use as a simplified description
      * @since 1.0
      */
     public XDialog( final String title,
@@ -96,14 +92,12 @@ public abstract class XDialog extends Dialog< ButtonType > {
      * unwanted side effects and simply write their own GUI initialization
      * method that adds any extended behaviour or components to the layout.
      *
-     * @param title
-     *            The title bar text to use for the Dialog
-     * @param headerText
-     *            The Header Text to use as a simplified description
-     *
+     * @param title      The title bar text to use for the Dialog
+     * @param headerText The Header Text to use as a simplified description
      * @since 1.0
      */
-    private final void initDialog( final String title, final String headerText ) {
+    private final void initDialog( final String title,
+                                   final String headerText ) {
         setResizable( false );
 
         setTitle( title );
@@ -141,14 +135,15 @@ public abstract class XDialog extends Dialog< ButtonType > {
         return response;
     }
 
-    ////////////////////// Model/View syncing methods ////////////////////////
+    // NOTE: We are phasing out Swing-style model/view syncing in favor of Data
+    // Binding, so these methods are no longer required of subclasses.
+    public void updateView() {
+    }
+
+    /// /////////////////// Model/View syncing methods ////////////////////////
 
     // NOTE: We are phasing out Swing-style model/view syncing in favor of Data
     // Binding, so these methods are no longer required of subclasses.
-    public void updateModel() {}
-
-    // NOTE: We are phasing out Swing-style model/view syncing in favor of Data
-    // Binding, so these methods are no longer required of subclasses.
-    public void updateView() {}
-
+    public void updateModel() {
+    }
 }

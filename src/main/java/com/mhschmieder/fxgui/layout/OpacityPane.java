@@ -36,6 +36,7 @@ import com.mhschmieder.fxcontrols.control.DoubleEditor;
 import com.mhschmieder.fxcontrols.control.OpacitySlider;
 import com.mhschmieder.jcommons.util.ClientProperties;
 import com.mhschmieder.jgraphics.input.ScrollingSensitivity;
+
 import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.SimpleDoubleProperty;
 import javafx.geometry.Insets;
@@ -49,13 +50,13 @@ import javafx.scene.layout.VBox;
  */
 public final class OpacityPane extends VBox {
 
-    private Label          _opacityLabel;
-    public OpacitySlider   _opacitySlider;
-    public DoubleEditor    _opacityEditor;
-
+    public OpacitySlider _opacitySlider;
+    public DoubleEditor _opacityEditor;
+    private Label _opacityLabel;
     private DoubleProperty opacityPercent;
 
-    public OpacityPane( final ClientProperties clientProperties, final String labelText ) {
+    public OpacityPane( final ClientProperties clientProperties,
+                        final String labelText ) {
         // Always call the superclass constructor first!
         super();
 
@@ -64,33 +65,16 @@ public final class OpacityPane extends VBox {
         initPane( clientProperties, labelText );
     }
 
-    private void bindProperties() {
-        // Bidirectionally bind the Opacity property to its associated text
-        // input control's value property (which reflects committed edits).
-        // NOTE: This is OK because we embed unit conversion in DoubleEditor.
-        _opacityEditor.valueProperty().bindBidirectional( opacityPercentProperty() );
-
-        // Bidirectionally bind the slider to an editable text field restricted
-        // to the slider range.
-        // NOTE: This is commented out because we have to deal with units.
-        // _opacitySlider.valueProperty()
-        // .bindBidirectional( _opacityEditor.valueProperty() );
-
-        // We don't need a listener for the Opacity slider, as there is only one
-        // Opacity Unit option, so just use data binding directly.
-        _opacitySlider.valueProperty().bindBidirectional( opacityPercentProperty() );
-    }
-
-    public double getOpacityPercent() {
-        return opacityPercent.get();
-    }
-
-    private void initPane( final ClientProperties clientProperties, final String labelText ) {
+    private void initPane( final ClientProperties clientProperties,
+                           final String labelText ) {
         // Create a default Opacity Slider.
         _opacitySlider = new OpacitySlider( clientProperties );
 
-        // Conform the associated textField (text field) to the slider attributes.
-        _opacityEditor = ControlFactory.makeOpacitySliderEditor( clientProperties, _opacitySlider );
+        // Conform the associated textField (text field) to the slider
+        // attributes.
+        _opacityEditor = ControlFactory.makeOpacitySliderEditor(
+                clientProperties,
+                _opacitySlider );
         _opacityEditor.setPrefWidth( 70.0d );
 
         _opacityLabel = ControlUtilities.getControlLabel( labelText );
@@ -109,16 +93,19 @@ public final class OpacityPane extends VBox {
         // to the slider range.
         // NOTE: We no longer need the more complicated text binding with the
         //  new converter and formatter API calls, but rather than delete that
-        //  code, it is good to keep around as an example of how to use the newer
+        //  code, it is good to keep around as an example of how to use the
+        //  newer
         //  API calls from Oracle. Our Opacity Editor has a custom double
         //  precision value property that allows for direct bindings with the
         //  slider's double precision value property, bypassing this step. The
         //  text property of the underlying Text Field stays in sync as a
         //  formatted number via other methods and callbacks.
         // NOTE: We don't even need this binding at all anymore, as we instead
-        //  bind the textField and the slider independently to the data model. This
+        //  bind the textField and the slider independently to the data model
+        //  . This
         //  reduces confusion over any master/slave relationships between the
-        //  paired controls, and seems to retain the higher textField resolution.
+        //  paired controls, and seems to retain the higher textField
+        //  resolution.
         // _opacityEditor.valueProperty().bindBidirectional(
         // _opacitySlider.valueProperty() );
         // _opacityEditor.textProperty().bindBidirectional(
@@ -133,8 +120,13 @@ public final class OpacityPane extends VBox {
         // .getMax() ) );
     }
 
-    public DoubleProperty opacityPercentProperty() {
-        return opacityPercent;
+    public double getOpacityPercent() {
+        return opacityPercent.get();
+    }
+
+    public void setOpacityPercent( final double pOpacityPercent ) {
+        // Forward this to the Opacity Slider to keep it in sync.
+        opacityPercent.set( pOpacityPercent );
     }
 
     public void saveEdits() {
@@ -153,6 +145,12 @@ public final class OpacityPane extends VBox {
         _opacitySlider.setGesturesEnabled( gesturesEnabled );
     }
 
+    public void setNumericRange( final double minimumOpacity,
+                                 final double maximumOpacity ) {
+        setMinimum( minimumOpacity );
+        setMaximum( maximumOpacity );
+    }
+
     public void setMaximum( final double maximumopacity ) {
         _opacitySlider.setMax( maximumopacity );
         _opacityEditor.setMaximumValue( maximumopacity );
@@ -161,17 +159,6 @@ public final class OpacityPane extends VBox {
     public void setMinimum( final double minimumopacity ) {
         _opacitySlider.setMin( minimumopacity );
         _opacityEditor.setMinimumValue( minimumopacity );
-    }
-
-    public void setNumericRange( final double minimumOpacity, 
-                                 final double maximumOpacity ) {
-        setMinimum( minimumOpacity );
-        setMaximum( maximumOpacity );
-    }
-
-    public void setOpacityPercent( final double pOpacityPercent ) {
-        // Forward this to the Opacity Slider to keep it in sync.
-        opacityPercent.set( pOpacityPercent );
     }
 
     // Set and bind the Opacity Percent property reference.
@@ -184,11 +171,33 @@ public final class OpacityPane extends VBox {
         bindProperties();
     }
 
+    private void bindProperties() {
+        // Bidirectionally bind the Opacity property to its associated text
+        // input control's value property (which reflects committed edits).
+        // NOTE: This is OK because we embed unit conversion in DoubleEditor.
+        _opacityEditor.valueProperty()
+                      .bindBidirectional( opacityPercentProperty() );
+
+        // Bidirectionally bind the slider to an editable text field restricted
+        // to the slider range.
+        // NOTE: This is commented out because we have to deal with units.
+        // _opacitySlider.valueProperty()
+        // .bindBidirectional( _opacityEditor.valueProperty() );
+
+        // We don't need a listener for the Opacity slider, as there is only one
+        // Opacity Unit option, so just use data binding directly.
+        _opacitySlider.valueProperty()
+                      .bindBidirectional( opacityPercentProperty() );
+    }
+
+    public DoubleProperty opacityPercentProperty() {
+        return opacityPercent;
+    }
+
     /**
      * Set the new Scrolling Sensitivity for the Opacity Sliders.
      *
-     * @param scrollingSensitivity
-     *            The sensitivity of the mouse scroll wheel
+     * @param scrollingSensitivity The sensitivity of the mouse scroll wheel
      */
     public void setScrollingSensitivity( final ScrollingSensitivity scrollingSensitivity ) {
         _opacitySlider.setScrollingSensitivity( scrollingSensitivity );
@@ -197,5 +206,4 @@ public final class OpacityPane extends VBox {
     public void toggleGestures() {
         _opacitySlider.toggleGestures();
     }
-
 }

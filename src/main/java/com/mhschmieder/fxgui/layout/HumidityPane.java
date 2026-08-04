@@ -39,6 +39,7 @@ import com.mhschmieder.fxgraphics.paint.ColorUtilities;
 import com.mhschmieder.fxgui.util.GuiUtilities;
 import com.mhschmieder.jcommons.util.ClientProperties;
 import com.mhschmieder.jgraphics.input.ScrollingSensitivity;
+
 import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.SimpleDoubleProperty;
 import javafx.geometry.Insets;
@@ -51,10 +52,9 @@ import javafx.scene.paint.Color;
 
 public final class HumidityPane extends VBox {
 
-    private Label          _humidityLabel;
-    public HumiditySlider  _humiditySlider;
-    public HumidityEditor  _humidityEditor;
-
+    public HumiditySlider _humiditySlider;
+    public HumidityEditor _humidityEditor;
+    private Label _humidityLabel;
     private DoubleProperty humidityRelative;
 
     public HumidityPane( final ClientProperties clientProperties ) {
@@ -66,46 +66,26 @@ public final class HumidityPane extends VBox {
         initPane( clientProperties );
     }
 
-    private void bindProperties() {
-        // Bidirectionally bind the Humidity property to its associated text
-        // input control's value property (which reflects committed edits).
-        // NOTE: This is OK because we embed unit conversion in DoubleEditor.
-        _humidityEditor.valueProperty().bindBidirectional( humidityRelativeProperty() );
-
-        // Bidirectionally bind the slider to an editable text field restricted
-        // to the slider range.
-        // NOTE: This is commented out because we have to deal with units.
-        // _humiditySlider.valueProperty()
-        // .bindBidirectional( _humidityEditor.valueProperty() );
-
-        // We don't need a listener for the Relative Humidity slider, as there
-        // is only one Humidity Unit option, so just use data binding directly.
-        _humiditySlider.valueProperty().bindBidirectional( humidityRelativeProperty() );
-    }
-
-    public double getHumidityRelative() {
-        return humidityRelative.get();
-    }
-
-    public DoubleProperty humidityRelativeProperty() {
-        return humidityRelative;
-    }
-
     private void initPane( final ClientProperties clientProperties ) {
         // Make a bolded label to clearly identify the functionality.
-        _humidityLabel = GuiUtilities.getColumnHeader( "Relative Humidity" ); //$NON-NLS-1$
+        _humidityLabel
+                = GuiUtilities.getColumnHeader( "Relative Humidity" ); //$NON
+        // -NLS-1$
 
         // Create a Relative Humidity slider.
         _humiditySlider = new HumiditySlider( clientProperties );
 
-        // Conform the associated textField (text field) to the slider attributes.
+        // Conform the associated textField (text field) to the slider
+        // attributes.
         _humidityEditor = ControlFactory.makeHumiditySliderEditor(
                 clientProperties,
                 _humiditySlider );
         _humidityEditor.setPrefWidth( 100d );
         _humidityEditor.setMaxWidth( 100d );
 
-        getChildren().addAll( _humidityLabel, _humiditySlider, _humidityEditor );
+        getChildren().addAll( _humidityLabel,
+                              _humiditySlider,
+                              _humidityEditor );
 
         setAlignment( Pos.CENTER );
         setPadding( new Insets( 6.0d ) );
@@ -114,26 +94,31 @@ public final class HumidityPane extends VBox {
         VBox.setVgrow( _humiditySlider, Priority.ALWAYS );
     }
 
+    public double getHumidityRelative() {
+        return humidityRelative.get();
+    }
+
+    public void setHumidityRelative( final double pHumidityRelative ) {
+        humidityRelative.set( pHumidityRelative );
+    }
+
     public void reset() {
-        _humiditySlider.setValue( NaturalEnvironmentProperties
-                .HUMIDITY_RELATIVE_DEFAULT );
+        _humiditySlider.setValue( NaturalEnvironmentProperties.HUMIDITY_RELATIVE_DEFAULT );
     }
 
     public void setForegroundFromBackground( final Color backColor ) {
         // Set the new Background first, so it sets context for CSS derivations.
-        final Background background = RegionUtilities.makeRegionBackground( backColor );
+        final Background background = RegionUtilities.makeRegionBackground(
+                backColor );
         setBackground( background );
 
-        final Color foregroundColor = ColorUtilities.getForegroundFromBackground( backColor );
+        final Color foregroundColor
+                = ColorUtilities.getForegroundFromBackground( backColor );
         _humidityLabel.setTextFill( foregroundColor );
     }
 
     public void setGesturesEnabled( final boolean gesturesEnabled ) {
         _humiditySlider.setGesturesEnabled( gesturesEnabled );
-    }
-
-    public void setHumidityRelative( final double pHumidityRelative ) {
-        humidityRelative.set( pHumidityRelative );
     }
 
     // Set and bind the Relative Humidity property reference.
@@ -146,11 +131,33 @@ public final class HumidityPane extends VBox {
         bindProperties();
     }
 
+    private void bindProperties() {
+        // Bidirectionally bind the Humidity property to its associated text
+        // input control's value property (which reflects committed edits).
+        // NOTE: This is OK because we embed unit conversion in DoubleEditor.
+        _humidityEditor.valueProperty()
+                       .bindBidirectional( humidityRelativeProperty() );
+
+        // Bidirectionally bind the slider to an editable text field restricted
+        // to the slider range.
+        // NOTE: This is commented out because we have to deal with units.
+        // _humiditySlider.valueProperty()
+        // .bindBidirectional( _humidityEditor.valueProperty() );
+
+        // We don't need a listener for the Relative Humidity slider, as there
+        // is only one Humidity Unit option, so just use data binding directly.
+        _humiditySlider.valueProperty()
+                       .bindBidirectional( humidityRelativeProperty() );
+    }
+
+    public DoubleProperty humidityRelativeProperty() {
+        return humidityRelative;
+    }
+
     /**
      * Set the new Scrolling Sensitivity for the Humidity Sliders.
      *
-     * @param scrollingSensitivity
-     *            The sensitivity of the mouse scroll wheel
+     * @param scrollingSensitivity The sensitivity of the mouse scroll wheel
      */
     public void setScrollingSensitivity( final ScrollingSensitivity scrollingSensitivity ) {
         _humiditySlider.setScrollingSensitivity( scrollingSensitivity );
@@ -159,5 +166,4 @@ public final class HumidityPane extends VBox {
     public void toggleGestures() {
         _humiditySlider.toggleGestures();
     }
-
 }

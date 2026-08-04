@@ -33,11 +33,12 @@ package com.mhschmieder.fxgui.demo;
 import com.mhschmieder.fxgui.stage.MainApplicationStage;
 import com.mhschmieder.jcommons.branding.ProductBranding;
 import com.mhschmieder.jcommons.util.ClientProperties;
+
 import javafx.scene.Node;
 
 /**
- * A bare-bones demo stage just to have a non-abstract stage available for
- * the demo application class to launch.
+ * A bare-bones demo stage just to have a non-abstract stage available for the
+ * demo application class to launch.
  */
 public class DemoStage extends MainApplicationStage {
 
@@ -53,23 +54,19 @@ public class DemoStage extends MainApplicationStage {
 
     @Override
     public void initStage( boolean resizable ) {
-        initStage( "/java/JavaFxLogo64.png",
-                   200.0d,
-                   240.0d,
-                   resizable );
+        initStage( "/java/JavaFxLogo64.png", 200.0d, 240.0d, resizable );
 
         // Now that the GUI itself is built, we can initialize the application.
         initApplication();
     }
 
     @Override
-    protected Node loadContent() {
+    public void open( String filePath ) {
         // NOTE Auto-generated method stub
-        return null;
     }
 
     @Override
-    public void open( String filePath ) {
+    protected void setDefaultProject( boolean applicationInitMode ) {
         // NOTE Auto-generated method stub
     }
 
@@ -79,7 +76,8 @@ public class DemoStage extends MainApplicationStage {
     }
 
     @Override
-    protected void setDefaultProject( boolean applicationInitMode ) {
+    protected Node loadContent() {
         // NOTE Auto-generated method stub
+        return null;
     }
 }

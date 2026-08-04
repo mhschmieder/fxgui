@@ -33,6 +33,7 @@ package com.mhschmieder.fxgui.layout;
 import com.mhschmieder.fxcontrols.control.ControlUtilities;
 import com.mhschmieder.fxcontrols.control.DoubleEditor;
 import com.mhschmieder.jcommons.util.ClientProperties;
+
 import javafx.geometry.Insets;
 import javafx.geometry.Point2D;
 import javafx.geometry.Pos;
@@ -56,18 +57,13 @@ public class UnitlessPositionPane extends BorderPane {
         super();
 
         try {
-            initPane( clientProperties, xPositionLabelText, yPositionLabelText );
+            initPane( clientProperties,
+                      xPositionLabelText,
+                      yPositionLabelText );
         }
         catch ( final Exception ex ) {
             ex.printStackTrace();
         }
-    }
-
-    public final Point2D getCartesianPosition2D() {
-        final Point2D cartesianPosition = new Point2D( _xPositionEditor.getValue(),
-                                                       _yPositionEditor.getValue() );
-
-        return cartesianPosition;
     }
 
     private final void initPane( final ClientProperties clientProperties,
@@ -97,11 +93,13 @@ public class UnitlessPositionPane extends BorderPane {
         gridPane.setHgap( 10.0d );
         gridPane.setVgap( 10.0d );
 
-        final Label xPositionLabel = ControlUtilities.getControlLabel( xPositionLabelText );
+        final Label xPositionLabel = ControlUtilities.getControlLabel(
+                xPositionLabelText );
         gridPane.add( xPositionLabel, 0, 0 );
         gridPane.add( _xPositionEditor, 1, 0 );
 
-        final Label yPositionLabel = ControlUtilities.getControlLabel( yPositionLabelText );
+        final Label yPositionLabel = ControlUtilities.getControlLabel(
+                yPositionLabelText );
         gridPane.add( yPositionLabel, 0, 1 );
         gridPane.add( _yPositionEditor, 1, 1 );
 
@@ -111,9 +109,17 @@ public class UnitlessPositionPane extends BorderPane {
         setLeft( gridPane );
     }
 
-    public final void saveEdits() {
-        _xPositionEditor.saveEdits();
-        _yPositionEditor.saveEdits();
+    public final Point2D getCartesianPosition2D() {
+        final Point2D cartesianPosition
+                = new Point2D( _xPositionEditor.getValue(),
+                               _yPositionEditor.getValue() );
+
+        return cartesianPosition;
+    }
+
+    public final void setCartesianPosition2D( final Point2D cartesianPosition2D ) {
+        setCartesianPosition2D( cartesianPosition2D.getX(),
+                                cartesianPosition2D.getY() );
     }
 
     public final void setCartesianPosition2D( final double cartesianPositionX,
@@ -123,8 +129,9 @@ public class UnitlessPositionPane extends BorderPane {
         _yPositionEditor.setValue( cartesianPositionY );
     }
 
-    public final void setCartesianPosition2D( final Point2D cartesianPosition2D ) {
-        setCartesianPosition2D( cartesianPosition2D.getX(), cartesianPosition2D.getY() );
+    public final void saveEdits() {
+        _xPositionEditor.saveEdits();
+        _yPositionEditor.saveEdits();
     }
 
     public final void setMaximumDistance( final double maximumDistance ) {
@@ -138,5 +145,4 @@ public class UnitlessPositionPane extends BorderPane {
         _xPositionEditor.setMinimumValue( minimumDistance );
         _yPositionEditor.setMinimumValue( minimumDistance );
     }
-
 }

@@ -30,49 +30,50 @@
  */
 package com.mhschmieder.fxgui.application;
 
-import javafx.geometry.Dimension2D;
-
 import java.io.File;
 import java.util.prefs.Preferences;
+
+import javafx.geometry.Dimension2D;
 
 /**
  * Defines the contract for methods that all application windows and stages must
  * implement for handling basic application session functionality.
  */
-public interface ApplicationWindowHandler { 
-    
+public interface ApplicationWindowHandler {
+
     void hideAllWindows();
-    
+
     void loadAllPreferences();
-    
+
     void saveAllPreferences();
-    
+
     Preferences loadPreferences();
-    
+
     Preferences savePreferences();
-    
+
     void restoreAllWindowLayouts( final Preferences prefs );
-    
+
     void saveAllWindowLayouts( final Preferences prefs );
 
     void restoreWindowLayout( final Preferences prefs );
-    
+
     void saveWindowLayout( final Preferences prefs );
-    
+
     void setDefaultWindowSize( final double defaultWidth,
                                final double defaultHeight );
-    
+
     Dimension2D getPreferredWindowSize();
-    
-    void setPreferredWindowSize( final double stageWidth, 
+
+    void setPreferredWindowSize( final double stageWidth,
                                  final double stageHeight );
-    
+
     void setWindowSize( final Dimension2D windowSize );
-    
-    void setWindowLocation( final double x, final double y );
-    
+
+    void setWindowLocation( final double x,
+                            final double y );
+
     String getWindowKeyPrefix();
-    
+
     /**
      * This method returns the window key prefix for window preferences.
      *
@@ -80,27 +81,27 @@ public interface ApplicationWindowHandler {
      *         preferences
      */
     StringBuilder getDefaultTitle();
-    
+
     default StringBuilder getSubtitle( final String documentFileName,
                                        final Boolean documentModified ) {
         // Append the current document file name, with an asterisk at the end if
         // the document is modified.
         final StringBuilder subtitle = new StringBuilder( " - [" );
         subtitle.append( documentFileName );
-        
+
         // TODO: Re-enable the Mac conditionals once we figure out how to do it.
         // if ( documentModified
         // && !SystemType.MACOS.equals( clientProperties.systemType ) ) {
         if ( documentModified ) {
             subtitle.append( "*" );
         }
-        
+
         subtitle.append( "]" );
         return subtitle;
     }
-    
-    void updateFrameTitle( final File documentFile, 
+
+    void updateFrameTitle( final File documentFile,
                            final boolean documentModified );
-    
+
     void setIcon( final String jarRelativeIconFilename );
 }

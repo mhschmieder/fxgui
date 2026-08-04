@@ -32,9 +32,5 @@
  * This package contains the fxgui Library's enhancements for JavaFX Dialogs,
  * along with dialog-related methods and tools to support security features such
  * as proxies and standard logins
- *
- * @version 1.0
- *
- * @author Mark Schmieder
  */
 package com.mhschmieder.fxgui.dialog;

@@ -33,6 +33,7 @@ package com.mhschmieder.fxgui.layout;
 import com.mhschmieder.fxcontrols.control.ControlUtilities;
 import com.mhschmieder.jcommons.util.ClientProperties;
 import com.mhschmieder.jmath.geometry.euclidean.FacingDirection;
+
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.RadioButton;
@@ -58,15 +59,7 @@ public class FacingDirectionPane extends BorderPane {
         }
     }
 
-    public final FacingDirection getFacingDirection() {
-        return _facingRightRadioButton.isSelected()
-            ? FacingDirection.RIGHT
-            : _facingLeftRadioButton.isSelected()
-                ? FacingDirection.LEFT
-                : FacingDirection.defaultValue();
-    }
-
-    private void initPane(final ClientProperties pClientProperties) {
+    private void initPane( final ClientProperties pClientProperties ) {
         _facingDirectionToggleGroup = new ToggleGroup();
         _facingRightRadioButton = ControlUtilities.getRadioButton(
                 FacingDirection.RIGHT.label(),
@@ -90,23 +83,30 @@ public class FacingDirectionPane extends BorderPane {
         setLeft( gridPane );
     }
 
-    public final void saveEdits() {
-        // NOTE: Currently there is nothing to do as all the data is saved in
-        // the controls themselves.
+    public final FacingDirection getFacingDirection() {
+        return _facingRightRadioButton.isSelected()
+               ? FacingDirection.RIGHT
+               : _facingLeftRadioButton.isSelected()
+                 ? FacingDirection.LEFT
+                 : FacingDirection.defaultValue();
     }
 
     public final void setFacingDirection( final FacingDirection facingDirection ) {
         // Forward this method to the subsidiary components.
         switch ( facingDirection ) {
-        case RIGHT:
-            _facingRightRadioButton.setSelected( true );
-            break;
-        case LEFT:
-            _facingLeftRadioButton.setSelected( true );
-            break;
-        default:
-            break;
+            case RIGHT:
+                _facingRightRadioButton.setSelected( true );
+                break;
+            case LEFT:
+                _facingLeftRadioButton.setSelected( true );
+                break;
+            default:
+                break;
         }
     }
 
+    public final void saveEdits() {
+        // NOTE: Currently there is nothing to do as all the data is saved in
+        // the controls themselves.
+    }
 }

@@ -35,6 +35,7 @@ import com.mhschmieder.fxcontrols.control.PredictToolBar;
 import com.mhschmieder.fxgui.layout.SplRangePane;
 import com.mhschmieder.jcommons.branding.ProductBranding;
 import com.mhschmieder.jcommons.util.ClientProperties;
+
 import javafx.scene.Node;
 import javafx.scene.control.ToolBar;
 
@@ -42,28 +43,24 @@ public final class SplRangeStage extends XStage {
 
     public static final String SPL_RANGE_FRAME_TITLE_DEFAULT
             = "Sound Field SPL Range"; //$NON-NLS-1$
-
-    // Declare the actions.
-    public SimulationActions simulationActions;
-
-    // Declare the main tool bar.
-    public PredictToolBar toolBar;
-
-    // Declare the main content pane.
-    public SplRangePane splRangePane;
-    
     // Flag for whether to allow extended SPL Range values.
     private final boolean useExtendedRange;
+    // Declare the actions.
+    public SimulationActions simulationActions;
+    // Declare the main tool bar.
+    public PredictToolBar toolBar;
+    // Declare the main content pane.
+    public SplRangePane splRangePane;
 
     public SplRangeStage( final ProductBranding pProductBranding,
                           final ClientProperties pClientProperties,
                           final boolean pUseExtendedRange ) {
         // Always call the superclass constructor first!
-        super( SPL_RANGE_FRAME_TITLE_DEFAULT, 
-               "splRange", 
-               pProductBranding, 
+        super( SPL_RANGE_FRAME_TITLE_DEFAULT,
+               "splRange",
+               pProductBranding,
                pClientProperties );
-        
+
         useExtendedRange = pUseExtendedRange;
 
         try {
@@ -74,22 +71,32 @@ public final class SplRangeStage extends XStage {
         }
     }
 
+    private void initStage() {
+        // First have the superclass initialize its content.
+        initStage( "/icons/mhschmieder/JetPalette16.png",
+                   300.0d,
+                   180.0d,
+                   false );
+    }
+
     public int getSplRangeDb() {
         // Forward this method to the SPL Range Pane.
         return splRangePane.getSplRangeDb();
     }
 
-    private void initStage() {
-        // First have the superclass initialize its content.
-        initStage( "/icons/mhschmieder/JetPalette16.png", 
-                   300.0d, 
-                   180.0d,
-                   false );
-    }
-
     public boolean isAutoRangeSpl() {
         // Forward this method to the SPL Range Pane.
         return splRangePane.isAutoRangeSpl();
+    }
+
+    // Add the Tool Bar for this Stage.
+    @Override
+    public ToolBar loadToolBar() {
+        // Build the Tool Bar for this Stage.
+        toolBar = new PredictToolBar( clientProperties, simulationActions );
+
+        // Return the Tool Bar so the superclass can use it.
+        return toolBar;
     }
 
     // Load the relevant actions for this Stage.
@@ -102,26 +109,13 @@ public final class SplRangeStage extends XStage {
     @Override
     protected Node loadContent() {
         // Instantiate and return the custom Content Node.
-        splRangePane = new SplRangePane( clientProperties, 
-                                         useExtendedRange );
+        splRangePane = new SplRangePane( clientProperties, useExtendedRange );
         return splRangePane;
     }
 
-    // Add the Tool Bar for this Stage.
-    @Override
-    public ToolBar loadToolBar() {
-        // Build the Tool Bar for this Stage.
-        toolBar = new PredictToolBar( clientProperties, 
-                                      simulationActions );
-
-        // Return the Tool Bar so the superclass can use it.
-        return toolBar;
-    }
-
-    public void updateSplRange( final boolean autoRangeSpl, 
+    public void updateSplRange( final boolean autoRangeSpl,
                                 final int splRangeDb ) {
         // Forward this method to the SPL Range Pane.
-        splRangePane.updateSplRange( autoRangeSpl, 
-                                     splRangeDb );
+        splRangePane.updateSplRange( autoRangeSpl, splRangeDb );
     }
 }

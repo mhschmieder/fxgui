@@ -35,6 +35,9 @@ import com.mhschmieder.fxgraphics.image.ImageUtilities;
 import com.mhschmieder.fxgui.util.GuiUtilities;
 import com.mhschmieder.jcommons.branding.ProductBranding;
 import com.mhschmieder.jcommons.util.SystemType;
+
+import java.util.List;
+
 import javafx.collections.ObservableList;
 import javafx.scene.Node;
 import javafx.scene.image.Image;
@@ -43,8 +46,6 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.Popup;
 import javafx.stage.Window;
-
-import java.util.List;
 
 public final class AboutBox extends Popup {
 
@@ -82,7 +83,8 @@ public final class AboutBox extends Popup {
                               final boolean useAppInfo ) {
         // Place the Splash Screen Image in a JavaFX ImageView container, so it
         // can be displayed and scaled.
-        _splashImageView = ImageUtilities.getImageView( splashScreenImage, backgroundLoading );
+        _splashImageView = ImageUtilities.getImageView( splashScreenImage,
+                                                        backgroundLoading );
 
         // Create a root pane to host the (optional) banner label, attribution
         // for third-party libraries, and the Splash Screen Image.
@@ -93,8 +95,9 @@ public final class AboutBox extends Popup {
         final ObservableList< Node > nodes = root.getChildren();
         if ( useAppInfo ) {
             final String revisionNotice = "Release Version: "
-                    + productBranding.productVersion + ",  Last Updated: "
-                    + productBranding.revisionDate;
+                                          + productBranding.productVersion
+                                          + ",  Last Updated: "
+                                          + productBranding.revisionDate;
 
             final HBox banner = GuiUtilities.getBanner( revisionNotice );
             nodes.add( banner );
@@ -104,8 +107,10 @@ public final class AboutBox extends Popup {
 
         if ( useAppInfo ) {
             if ( thirdPartyAttributions != null ) {
-                for ( final String thirdPartyAttribution : thirdPartyAttributions ) {
-                    final HBox attribution = GuiUtilities.getBanner( thirdPartyAttribution );
+                for ( final String thirdPartyAttribution :
+                        thirdPartyAttributions ) {
+                    final HBox attribution = GuiUtilities.getBanner(
+                            thirdPartyAttribution );
                     nodes.add( attribution );
                 }
             }
@@ -185,5 +190,4 @@ public final class AboutBox extends Popup {
         show( ownerWindow, getX(), getY() );
         _splashImageView.requestFocus();
     }
-
 }

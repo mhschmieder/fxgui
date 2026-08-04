@@ -39,6 +39,7 @@ import com.mhschmieder.jcommons.util.ClientProperties;
 import com.mhschmieder.jgraphics.input.ScrollingSensitivity;
 import com.mhschmieder.jphysics.measure.AngleUnit;
 import com.mhschmieder.jphysics.measure.DistanceUnit;
+
 import javafx.collections.ObservableList;
 import javafx.scene.Node;
 
@@ -48,24 +49,28 @@ public final class CartesianLineEditor extends ObjectPropertiesEditor {
     protected CartesianLinePane _cartesianLinePane;
 
     // Maintain a reference to the current Cartesian Line object.
-    protected CartesianLine                              _cartesianLineReference;
+    protected CartesianLine _cartesianLineReference;
 
     // Maintain a reference to the Cartesian Line collection.
-    protected GraphicalObjectCollection< CartesianLine > _cartesianLineCollection;
-    
-    // Allow for customization of Cartesian Line Type (name identifier, not behavior).
+    protected GraphicalObjectCollection< CartesianLine >
+            _cartesianLineCollection;
+
+    // Allow for customization of Cartesian Line Type (name identifier, not
+    // behavior).
     protected String _cartesianLineType;
 
-    // Allow for customization of Projector Type (name identifier, not behavior).
+    // Allow for customization of Projector Type (name identifier, not
+    // behavior).
     protected String _projectorType;
-    
-    // Allow for customization of Projection Zones Type (name identifier, not behavior).
+
+    // Allow for customization of Projection Zones Type (name identifier, not
+    // behavior).
     protected String _projectionZonesType;
-    
+
     // Projection Zones usage context, for constructing tooltips.
     protected String _projectionZonesUsageContext;
 
-    @SuppressWarnings("nls")
+    @SuppressWarnings( "nls" )
     public CartesianLineEditor( final boolean insertMode,
                                 final GraphicalObjectCollection< CartesianLine > cartesianLineCollection,
                                 final ProductBranding productBranding,
@@ -76,15 +81,15 @@ public final class CartesianLineEditor extends ObjectPropertiesEditor {
                                 final String projectionZonesType,
                                 final String projectionZonesUsageContext ) {
         // Always call the superclass constructor first!
-        super( insertMode, 
-               cartesianLineType, 
-               "cartesianLine", 
-               productBranding, 
+        super( insertMode,
+               cartesianLineType,
+               "cartesianLine",
+               productBranding,
                pClientProperties,
                pResetApplicable );
 
         _cartesianLineCollection = cartesianLineCollection;
-        
+
         _cartesianLineType = cartesianLineType;
         _projectorType = projectorType;
         _projectionZonesType = projectionZonesType;
@@ -101,13 +106,26 @@ public final class CartesianLineEditor extends ObjectPropertiesEditor {
         }
     }
 
+    @SuppressWarnings( "nls" )
+    private void initStage() {
+        // First have the superclass initialize its content.
+        initStage( "/icons/wooThemes/Ruler16.png",
+                   _cartesianLineType,
+                   1080d,
+                   460d,
+                   false,
+                   false,
+                   false );
+    }
+
     // Open the textField initialized to a mouse-selected Cartesian Line.
     public void editCartesianLine( final CartesianLine cartesianLine ) {
         // Make sure an active editing session is always enabled when visible.
         setDisable( false );
 
         // Make sure the Layer Names are up-to-date, and that we avoid any side
-        // effects against the selected Layer for the new Cartesian Line Reference.
+        // effects against the selected Layer for the new Cartesian Line
+        // Reference.
         final Layer currentLayer = cartesianLine.getLayer();
         updateLayerNames( currentLayer );
 
@@ -125,25 +143,22 @@ public final class CartesianLineEditor extends ObjectPropertiesEditor {
         updateView();
     }
 
+    public void updateLayerNames( final Layer currentLayer ) {
+        // Forward this method to the Cartesian Line Pane.
+        _cartesianLinePane.updateLayerNames( currentLayer );
+    }
+
     public CartesianLine getCartesianLineReference() {
         return _cartesianLineReference;
+    }
+
+    public void setCartesianLineReference( final CartesianLine cartesianLine ) {
+        _cartesianLineReference = cartesianLine;
     }
 
     public String getNewCartesianLineLabelDefault() {
         // Forward this method to the Cartesian Line Pane.
         return _cartesianLinePane.getNewCartesianLineLabelDefault();
-    }
-
-    @SuppressWarnings("nls")
-    private void initStage() {
-        // First have the superclass initialize its content.
-        initStage( "/icons/wooThemes/Ruler16.png",
-                   _cartesianLineType,
-                   1080d,
-                   460d,
-                   false,
-                   false,
-                   false );
     }
 
     @Override
@@ -168,8 +183,8 @@ public final class CartesianLineEditor extends ObjectPropertiesEditor {
         final String cartesianLineLabel = _cartesianLineReference.getLabel();
 
         // Make a default Cartesian Line to effectively reset all the fields.
-        final CartesianLine cartesianLineDefault = CartesianLine
-                .getDefaultCartesianLine();
+        final CartesianLine cartesianLineDefault
+                = CartesianLine.getDefaultCartesianLine();
         _cartesianLineReference.setCartesianLine( cartesianLineDefault );
 
         // Restore the fields we want to preserve.
@@ -180,8 +195,16 @@ public final class CartesianLineEditor extends ObjectPropertiesEditor {
         updateView();
     }
 
-    public void setCartesianLineReference( final CartesianLine cartesianLine ) {
-        _cartesianLineReference = cartesianLine;
+    @Override
+    protected void updateObjectPropertiesView() {
+        // Forward this method to the Cartesian Line Pane.
+        _cartesianLinePane.updateCartesianLineView( _cartesianLineReference );
+    }
+
+    @Override
+    public void updatePreview() {
+        // Forward this method to the Cartesian Line Pane.
+        _cartesianLinePane.updatePreview( _cartesianLineReference );
     }
 
     @Override
@@ -192,6 +215,19 @@ public final class CartesianLineEditor extends ObjectPropertiesEditor {
 
         // Forward this method to the Cartesian Line Pane.
         _cartesianLinePane.setDisable( disable );
+    }
+
+    @Override
+    protected void updateObjectPropertiesModel() {
+        // Forward this method to the Cartesian Line Pane.
+        _cartesianLinePane.updateCartesianLineModel( _cartesianLineReference );
+    }
+
+    // TODO: Verify whether we need to synchronize both positions.
+    @Override
+    public void updatePositioning() {
+        // Forward this method to the Cartesian Line Pane.
+        _cartesianLinePane.updatePositioning( _cartesianLineReference );
     }
 
     public void setGesturesEnabled( final boolean gesturesEnabled ) {
@@ -207,24 +243,11 @@ public final class CartesianLineEditor extends ObjectPropertiesEditor {
     /**
      * Set the new Scrolling Sensitivity for all the sliders.
      *
-     * @param scrollingSensitivity
-     *            The sensitivity of the mouse scroll wheel
+     * @param scrollingSensitivity The sensitivity of the mouse scroll wheel
      */
     public void setScrollingSensitivity( final ScrollingSensitivity scrollingSensitivity ) {
         // Forward this method to the Cartesian Line Pane.
         _cartesianLinePane.setScrollingSensitivity( scrollingSensitivity );
-    }
-
-    @Override
-    protected void updateObjectPropertiesView() {
-        // Forward this method to the Cartesian Line Pane.
-        _cartesianLinePane.updateCartesianLineView( _cartesianLineReference );
-    }
-
-    @Override
-    protected void updateObjectPropertiesModel() {
-        // Forward this method to the Cartesian Line Pane.
-        _cartesianLinePane.updateCartesianLineModel( _cartesianLineReference );
     }
 
     public void updateLayerNameSelection() {
@@ -269,23 +292,4 @@ public final class CartesianLineEditor extends ObjectPropertiesEditor {
         _cartesianLinePane.updateLayerNames( preserveSelectedLayerByIndex,
                                              preserveSelectedLayerByName );
     }
-
-    public void updateLayerNames( final Layer currentLayer ) {
-        // Forward this method to the Cartesian Line Pane.
-        _cartesianLinePane.updateLayerNames( currentLayer );
-    }
-
-    // TODO: Verify whether we need to synchronize both positions.
-    @Override
-    public void updatePositioning() {
-        // Forward this method to the Cartesian Line Pane.
-        _cartesianLinePane.updatePositioning( _cartesianLineReference );
-    }
-
-    @Override
-    public void updatePreview() {
-        // Forward this method to the Cartesian Line Pane.
-        _cartesianLinePane.updatePreview( _cartesianLineReference );
-    }
-
 }

@@ -37,6 +37,7 @@ import com.mhschmieder.fxcontrols.control.ControlUtilities;
 import com.mhschmieder.jcommons.util.ClientProperties;
 import com.mhschmieder.jgraphics.input.ScrollingSensitivity;
 import com.mhschmieder.jphysics.measure.AngleUnit;
+
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.Label;
@@ -58,19 +59,16 @@ public class AnglePane extends VBox {
         initPane( clientProperties, labelText, useContextMenu );
     }
 
-    public final double getAngleDegrees() {
-        return _angleSlider.getValue();
-    }
-
     private final void initPane( final ClientProperties clientProperties,
                                  final String labelText,
                                  final boolean useContextMenu ) {
         // Create a default Angle Slider.
         _angleSlider = new AngleSlider( clientProperties, useContextMenu );
 
-        // Conform the associated textField (text field) to the slider attributes.
-        _angleEditor = ControlFactory.makeAngleSliderEditor(
-                clientProperties, _angleSlider );
+        // Conform the associated textField (text field) to the slider
+        // attributes.
+        _angleEditor = ControlFactory.makeAngleSliderEditor( clientProperties,
+                                                             _angleSlider );
         _angleEditor.setPrefWidth( 70d );
 
         final Label angleLabel = ControlUtilities.getControlLabel( labelText );
@@ -95,7 +93,8 @@ public class AnglePane extends VBox {
         // double precision value property, bypassing this step. The text
         // property of the underlying Text Field stays in sync as a formatted
         // number via other methods and callbacks.
-        _angleEditor.valueProperty().bindBidirectional( _angleSlider.valueProperty() );
+        _angleEditor.valueProperty()
+                    .bindBidirectional( _angleSlider.valueProperty() );
         // _angleEditor.textProperty().bindBidirectional(
         // _angleSlider.valueProperty(),
         // new AngleConverter( _angleEditor
@@ -106,6 +105,15 @@ public class AnglePane extends VBox {
         // _angleSlider.getMin(),
         // _angleSlider
         // .getMax() ) );
+    }
+
+    public final double getAngleDegrees() {
+        return _angleSlider.getValue();
+    }
+
+    public final void setAngleDegrees( final double angleDegrees ) {
+        // Forward this to the Angle Slider so it can unwrap the angle.
+        _angleSlider.setAngleDegrees( angleDegrees );
     }
 
     public final void saveEdits() {
@@ -120,13 +128,14 @@ public class AnglePane extends VBox {
         }
     }
 
-    public final void setAngleDegrees( final double angleDegrees ) {
-        // Forward this to the Angle Slider so it can unwrap the angle.
-        _angleSlider.setAngleDegrees( angleDegrees );
-    }
-
     public final void setGesturesEnabled( final boolean gesturesEnabled ) {
         _angleSlider.setGesturesEnabled( gesturesEnabled );
+    }
+
+    public final void setNumericRange( final double minimumAngle,
+                                       final double maximumAngle ) {
+        setMinimum( minimumAngle );
+        setMaximum( maximumAngle );
     }
 
     public final void setMaximum( final double maximumAngle ) {
@@ -139,16 +148,10 @@ public class AnglePane extends VBox {
         _angleEditor.setMinimumValue( minimumAngle );
     }
 
-    public final void setNumericRange( final double minimumAngle, final double maximumAngle ) {
-        setMinimum( minimumAngle );
-        setMaximum( maximumAngle );
-    }
-
     /**
      * Set the new Scrolling Sensitivity for the Angle Sliders.
      *
-     * @param scrollingSensitivity
-     *            The sensitivity of the mouse scroll wheel
+     * @param scrollingSensitivity The sensitivity of the mouse scroll wheel
      */
     public final void setScrollingSensitivity( final ScrollingSensitivity scrollingSensitivity ) {
         _angleSlider.setScrollingSensitivity( scrollingSensitivity );
@@ -162,5 +165,4 @@ public class AnglePane extends VBox {
         // TODO: Implement this, and also for the associated slider?
         // _angleEditor.updateAngleUnit( angleUnit );
     }
-
 }

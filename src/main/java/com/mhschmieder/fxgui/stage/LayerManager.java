@@ -41,14 +41,15 @@ import com.mhschmieder.fxgui.dialog.DialogUtilities;
 import com.mhschmieder.fxgui.layout.LayerManagerPane;
 import com.mhschmieder.jcommons.branding.ProductBranding;
 import com.mhschmieder.jcommons.util.ClientProperties;
+
+import java.util.Optional;
+
 import javafx.collections.ObservableList;
 import javafx.scene.Node;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.MenuBar;
 import javafx.scene.control.ToolBar;
 import javafx.scene.paint.Color;
-
-import java.util.Optional;
 
 public final class LayerManager extends XStage {
 
@@ -66,23 +67,20 @@ public final class LayerManager extends XStage {
 
     // Declare the main tool bar.
     public LayerManagerToolBar _toolBar;
-
-    // Cache the Layer Collection reference.
-    private ObservableList< LayerProperties > _layerCollection;
-
     // Declare the main content pane.
     protected LayerManagerPane _layerManagerPane;
+    // Cache the Layer Collection reference.
+    private ObservableList< LayerProperties > _layerCollection;
 
     public LayerManager( final ProductBranding productBranding,
                          final ClientProperties pClientProperties ) {
         // Always call the superclass constructor first!
-        super(
-                LAYER_MANAGER_FRAME_TITLE_DEFAULT,
-                "layerManager",
-                true,
-                true,
-                productBranding,
-                pClientProperties );
+        super( LAYER_MANAGER_FRAME_TITLE_DEFAULT,
+               "layerManager",
+               true,
+               true,
+               productBranding,
+               pClientProperties );
 
         try {
             initStage( true );
@@ -92,21 +90,107 @@ public final class LayerManager extends XStage {
         }
     }
 
+    @SuppressWarnings( "nls" )
+    public void initStage( final boolean resizable ) {
+        // First have the superclass initialize its content.
+        initStage( "/com/ahaSoft/icons/Layers16.png",
+                   LAYER_MANAGER_STAGE_WIDTH_DEFAULT,
+                   LAYER_MANAGER_STAGE_HEIGHT_DEFAULT,
+                   resizable );
+
+        // Clear any selected rows in the Layers Table, to set enablement.
+        clearSelection();
+        updateContextualSettings();
+
+        graphicsCategory = "Layers";
+    }
+
+    // Clear any selected rows in the Layers Table.
+    protected void clearSelection() {
+        // Forward this method to the Layer Management Pane.
+        _layerManagerPane.clearSelection();
+    }
+
+    public void addLayerSelectionListener() {
+        // Forward this method to the Layer Management Pane.
+        _layerManagerPane.addLayerSelectionListener();
+    }
+
+    // This method is used during File Load post-processing of graphical
+    // objects that have Layer assignments, to add ones not already present. As
+    // these Layers come from files vs. user editing, we already know the names
+    // are either unique or correspond to Layers already present in the project,
+    // thus we do not want to disambiguate names as with addLayer().
+    public LayerProperties importLayer( final LayerProperties layerCandidate ) {
+        // Add the Layer candidate to the collection if not already present.
+        final LayerProperties layerAdjusted
+                = LayerPropertiesManagement.importLayer( _layerCollection,
+                                                         layerCandidate );
+
+        // Update the contextual Layer Management settings.
+        updateContextualSettings();
+
+        // Return the imported Layer if added, or the Default Layer.
+        return layerAdjusted;
+    }
+
+    public void removeLayerSelectionListener() {
+        // Forward this method to the Layer Management Pane.
+        _layerManagerPane.removeLayerSelectionListener();
+    }
+
+    // This method should only be called once, at startup, but it is now
+    // written safely anyway, in that it removes the change listener (if
+    // present) before adding it, due to the stacked weak listener issue.
+    public void setLayerCollection( final ObservableList< LayerProperties > layerCollection ) {
+        // Cache a local copy of the Layer Collection.
+        _layerCollection = layerCollection;
+
+        // Forward this method to the Layer Management Pane.
+        _layerManagerPane.setLayerCollection( layerCollection );
+    }
+
+    public void updateLayerCollection() {
+        // Forward this method to the Layer Management Pane.
+        _layerManagerPane.updateLayerCollection();
+
+        // The available options may change based on the new Layer Collection.
+        updateContextualSettings();
+    }
+
+    @Override
+    public String getBackgroundColor() {
+        return _actions.getSelectedBackgroundColorName();
+    }
+
+    @Override
+    public void selectBackgroundColor( final String backgroundColorName ) {
+        _actions.selectBackgroundColor( backgroundColorName );
+    }
+
+    @Override
+    public void setForegroundFromBackground( final Color backColor ) {
+        // Take care of general styling first, as that also loads shared
+        // variables.
+        super.setForegroundFromBackground( backColor );
+
+        // Forward this method to the Layer Management Pane.
+        _layerManagerPane.setForegroundFromBackground( backColor );
+    }
+
     // Add all of the relevant action handlers.
     @Override
     protected void addActionHandlers() {
         // Load the action handlers for the "File" actions.
-        _actions.fileActions._closeWindowAction.setEventHandler(
-                evt -> doCloseWindow() );
-        _actions.fileActions._pageSetupAction.setEventHandler(
-                evt -> doPageSetup() );
+        _actions.fileActions._closeWindowAction.setEventHandler( evt -> doCloseWindow() );
+        _actions.fileActions._pageSetupAction.setEventHandler( evt -> doPageSetup() );
         _actions.fileActions._printAction.setEventHandler( evt -> doPrint() );
 
         // Load the action handlers for the "Export" actions.
-        _actions.fileActions._exportActions._exportRasterGraphicsAction
-                .setEventHandler( evt -> doExportImageGraphics() );
-        _actions.fileActions._exportActions._exportVectorGraphicsAction
-                .setEventHandler( evt -> doExportVectorGraphics() );
+        _actions.fileActions._exportActions._exportRasterGraphicsAction.setEventHandler(
+                evt -> doExportImageGraphics() );
+        _actions.fileActions._exportActions._exportVectorGraphicsAction.setEventHandler(
+                evt -> doExportVectorGraphics() );
 
         // Load the action handlers for the "Background Color" choices.
         addBackgroundColorChoiceHandlers( _actions.settingsActions._backgroundColorChoices );
@@ -116,11 +200,6 @@ public final class LayerManager extends XStage {
 
         // Load the action handlers for the "Tools" actions.
         // NOTE: These are registered at the top-most level of the application.
-    }
-
-    public void addLayerSelectionListener() {
-        // Forward this method to the Layer Management Pane.
-        _layerManagerPane.addLayerSelectionListener();
     }
 
     // Add the Tool Bar's event listeners.
@@ -137,12 +216,6 @@ public final class LayerManager extends XStage {
         _toolBar._layerActionButtons._deleteButton.setOnAction( evt -> deleteLayers() );
     }
 
-    // Clear any selected rows in the Layers Table.
-    protected void clearSelection() {
-        // Forward this method to the Layer Management Pane.
-        _layerManagerPane.clearSelection();
-    }
-
     // Create a new Layer cloned from the selected Layer.
     public void createLayer() {
         // Insert the new Layer into the Layer Properties Table.
@@ -152,13 +225,19 @@ public final class LayerManager extends XStage {
         }
 
         // Immediately place editing focus into the default new Layer Name.
-        setEditingFocus(
-                referenceIndex,
-                LayerPropertiesTable.COLUMN_LAYER_NAME );
+        setEditingFocus( referenceIndex,
+                         LayerPropertiesTable.COLUMN_LAYER_NAME );
 
         // Update the contextual Layer Management settings.
         // NOTE: This is redundant due to the callback on selection changed.
         // updateContextualSettings();
+    }
+
+    // Place editing focus in the specified row and column.
+    protected void setEditingFocus( final int rowIndex,
+                                    final int columnIndex ) {
+        // Forward this method to the Layer Management Pane.
+        _layerManagerPane.setEditingFocus( rowIndex, columnIndex );
     }
 
     // Conditionally delete the selected Layer(s).
@@ -167,11 +246,15 @@ public final class LayerManager extends XStage {
         final String message = MessageFactory.getDeleteLayersMessage();
         final String masthead = MessageFactory.getDeleteLayersMasthead();
         final String title = MessageFactory.getDeleteLayersTitle();
-        final Optional< ButtonType > response = DialogUtilities
-                .showConfirmationAlert( message, masthead, title, false );
+        final Optional< ButtonType > response
+                = DialogUtilities.showConfirmationAlert( message,
+                                                         masthead,
+                                                         title,
+                                                         false );
 
         final ButtonType button = response.get();
-        if ( !ButtonType.OK.equals( button ) && !ButtonType.YES.equals( button ) ) {
+        if ( !ButtonType.OK.equals( button )
+             && !ButtonType.YES.equals( button ) ) {
             return;
         }
 
@@ -200,60 +283,13 @@ public final class LayerManager extends XStage {
         // updateContextualSettings();
     }
 
-    // This method is used during File Load post-processing of graphical
-    // objects that have Layer assignments, to add ones not already present. As
-    // these Layers come from files vs. user editing, we already know the names
-    // are either unique or correspond to Layers already present in the project,
-    // thus we do not want to disambiguate names as with addLayer().
-    public LayerProperties importLayer( final LayerProperties layerCandidate ) {
-        // Add the Layer candidate to the collection if not already present.
-        final LayerProperties layerAdjusted
-                = LayerPropertiesManagement.importLayer(
-                        _layerCollection, layerCandidate );
-
-        // Update the contextual Layer Management settings.
-        updateContextualSettings();
-
-        // Return the imported Layer if added, or the Default Layer.
-        return layerAdjusted;
-    }
-
-    @SuppressWarnings("nls")
-    public void initStage( final boolean resizable ) {
-        // First have the superclass initialize its content.
-        initStage( "/com/ahaSoft/icons/Layers16.png",
-                LAYER_MANAGER_STAGE_WIDTH_DEFAULT,
-                LAYER_MANAGER_STAGE_HEIGHT_DEFAULT,
-                   resizable );
-
-        // Clear any selected rows in the Layers Table, to set enablement.
-        clearSelection();
-        updateContextualSettings();
-        
-        graphicsCategory = "Layers";
-    }
-
-    // Load the relevant actions for this Stage.
-    @Override
-    protected void loadActions() {
-        // Make all the actions.
-        _actions = new LayerManagerActions( clientProperties );
-    }
-
-    @Override
-    protected Node loadContent() {
-        // Instantiate and return the custom Content Node.
-        _layerManagerPane = new LayerManagerPane(
-                this, clientProperties );
-        return _layerManagerPane;
-    }
-
     // Add the Menu Bar for this Stage.
     @Override
     protected MenuBar loadMenuBar() {
         // Build the Menu Bar for this Stage.
         final MenuBar menuBar = MenuFactory.getLayerManagerMenuBar(
-                clientProperties, _actions );
+                clientProperties,
+                _actions );
 
         // Return the Menu Bar so the superclass can use it.
         return menuBar;
@@ -269,36 +305,18 @@ public final class LayerManager extends XStage {
         return _toolBar;
     }
 
-    public void removeLayerSelectionListener() {
-        // Forward this method to the Layer Management Pane.
-        _layerManagerPane.removeLayerSelectionListener();
-    }
-
-    // Place editing focus in the specified row and column.
-    protected void setEditingFocus( final int rowIndex, final int columnIndex ) {
-        // Forward this method to the Layer Management Pane.
-        _layerManagerPane.setEditingFocus( rowIndex, columnIndex );
+    // Load the relevant actions for this Stage.
+    @Override
+    protected void loadActions() {
+        // Make all the actions.
+        _actions = new LayerManagerActions( clientProperties );
     }
 
     @Override
-    public void setForegroundFromBackground( final Color backColor ) {
-        // Take care of general styling first, as that also loads shared
-        // variables.
-        super.setForegroundFromBackground( backColor );
-
-        // Forward this method to the Layer Management Pane.
-        _layerManagerPane.setForegroundFromBackground( backColor );
-    }
-
-    // This method should only be called once, at startup, but it is now
-    // written safely anyway, in that it removes the change listener (if
-    // present) before adding it, due to the stacked weak listener issue.
-    public void setLayerCollection( final ObservableList< LayerProperties > layerCollection ) {
-        // Cache a local copy of the Layer Collection.
-        _layerCollection = layerCollection;
-
-        // Forward this method to the Layer Management Pane.
-        _layerManagerPane.setLayerCollection( layerCollection );
+    protected Node loadContent() {
+        // Instantiate and return the custom Content Node.
+        _layerManagerPane = new LayerManagerPane( this, clientProperties );
+        return _layerManagerPane;
     }
 
     // Update the contextual Layer Management settings.
@@ -315,23 +333,5 @@ public final class LayerManager extends XStage {
         // it is legal to delete either the selected row(s) or the default
         // auto-select row (which is currently hard-wired to be the last row).
         _toolBar.setLayerDeleteEnabled( canDeleteRows );
-    }
-
-    public void updateLayerCollection() {
-        // Forward this method to the Layer Management Pane.
-        _layerManagerPane.updateLayerCollection();
-
-        // The available options may change based on the new Layer Collection.
-        updateContextualSettings();
-    }
-    
-    @Override
-    public String getBackgroundColor() {
-        return _actions.getSelectedBackgroundColorName();
-    }
-
-    @Override
-    public void selectBackgroundColor( final String backgroundColorName ) {
-        _actions.selectBackgroundColor( backgroundColorName );
     }
 }

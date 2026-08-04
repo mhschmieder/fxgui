@@ -33,12 +33,6 @@ package com.mhschmieder.fxgui.file;
 import com.mhschmieder.fxcontrols.util.MessageFactory;
 import com.mhschmieder.fxgui.dialog.DialogUtilities;
 import com.mhschmieder.jcommons.lang.StringUtilities;
-import javafx.collections.ObservableList;
-import javafx.scene.control.ButtonType;
-import javafx.stage.DirectoryChooser;
-import javafx.stage.FileChooser;
-import javafx.stage.FileChooser.ExtensionFilter;
-import javafx.stage.Window;
 
 import java.io.File;
 import java.io.IOException;
@@ -51,95 +45,30 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Optional;
 
+import javafx.collections.ObservableList;
+import javafx.scene.control.ButtonType;
+import javafx.stage.DirectoryChooser;
+import javafx.stage.FileChooser;
+import javafx.stage.FileChooser.ExtensionFilter;
+import javafx.stage.Window;
+
 public final class FileChooserUtilities {
 
     // NOTE: The constructor is disabled, as this is a static utilities class.
-    private FileChooserUtilities() {}
-
-    // Correct the extension of a given filename to use a default filter.
-    public static String correctFileExtension( final String filename,
-                                               final ExtensionFilter extensionFilter ) {
-        // NOTE: We can't rename as the originally specified file may not
-        // exist, or may be a directory and not a file.
-        final List< String > defaultExtensions = extensionFilter.getExtensions();
-        final String defaultExtension = StringUtilities.replace( defaultExtensions.get( 0 ),
-                                                                 "*.", //$NON-NLS-1$
-                                                                 "." ); //$NON-NLS-1$
-        final String correctedFilename = filename + defaultExtension;
-        return correctedFilename;
-    }
-
-    // Get a File Chooser with fully initialized properties.
-    public static FileChooser getFileChooser( final String title,
-                                              final File initialDirectory,
-                                              final List< ExtensionFilter > extensionFilterAdditions,
-                                              final ExtensionFilter defaultExtensionFilter ) {
-        final FileChooser fileChooser = new FileChooser();
-        fileChooser.setTitle( title );
-        try {
-            if ( ( initialDirectory != null ) && Files.isDirectory( initialDirectory.toPath() ) ) {
-                fileChooser.setInitialDirectory( initialDirectory );
-            }
-        }
-        catch ( final SecurityException | InvalidPathException | NullPointerException e ) {
-            e.printStackTrace();
-        }
-
-        if ( extensionFilterAdditions != null ) {
-            final ObservableList< ExtensionFilter > extensionFilters = fileChooser
-                    .getExtensionFilters();
-            for ( final ExtensionFilter extensionFilter : extensionFilterAdditions ) {
-                extensionFilters.add( extensionFilter );
-            }
-
-            if ( ( defaultExtensionFilter != null )
-                    && extensionFilterAdditions.contains( defaultExtensionFilter ) ) {
-                fileChooser.setSelectedExtensionFilter( defaultExtensionFilter );
-            }
-            else {
-                fileChooser.setSelectedExtensionFilter( extensionFilterAdditions.get( 0 ) );
-            }
-        }
-
-        return fileChooser;
-    }
-
-    // Get a Directory Chooser with fully initialized properties.
-    public static DirectoryChooser getDirectoryChooser( 
-            final String title,
-            final File initialDirectory ) {
-        final DirectoryChooser directoryChooser = new DirectoryChooser();
-        directoryChooser.setTitle( title );
-        
-        try {
-            // It's OK for there to not be a valid initial default directory.
-            if ( ( initialDirectory != null ) 
-                    && Files.isDirectory( initialDirectory.toPath() ) ) {
-                directoryChooser.setInitialDirectory( initialDirectory );
-            }
-        }
-        catch ( final SecurityException | InvalidPathException | NullPointerException e ) {
-            e.printStackTrace();
-        }
-
-        return directoryChooser;
+    private FileChooserUtilities() {
     }
 
     /**
      * Get a file for a "File Open" action. Wraps
      * {@link FileChooser#showOpenDialog(javafx.stage.Window) showOpenDialog}.
      *
-     * @param title
-     *            the title to use for the file chooser
-     * @param initialDirectory
-     *            the initial default directory for the user
-     * @param extensionFilterAdditions
-     *            additions to the general file extensions
-     * @param defaultExtensionFilter
-     *            the default file extension filter to use
-     * @param parent
-     *            If an invalid or null parent is provided, the dialog will not
-     *            be modal.
+     * @param title                    the title to use for the file chooser
+     * @param initialDirectory         the initial default directory for the
+     *                                 user
+     * @param extensionFilterAdditions additions to the general file extensions
+     * @param defaultExtensionFilter   the default file extension filter to use
+     * @param parent                   If an invalid or null parent is provided,
+     *                                 the dialog will not be modal.
      * @return a file corresponding to the one selected in the chooser
      */
     public static File getFileForOpen( final String title,
@@ -158,6 +87,45 @@ public final class FileChooserUtilities {
 
         // Return the file, even if none was chosen.
         return file;
+    }
+
+    // Get a File Chooser with fully initialized properties.
+    public static FileChooser getFileChooser( final String title,
+                                              final File initialDirectory,
+                                              final List< ExtensionFilter > extensionFilterAdditions,
+                                              final ExtensionFilter defaultExtensionFilter ) {
+        final FileChooser fileChooser = new FileChooser();
+        fileChooser.setTitle( title );
+        try {
+            if ( ( initialDirectory != null ) && Files.isDirectory(
+                    initialDirectory.toPath() ) ) {
+                fileChooser.setInitialDirectory( initialDirectory );
+            }
+        }
+        catch ( final SecurityException | InvalidPathException |
+                      NullPointerException e ) {
+            e.printStackTrace();
+        }
+
+        if ( extensionFilterAdditions != null ) {
+            final ObservableList< ExtensionFilter > extensionFilters
+                    = fileChooser.getExtensionFilters();
+            for ( final ExtensionFilter extensionFilter :
+                    extensionFilterAdditions ) {
+                extensionFilters.add( extensionFilter );
+            }
+
+            if ( ( defaultExtensionFilter != null )
+                 && extensionFilterAdditions.contains( defaultExtensionFilter ) ) {
+                fileChooser.setSelectedExtensionFilter( defaultExtensionFilter );
+            }
+            else {
+                fileChooser.setSelectedExtensionFilter( extensionFilterAdditions.get(
+                        0 ) );
+            }
+        }
+
+        return fileChooser;
     }
 
     // Get a file for a "File Save As" action.
@@ -185,77 +153,14 @@ public final class FileChooserUtilities {
         }
 
         // Return the name-corrected file, even if none was chosen.
-        final List< ExtensionFilter > extensionFilters = fileChooser.getExtensionFilters();
-        final ExtensionFilter selectedExtensionFilter = fileChooser.getSelectedExtensionFilter();
+        final List< ExtensionFilter > extensionFilters
+                = fileChooser.getExtensionFilters();
+        final ExtensionFilter selectedExtensionFilter
+                = fileChooser.getSelectedExtensionFilter();
         final File nameCorrectedFile = getNameCorrectedFile( file,
                                                              extensionFilters,
                                                              selectedExtensionFilter );
         return nameCorrectedFile;
-    }
-
-    /**
-     * Get a file (or list of files) for a "File Open" action. Wraps
-     * {@link FileChooser#showOpenMultipleDialog(javafx.stage.Window)
-     * showOpenMultipleDialog}.
-     *
-     * @param title
-     *            the title to use for the file chooser
-     * @param initialDirectory
-     *            the initial default directory for the user
-     * @param extensionFilterAdditions
-     *            additions to the general file extensions
-     * @param defaultExtensionFilter
-     *            the default file extension filter to use
-     * @param parent
-     *            If an invalid or null parent is provided, the dialog will not
-     *            be modal.
-     * @return a file corresponding to the one selected in the chooser
-     */
-    public static List< File > getFilesForOpen( final String title,
-                                                final File initialDirectory,
-                                                final List< ExtensionFilter > extensionFilterAdditions,
-                                                final ExtensionFilter defaultExtensionFilter,
-                                                final Window parent ) {
-        // Get a file chooser with fully initialized properties.
-        final FileChooser fileChooser = getFileChooser( title,
-                                                        initialDirectory,
-                                                        extensionFilterAdditions,
-                                                        defaultExtensionFilter );
-
-        // Throw up a modal file chooser dialog for the "Open" filename.
-        final List< File > files = fileChooser.showOpenMultipleDialog( parent );
-
-        // Return the file(s), even if none was chosen.
-        return files;
-    }
-
-    /**
-     * Get a directory for a batch action or other action that traverses or 
-     * browses a full directory . Wraps
-     * {@link DirectoryChooser#showDialog(javafx.stage.Window) showDialog}.
-     *
-     * @param title
-     *            the title to use for the directory chooser
-     * @param initialDirectory
-     *            the initial default directory for the user
-     * @param parent
-     *            If an invalid or null parent is provided, the dialog will not
-     *            be modal.
-     * @return a directory corresponding to the one selected in the chooser
-     */
-    public static File getDirectory( final String title,
-                                     final File initialDirectory,
-                                     final Window parent ) {
-        // Get a directory chooser with fully initialized properties.
-        final DirectoryChooser directoryChooser = getDirectoryChooser( 
-                title,
-                initialDirectory );
-
-        // Throw up a modal directory chooser dialog for the directory name.
-        final File directory = directoryChooser.showDialog( parent );
-
-        // Return the directory, even if none was chosen.
-        return directory;
     }
 
     // Conditionally rename a file (such as when it is missing an extension).
@@ -266,7 +171,8 @@ public final class FileChooserUtilities {
             // Loop through all installed extension filters to see if any are
             // present on this file as typed into the file chooser.
             final String filename = file.getCanonicalPath();
-            final boolean extensionFound = verifyFileExtension( filename, extensionFilters );
+            final boolean extensionFound = verifyFileExtension( filename,
+                                                                extensionFilters );
 
             // If there is a valid extension, just return the file as is.
             if ( extensionFound ) {
@@ -288,18 +194,22 @@ public final class FileChooserUtilities {
             // TODO: Tag a revision number and/or product version and/or
             // date/time and do an auto-save without confirmation but possibly
             // with an informational alert instead?
-            final Path nameCorrectedPath = Paths.get( correctedFilename.toString() );
-            if ( Files.isRegularFile( nameCorrectedPath, LinkOption.NOFOLLOW_LINKS ) ) {
+            final Path nameCorrectedPath
+                    = Paths.get( correctedFilename.toString() );
+            if ( Files.isRegularFile( nameCorrectedPath,
+                                      LinkOption.NOFOLLOW_LINKS ) ) {
                 // Throw up an alert about possible overwrite.
-                final String message = MessageFactory.getContinueWithFileSaveMessage();
-                final String masthead = MessageFactory.getAutoAppendExtensionMayOverwriteMasthead();
+                final String message
+                        = MessageFactory.getContinueWithFileSaveMessage();
+                final String masthead
+                        =
+                        MessageFactory.getAutoAppendExtensionMayOverwriteMasthead();
                 final String title = MessageFactory.getFileNameConflictTitle();
-                final Optional< ButtonType > response = DialogUtilities
-                        .showConfirmationAlert(
-                                message,
-                                masthead,
-                                title,
-                                false );
+                final Optional< ButtonType > response
+                        = DialogUtilities.showConfirmationAlert( message,
+                                                                 masthead,
+                                                                 title,
+                                                                 false );
 
                 // Unless the user dismissed due to possible overwrite,
                 // construct the file object from the corrected path.
@@ -315,8 +225,137 @@ public final class FileChooserUtilities {
         return null;
     }
 
+    // Correct the extension of a given filename to use a default filter.
+    public static String correctFileExtension( final String filename,
+                                               final ExtensionFilter extensionFilter ) {
+        // NOTE: We can't rename as the originally specified file may not
+        // exist, or may be a directory and not a file.
+        final List< String > defaultExtensions
+                = extensionFilter.getExtensions();
+        final String defaultExtension = StringUtilities.replace(
+                defaultExtensions.get( 0 ),
+                "*.", //$NON-NLS-1$
+                "." ); //$NON-NLS-1$
+        final String correctedFilename = filename + defaultExtension;
+        return correctedFilename;
+    }
+
+    // Verify the extension of a given filename for a set of valid filters.
+    // NOTE: This method must execute on the JavaFX event thread.
+    public static boolean verifyFileExtension( final String filename,
+                                               final List< ExtensionFilter > extensionFilters ) {
+        // Loop through all installed extension filters to see if any are
+        // present on this filename as typed into the file chooser.
+        boolean extensionFound = false;
+        final Iterator< ExtensionFilter > extensionFiltersIterator
+                = extensionFilters.iterator();
+        while ( extensionFiltersIterator.hasNext() ) {
+            final ExtensionFilter extensionFilter
+                    = extensionFiltersIterator.next();
+            final List< String > extensionsList
+                    = extensionFilter.getExtensions();
+            final Iterator< String > extensionsIterator
+                    = extensionsList.iterator();
+            while ( extensionsIterator.hasNext() ) {
+                final String extension = StringUtilities.replace(
+                        extensionsIterator.next(),
+                        "*.", //$NON-NLS-1$
+                        "." ); //$NON-NLS-1$
+                if ( filename.endsWith( extension ) ) {
+                    extensionFound = true;
+                    break;
+                }
+            }
+
+            if ( extensionFound ) {
+                break;
+            }
+        }
+
+        return extensionFound;
+    }
+
+    /**
+     * Get a file (or list of files) for a "File Open" action. Wraps
+     * {@link FileChooser#showOpenMultipleDialog(javafx.stage.Window)
+     * showOpenMultipleDialog}.
+     *
+     * @param title                    the title to use for the file chooser
+     * @param initialDirectory         the initial default directory for the
+     *                                 user
+     * @param extensionFilterAdditions additions to the general file extensions
+     * @param defaultExtensionFilter   the default file extension filter to use
+     * @param parent                   If an invalid or null parent is provided,
+     *                                 the dialog will not be modal.
+     * @return a file corresponding to the one selected in the chooser
+     */
+    public static List< File > getFilesForOpen( final String title,
+                                                final File initialDirectory,
+                                                final List< ExtensionFilter > extensionFilterAdditions,
+                                                final ExtensionFilter defaultExtensionFilter,
+                                                final Window parent ) {
+        // Get a file chooser with fully initialized properties.
+        final FileChooser fileChooser = getFileChooser( title,
+                                                        initialDirectory,
+                                                        extensionFilterAdditions,
+                                                        defaultExtensionFilter );
+
+        // Throw up a modal file chooser dialog for the "Open" filename.
+        final List< File > files = fileChooser.showOpenMultipleDialog( parent );
+
+        // Return the file(s), even if none was chosen.
+        return files;
+    }
+
+    /**
+     * Get a directory for a batch action or other action that traverses or
+     * browses a full directory . Wraps
+     * {@link DirectoryChooser#showDialog(javafx.stage.Window) showDialog}.
+     *
+     * @param title            the title to use for the directory chooser
+     * @param initialDirectory the initial default directory for the user
+     * @param parent           If an invalid or null parent is provided, the
+     *                         dialog will not be modal.
+     * @return a directory corresponding to the one selected in the chooser
+     */
+    public static File getDirectory( final String title,
+                                     final File initialDirectory,
+                                     final Window parent ) {
+        // Get a directory chooser with fully initialized properties.
+        final DirectoryChooser directoryChooser = getDirectoryChooser( title,
+                                                                       initialDirectory );
+
+        // Throw up a modal directory chooser dialog for the directory name.
+        final File directory = directoryChooser.showDialog( parent );
+
+        // Return the directory, even if none was chosen.
+        return directory;
+    }
+
+    // Get a Directory Chooser with fully initialized properties.
+    public static DirectoryChooser getDirectoryChooser( final String title,
+                                                        final File initialDirectory ) {
+        final DirectoryChooser directoryChooser = new DirectoryChooser();
+        directoryChooser.setTitle( title );
+
+        try {
+            // It's OK for there to not be a valid initial default directory.
+            if ( ( initialDirectory != null ) && Files.isDirectory(
+                    initialDirectory.toPath() ) ) {
+                directoryChooser.setInitialDirectory( initialDirectory );
+            }
+        }
+        catch ( final SecurityException | InvalidPathException |
+                      NullPointerException e ) {
+            e.printStackTrace();
+        }
+
+        return directoryChooser;
+    }
+
     // Get a temporary file for interim write operations.
-    public static File getTempFile( final File file, final String filePrefix ) {
+    public static File getTempFile( final File file,
+                                    final String filePrefix ) {
         File tempFile = null;
 
         // Set the default error message and error message title for general
@@ -329,9 +368,9 @@ public final class FileChooserUtilities {
             // protects against overwriting the original file (if it exists)
             // until the file save is complete and known to be error-free.
             tempFile = File.createTempFile( filePrefix, null ); // use the
-                                                                // default
-                                                                // temporary
-                                                                // file suffix
+            // default
+            // temporary
+            // file suffix
             tempFile.deleteOnExit();
         }
         catch ( final IllegalArgumentException iae ) {
@@ -346,7 +385,8 @@ public final class FileChooserUtilities {
 
             // Throw up a message dialog that the security manager denies write
             // access for the selected file.
-            errorMessage = MessageFactory.getSecurityManagedFileMessage( file, "write" ); //$NON-NLS-1$
+            errorMessage = MessageFactory.getSecurityManagedFileMessage( file,
+                                                                         "write" ); //$NON-NLS-1$
         }
         catch ( final IOException ioe ) {
             ioe.printStackTrace();
@@ -363,36 +403,6 @@ public final class FileChooserUtilities {
         }
 
         return tempFile;
-    }
-
-    // Verify the extension of a given filename for a set of valid filters.
-    // NOTE: This method must execute on the JavaFX event thread.
-    public static boolean verifyFileExtension( final String filename,
-                                               final List< ExtensionFilter > extensionFilters ) {
-        // Loop through all installed extension filters to see if any are
-        // present on this filename as typed into the file chooser.
-        boolean extensionFound = false;
-        final Iterator< ExtensionFilter > extensionFiltersIterator = extensionFilters.iterator();
-        while ( extensionFiltersIterator.hasNext() ) {
-            final ExtensionFilter extensionFilter = extensionFiltersIterator.next();
-            final List< String > extensionsList = extensionFilter.getExtensions();
-            final Iterator< String > extensionsIterator = extensionsList.iterator();
-            while ( extensionsIterator.hasNext() ) {
-                final String extension = StringUtilities.replace( extensionsIterator.next(),
-                                                                  "*.", //$NON-NLS-1$
-                                                                  "." ); //$NON-NLS-1$
-                if ( filename.endsWith( extension ) ) {
-                    extensionFound = true;
-                    break;
-                }
-            }
-
-            if ( extensionFound ) {
-                break;
-            }
-        }
-
-        return extensionFound;
     }
 
     // Verify a selected file can be opened for read. Returns an error message.
@@ -417,7 +427,8 @@ public final class FileChooserUtilities {
 
             // Alert the user that the security manager denies read access for
             // the selected file.
-            return MessageFactory.getSecurityManagedFileMessage( file, "read" ); //$NON-NLS-1$
+            return MessageFactory.getSecurityManagedFileMessage( file, "read" );
+            //$NON-NLS-1$
         }
 
         // No more errors to detect at this point.
@@ -447,11 +458,12 @@ public final class FileChooserUtilities {
 
             // Alert the user that the security manager denies write access for
             // the selected file.
-            return MessageFactory.getSecurityManagedFileMessage( file, "write" ); //$NON-NLS-1$
+            return MessageFactory.getSecurityManagedFileMessage( file,
+                                                                 "write" );
+            //$NON-NLS-1$
         }
 
         // No more errors to detect at this point.
         return null;
     }
-
 }

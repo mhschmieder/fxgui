@@ -46,27 +46,24 @@ import javafx.scene.paint.Paint;
 public class BorderFactory {
 
     /**
-     * The default constructor is disabled, as this is a static utilities class.
+     * The default constructor is disabled, as this is a static utilities
+     * class.
      */
-    private BorderFactory() {}
+    private BorderFactory() {
+    }
 
-    public static Border makeThinSolidBorder( final Paint stroke, final CornerRadii cornerRadii ) {
+    public static Border makeThinSolidBorder( final Paint stroke,
+                                              final CornerRadii cornerRadii ) {
         return makeSolidBorder( stroke, cornerRadii, BorderStroke.THIN );
-    }
-
-    public static Border makeMediumSolidBorder( final Paint stroke,
-                                                final CornerRadii cornerRadii ) {
-        return makeSolidBorder( stroke, cornerRadii, BorderStroke.MEDIUM );
-    }
-
-    public static Border makeThickSolidBorder( final Paint stroke, final CornerRadii cornerRadii ) {
-        return makeSolidBorder( stroke, cornerRadii, BorderStroke.THICK );
     }
 
     public static Border makeSolidBorder( final Paint stroke,
                                           final CornerRadii cornerRadii,
                                           final BorderWidths borderWidths ) {
-        return makeBorder( stroke, BorderStrokeStyle.SOLID, cornerRadii, borderWidths );
+        return makeBorder( stroke,
+                           BorderStrokeStyle.SOLID,
+                           cornerRadii,
+                           borderWidths );
     }
 
     public static Border makeBorder( final Paint stroke,
@@ -81,22 +78,23 @@ public class BorderFactory {
         return new Border( borderStroke );
     }
 
-    public static Border makeThinSolidBorder( final Paint stroke,
-                                              final CornerRadii cornerRadii,
-                                              final Insets buttonInsets ) {
-        return makeSolidBorder( stroke, cornerRadii, BorderStroke.THIN, buttonInsets );
-    }
-
     public static Border makeMediumSolidBorder( final Paint stroke,
-                                                final CornerRadii cornerRadii,
-                                                final Insets buttonInsets ) {
-        return makeSolidBorder( stroke, cornerRadii, BorderStroke.MEDIUM, buttonInsets );
+                                                final CornerRadii cornerRadii ) {
+        return makeSolidBorder( stroke, cornerRadii, BorderStroke.MEDIUM );
     }
 
     public static Border makeThickSolidBorder( final Paint stroke,
-                                               final CornerRadii cornerRadii,
-                                               final Insets buttonInsets ) {
-        return makeSolidBorder( stroke, cornerRadii, BorderStroke.THICK, buttonInsets );
+                                               final CornerRadii cornerRadii ) {
+        return makeSolidBorder( stroke, cornerRadii, BorderStroke.THICK );
+    }
+
+    public static Border makeThinSolidBorder( final Paint stroke,
+                                              final CornerRadii cornerRadii,
+                                              final Insets buttonInsets ) {
+        return makeSolidBorder( stroke,
+                                cornerRadii,
+                                BorderStroke.THIN,
+                                buttonInsets );
     }
 
     public static Border makeSolidBorder( final Paint stroke,
@@ -124,4 +122,21 @@ public class BorderFactory {
         return new Border( borderStroke );
     }
 
+    public static Border makeMediumSolidBorder( final Paint stroke,
+                                                final CornerRadii cornerRadii,
+                                                final Insets buttonInsets ) {
+        return makeSolidBorder( stroke,
+                                cornerRadii,
+                                BorderStroke.MEDIUM,
+                                buttonInsets );
+    }
+
+    public static Border makeThickSolidBorder( final Paint stroke,
+                                               final CornerRadii cornerRadii,
+                                               final Insets buttonInsets ) {
+        return makeSolidBorder( stroke,
+                                cornerRadii,
+                                BorderStroke.THICK,
+                                buttonInsets );
+    }
 }

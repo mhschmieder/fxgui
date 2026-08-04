@@ -39,6 +39,7 @@ import com.mhschmieder.jphysics.measure.DistanceUnit;
 import com.mhschmieder.jphysics.measure.PressureUnit;
 import com.mhschmieder.jphysics.measure.TemperatureUnit;
 import com.mhschmieder.jphysics.measure.WeightUnit;
+
 import javafx.beans.binding.StringBinding;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -69,76 +70,9 @@ public final class MeasurementUnitsPane extends VBox {
         }
     }
 
-    private void bindProperties() {
-        // A failed attempt to be less verbose. Perhaps could be improved.
-        // Callable< String > distUnitStr = () -> measurementUnits
-        // .getDistanceUnit().toCanonicalString();
-        // ObjectProperty< DistanceUnit > distanceUnitProp = measurementUnits
-        // .distanceUnitProperty();
-        // StringBinding sb = Bindings.createStringBinding( distUnitStr,
-        // distanceUnitProp );
-        // distanceUnitSelector.valueProperty().bind( sb );
-
-        distanceUnitSelector.getEditor().textProperty().bind( new StringBinding() {
-            {
-                bind( measurementUnitProperties.distanceUnitProperty() );
-            }
-
-            @Override
-            protected String computeValue() {
-                return measurementUnitProperties.getDistanceUnit().label();
-            }
-        } );
-
-        /*
-        angleUnitSelector.getEditor().textProperty().bind( new StringBinding() {
-            {
-                bind( measurementUnits.angleUnitProperty() );
-            }
-            
-            @Override
-           protected String computeValue() {
-                return measurementUnits.getAngleUnit().label();
-            }
-        } );
-        */
-
-        weightUnitSelector.getEditor().textProperty().bind( new StringBinding() {
-            {
-                bind( measurementUnitProperties.weightUnitProperty() );
-            }
-
-            @Override
-            protected String computeValue() {
-                return measurementUnitProperties.getWeightUnit().label();
-            }
-        } );
-
-        temperatureUnitSelector.getEditor().textProperty().bind( new StringBinding() {
-            {
-                bind( measurementUnitProperties.temperatureUnitProperty() );
-            }
-
-            @Override
-            protected String computeValue() {
-                return measurementUnitProperties.getTemperatureUnit().label();
-            }
-        } );
-
-        pressureUnitSelector.getEditor().textProperty().bind( new StringBinding() {
-            {
-                bind( measurementUnitProperties.pressureUnitProperty() );
-            }
-
-            @Override
-            protected String computeValue() {
-                return measurementUnitProperties.getPressureUnit().label();
-            }
-        } );
-    }
-
     private void initPane( final ClientProperties pClientProperties ) {
-        final Label distanceUnitLabel = ControlUtilities.getControlLabel( "Distance Unit" );
+        final Label distanceUnitLabel = ControlUtilities.getControlLabel(
+                "Distance Unit" );
         distanceUnitSelector = ControlFactory.makeDistanceUnitSelector(
                 pClientProperties,
                 true,
@@ -146,26 +80,30 @@ public final class MeasurementUnitsPane extends VBox {
                 DistanceUnit.defaultValue() );
 
         /*
-        final Label angleUnitLabel = GuiUtilities.getControlLabel( "Angle Unit" );
-        angleUnitSelector = PhysicsControlFactory.makeAngleUnitSelector( 
+        final Label angleUnitLabel = GuiUtilities.getControlLabel( "Angle
+        Unit" );
+        angleUnitSelector = PhysicsControlFactory.makeAngleUnitSelector(
                 pClientProperties,
                 true,
                 AngleUnit.defaultValue() );
         */
 
-        final Label weightUnitLabel = ControlUtilities.getControlLabel( "Weight Unit" );
+        final Label weightUnitLabel = ControlUtilities.getControlLabel(
+                "Weight Unit" );
         weightUnitSelector = ControlFactory.makeWeightUnitSelector(
                 pClientProperties,
                 true,
                 WeightUnit.defaultValue() );
 
-        final Label temperatureUnitLabel = ControlUtilities.getControlLabel( "Temperature Unit" );
+        final Label temperatureUnitLabel = ControlUtilities.getControlLabel(
+                "Temperature Unit" );
         temperatureUnitSelector = ControlFactory.makeTemperatureUnitSelector(
                 pClientProperties,
                 true,
                 TemperatureUnit.defaultValue() );
 
-        final Label pressureUnitLabel = ControlUtilities.getControlLabel( "Pressure Unit" );
+        final Label pressureUnitLabel = ControlUtilities.getControlLabel(
+                "Pressure Unit" );
         pressureUnitSelector = ControlFactory.makePressureUnitSelector(
                 pClientProperties,
                 true,
@@ -206,18 +144,26 @@ public final class MeasurementUnitsPane extends VBox {
         distanceUnitSelector.setMaxWidth( 120d );
 
         /*
-        angleUnitSelector.minWidthProperty().bind( distanceUnitSelector.widthProperty() );
-        angleUnitSelector.maxWidthProperty().bind( distanceUnitSelector.widthProperty() );
+        angleUnitSelector.minWidthProperty().bind( distanceUnitSelector
+        .widthProperty() );
+        angleUnitSelector.maxWidthProperty().bind( distanceUnitSelector
+        .widthProperty() );
         */
 
-        weightUnitSelector.minWidthProperty().bind( distanceUnitSelector.widthProperty() );
-        weightUnitSelector.maxWidthProperty().bind( distanceUnitSelector.widthProperty() );
+        weightUnitSelector.minWidthProperty()
+                          .bind( distanceUnitSelector.widthProperty() );
+        weightUnitSelector.maxWidthProperty()
+                          .bind( distanceUnitSelector.widthProperty() );
 
-        temperatureUnitSelector.minWidthProperty().bind( distanceUnitSelector.widthProperty() );
-        temperatureUnitSelector.maxWidthProperty().bind( distanceUnitSelector.widthProperty() );
+        temperatureUnitSelector.minWidthProperty()
+                               .bind( distanceUnitSelector.widthProperty() );
+        temperatureUnitSelector.maxWidthProperty()
+                               .bind( distanceUnitSelector.widthProperty() );
 
-        pressureUnitSelector.minWidthProperty().bind( distanceUnitSelector.widthProperty() );
-        pressureUnitSelector.maxWidthProperty().bind( distanceUnitSelector.widthProperty() );
+        pressureUnitSelector.minWidthProperty()
+                            .bind( distanceUnitSelector.widthProperty() );
+        pressureUnitSelector.maxWidthProperty()
+                            .bind( distanceUnitSelector.widthProperty() );
 
         // Bind the data model to the respective GUI components.
         // TODO: Determine whether the listeners below are rendered redundant.
@@ -247,7 +193,8 @@ public final class MeasurementUnitsPane extends VBox {
 
         // Load the event handler for the Temperature Unit Selector.
         temperatureUnitSelector.setOnAction( evt -> {
-            final TemperatureUnit temperatureUnit = temperatureUnitSelector.getValue();
+            final TemperatureUnit temperatureUnit
+                    = temperatureUnitSelector.getValue();
             measurementUnitProperties.setTemperatureUnit( temperatureUnit );
         } );
 
@@ -266,23 +213,7 @@ public final class MeasurementUnitsPane extends VBox {
 
         // NOTE: We have to update the selected items as well, as the bindings
         // only work with respect to user actions vs. programmatic updates.
-        updateMeasurementUnits(measurementUnitProperties);
-    }
-
-    // Set and bind the Measurement Units reference.
-    // NOTE: This should be done only once, to avoid breaking bindings.
-    public void setMeasurementUnits( final MeasurementUnitProperties pMeasurementUnitProperties) {
-        // Cache the Measurement Units reference.
-        measurementUnitProperties = pMeasurementUnitProperties;
-
-        // Set all of the initial selections, as the bindings don't do this due
-        // to differences between object properties and computed string values
-        // with regards to trigger points for bindings to kick in on initial
-        // evaluation of an unchanged state.
-        updateMeasurementUnits(pMeasurementUnitProperties);
-
-        // Bind the data model to the respective GUI components.
-        bindProperties();
+        updateMeasurementUnits( measurementUnitProperties );
     }
 
     public void updateMeasurementUnits( final MeasurementUnitProperties pMeasurementsUnits ) {
@@ -297,12 +228,6 @@ public final class MeasurementUnitsPane extends VBox {
         distanceUnitSelector.setValue( distanceUnit );
     }
 
-    /*
-    public final void updateAngleUnit( final AngleUnit angleUnit ) {
-        angleUnitSelector.setValue( angleUnit );
-    }
-    */
-
     public void updateWeightUnit( final WeightUnit weightUnit ) {
         weightUnitSelector.setValue( weightUnit );
     }
@@ -311,7 +236,109 @@ public final class MeasurementUnitsPane extends VBox {
         temperatureUnitSelector.setValue( temperatureUnit );
     }
 
+    /*
+    public final void updateAngleUnit( final AngleUnit angleUnit ) {
+        angleUnitSelector.setValue( angleUnit );
+    }
+    */
+
     public void updatePressureUnit( final PressureUnit pressureUnit ) {
         pressureUnitSelector.setValue( pressureUnit );
+    }
+
+    // Set and bind the Measurement Units reference.
+    // NOTE: This should be done only once, to avoid breaking bindings.
+    public void setMeasurementUnits( final MeasurementUnitProperties pMeasurementUnitProperties ) {
+        // Cache the Measurement Units reference.
+        measurementUnitProperties = pMeasurementUnitProperties;
+
+        // Set all of the initial selections, as the bindings don't do this due
+        // to differences between object properties and computed string values
+        // with regards to trigger points for bindings to kick in on initial
+        // evaluation of an unchanged state.
+        updateMeasurementUnits( pMeasurementUnitProperties );
+
+        // Bind the data model to the respective GUI components.
+        bindProperties();
+    }
+
+    private void bindProperties() {
+        // A failed attempt to be less verbose. Perhaps could be improved.
+        // Callable< String > distUnitStr = () -> measurementUnits
+        // .getDistanceUnit().toCanonicalString();
+        // ObjectProperty< DistanceUnit > distanceUnitProp = measurementUnits
+        // .distanceUnitProperty();
+        // StringBinding sb = Bindings.createStringBinding( distUnitStr,
+        // distanceUnitProp );
+        // distanceUnitSelector.valueProperty().bind( sb );
+
+        distanceUnitSelector.getEditor()
+                            .textProperty()
+                            .bind( new StringBinding() {
+                                {
+                                    bind( measurementUnitProperties.distanceUnitProperty() );
+                                }
+
+                                @Override
+                                protected String computeValue() {
+                                    return measurementUnitProperties.getDistanceUnit()
+                                                                    .label();
+                                }
+                            } );
+
+        /*
+        angleUnitSelector.getEditor().textProperty().bind( new StringBinding() {
+            {
+                bind( measurementUnits.angleUnitProperty() );
+            }
+
+            @Override
+           protected String computeValue() {
+                return measurementUnits.getAngleUnit().label();
+            }
+        } );
+        */
+
+        weightUnitSelector.getEditor()
+                          .textProperty()
+                          .bind( new StringBinding() {
+                              {
+                                  bind( measurementUnitProperties.weightUnitProperty() );
+                              }
+
+                              @Override
+                              protected String computeValue() {
+                                  return measurementUnitProperties.getWeightUnit()
+                                                                  .label();
+                              }
+                          } );
+
+        temperatureUnitSelector.getEditor()
+                               .textProperty()
+                               .bind( new StringBinding() {
+                                   {
+                                       bind( measurementUnitProperties.temperatureUnitProperty() );
+                                   }
+
+                                   @Override
+                                   protected String computeValue() {
+                                       return measurementUnitProperties.getTemperatureUnit()
+                                                                       .label();
+                                   }
+                               } );
+
+        pressureUnitSelector.getEditor()
+                            .textProperty()
+                            .bind( new StringBinding() {
+                                {
+                                    bind( measurementUnitProperties.pressureUnitProperty() );
+                                }
+
+                                @Override
+                                protected String computeValue() {
+                                    return measurementUnitProperties.getPressureUnit()
+                                                                    .label();
+                                }
+                            } );
     }
 }

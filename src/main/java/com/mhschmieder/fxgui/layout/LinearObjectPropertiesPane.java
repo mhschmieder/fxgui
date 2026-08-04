@@ -39,6 +39,9 @@ import com.mhschmieder.fxgraphics.geometry.LinearObject;
 import com.mhschmieder.fxgraphics.layers.Layer;
 import com.mhschmieder.fxgui.util.GuiUtilities;
 import com.mhschmieder.jcommons.util.ClientProperties;
+
+import java.util.List;
+
 import javafx.geometry.HPos;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -47,52 +50,49 @@ import javafx.scene.control.SingleSelectionModel;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
 
-import java.util.List;
-
 public class LinearObjectPropertiesPane extends BorderPane {
-
-    // Declare the table column header names.
-    private static final String        COLUMN_HEADER_LINEAR_OBJECT_LABEL = "Unique Label";         //$NON-NLS-1$
-    private static final String        COLUMN_HEADER_LAYER            = "Layer";                    //$NON-NLS-1$
-    private static final String        COLUMN_HEADER_PROJECTOR_DEFAULT = "Projector";               //$NON-NLS-1$
-    private static final String        COLUMN_HEADER_PROJECTION_ZONES_DEFAULT = "Projection Zones"; //$NON-NLS-1$
 
     // Declare static constant to use for symbolically referencing grid column
     // indices, to ensure no errors, and ease of extensibility.
-    public static final int            COLUMN_FIRST                   = 0;
-    public static final int            COLUMN_LINEAR_OBJECT_LABEL     = COLUMN_FIRST;
-    public static final int            COLUMN_LAYER                   = COLUMN_LINEAR_OBJECT_LABEL + 1;
-    public static final int            COLUMN_PROJECTOR               = COLUMN_LAYER + 1;
-    public static final int            COLUMN_PROJECTION_ZONES        = COLUMN_PROJECTOR + 1;
-    public static final int            COLUMN_LAST                    = COLUMN_PROJECTION_ZONES;
-    public static final int            NUMBER_OF_COLUMNS              =
-                                                         ( COLUMN_LAST - COLUMN_FIRST ) + 1;
-
+    public static final int COLUMN_FIRST = 0;
+    public static final int COLUMN_LINEAR_OBJECT_LABEL = COLUMN_FIRST;
+    public static final int COLUMN_LAYER = COLUMN_LINEAR_OBJECT_LABEL + 1;
+    public static final int COLUMN_PROJECTOR = COLUMN_LAYER + 1;
+    public static final int COLUMN_PROJECTION_ZONES = COLUMN_PROJECTOR + 1;
+    public static final int COLUMN_LAST = COLUMN_PROJECTION_ZONES;
+    public static final int NUMBER_OF_COLUMNS = ( COLUMN_LAST - COLUMN_FIRST )
+                                                + 1;
+    // Keep track of how many unique Column Headers there are (due to spanning).
+    public static final int NUMBER_OF_COLUMN_HEADERS = NUMBER_OF_COLUMNS;
     // Declare static constant to use for symbolically referencing grid row
     // indices, to ensure no errors, and ease of extensibility.
-    public static final int            ROW_HEADER                     = 0;
-    public static final int            ROW_PROPERTIES_FIRST           = ROW_HEADER + 1;
-    public static final int            ROW_PROPERTIES_LAST            = ROW_PROPERTIES_FIRST;
-    public static final int            ROW_LAST                       = ROW_PROPERTIES_LAST;
-
-    // Keep track of how many unique Column Headers there are (due to spanning).
-    public static final int            NUMBER_OF_COLUMN_HEADERS       = NUMBER_OF_COLUMNS;
-
-    // Declare the main GUI nodes that are needed beyond initialization time.
-    protected GridPane                 _linearObjectPropertiesGrid;
-
+    public static final int ROW_HEADER = 0;
+    public static final int ROW_PROPERTIES_FIRST = ROW_HEADER + 1;
+    public static final int ROW_PROPERTIES_LAST = ROW_PROPERTIES_FIRST;
+    public static final int ROW_LAST = ROW_PROPERTIES_LAST;
+    // Declare the table column header names.
+    private static final String COLUMN_HEADER_LINEAR_OBJECT_LABEL
+            = "Unique Label";         //$NON-NLS-1$
+    private static final String COLUMN_HEADER_LAYER = "Layer";
+    //$NON-NLS-1$
+    private static final String COLUMN_HEADER_PROJECTOR_DEFAULT = "Projector";
+    //$NON-NLS-1$
+    private static final String COLUMN_HEADER_PROJECTION_ZONES_DEFAULT
+            = "Projection Zones"; //$NON-NLS-1$
     // Declare the Linear Object Properties Controls.
     public LinearObjectPropertiesControls _linearObjectPropertiesControls;
-
+    // Declare the main GUI nodes that are needed beyond initialization time.
+    protected GridPane _linearObjectPropertiesGrid;
     // Cache the Linear Object Properties, for data binding.
     protected LinearObjectProperties _linearObjectProperties;
 
     public LinearObjectPropertiesPane( final ClientProperties pClientProperties,
                                        final String linearObjectLabelDefault,
-                                       final GraphicalObjectCollection< ? extends LinearObject > linearObjectCollection ) {
-        this( pClientProperties, 
-              linearObjectLabelDefault, 
-              linearObjectCollection, 
+                                       final GraphicalObjectCollection< ?
+                                               extends LinearObject > linearObjectCollection ) {
+        this( pClientProperties,
+              linearObjectLabelDefault,
+              linearObjectCollection,
               COLUMN_HEADER_PROJECTOR_DEFAULT,
               COLUMN_HEADER_PROJECTION_ZONES_DEFAULT,
               null );
@@ -100,7 +100,8 @@ public class LinearObjectPropertiesPane extends BorderPane {
 
     public LinearObjectPropertiesPane( final ClientProperties pClientProperties,
                                        final String linearObjectLabelDefault,
-                                       final GraphicalObjectCollection< ? extends LinearObject > linearObjectCollection,
+                                       final GraphicalObjectCollection< ?
+                                               extends LinearObject > linearObjectCollection,
                                        final String projectorType,
                                        final String projectionZonesType,
                                        final String projectionZonesUsageContext ) {
@@ -116,9 +117,9 @@ public class LinearObjectPropertiesPane extends BorderPane {
                 LinearObject.NUMBER_OF_PROJECTION_ZONES_DEFAULT );
 
         try {
-            initPane( pClientProperties, 
-                      linearObjectLabelDefault, 
-                      linearObjectCollection, 
+            initPane( pClientProperties,
+                      linearObjectLabelDefault,
+                      linearObjectCollection,
                       projectorType,
                       projectionZonesType,
                       projectionZonesUsageContext );
@@ -128,38 +129,10 @@ public class LinearObjectPropertiesPane extends BorderPane {
         }
     }
 
-    private final void bindProperties() {
-        // Bind the Linear Object Properties to their respective controls.
-        // NOTE: Bind the label property to our custom value property vs. the
-        // textField's built-in text property, as this is designed to more reliably
-        // reflect committed edits vs. incomplete or uncorrected typing.
-        _linearObjectPropertiesControls._linearObjectLabelEditor.textProperty()
-                .bindBidirectional( _linearObjectProperties.labelProperty() );
-        _linearObjectPropertiesControls._layerSelector.valueProperty()
-                .bindBidirectional( _linearObjectProperties.layerNameProperty() );
-        _linearObjectPropertiesControls._useAsProjectorCheckBox.selectedProperty()
-                .bindBidirectional( _linearObjectProperties.useAsProjectorProperty() );
-        _linearObjectPropertiesControls._projectionZonesSelector.valueProperty()
-                .bindBidirectional( _linearObjectProperties.numberOfProjectionZonesProperty() );
-    }
-
-    public final String getNewLinearObjectLabelDefault() {
-        // Forward this method to the Linear Object Properties Group.
-        return _linearObjectPropertiesControls.getNewLinearObjectLabelDefault();
-    }
-
-    public final String getUniqueLinearObjectLabel( final String linearObjectLabelCandidate ) {
-        // Forward this method to the Linear Object Properties Group.
-        return _linearObjectPropertiesControls.getUniqueLinearObjectLabel( linearObjectLabelCandidate );
-    }
-
-    public final LinearObjectProperties getLinearObjectProperties() {
-        return _linearObjectProperties;
-    }
-
     private final void initPane( final ClientProperties pClientProperties,
                                  final String linearObjectLabelDefault,
-                                 final GraphicalObjectCollection< ? extends LinearObject > linearObjectCollection,
+                                 final GraphicalObjectCollection< ?
+                                         extends LinearObject > linearObjectCollection,
                                  final String projectorType,
                                  final String projectionZonesType,
                                  final String projectionZonesUsageContext ) {
@@ -167,11 +140,14 @@ public class LinearObjectPropertiesPane extends BorderPane {
         _linearObjectPropertiesGrid = new GridPane();
 
         // We center the column header labels to follow common conventions.
-        final Label linearObjectLabelLabel = GuiUtilities
-                .getColumnHeader( COLUMN_HEADER_LINEAR_OBJECT_LABEL );
-        final Label layerLabel = GuiUtilities.getColumnHeader( COLUMN_HEADER_LAYER );
-        final Label projectorLabel = GuiUtilities.getColumnHeader( projectorType );
-        final Label projectionZonesLabel = GuiUtilities.getColumnHeader( projectionZonesType );
+        final Label linearObjectLabelLabel = GuiUtilities.getColumnHeader(
+                COLUMN_HEADER_LINEAR_OBJECT_LABEL );
+        final Label layerLabel = GuiUtilities.getColumnHeader(
+                COLUMN_HEADER_LAYER );
+        final Label projectorLabel
+                = GuiUtilities.getColumnHeader( projectorType );
+        final Label projectionZonesLabel = GuiUtilities.getColumnHeader(
+                projectionZonesType );
 
         // Force all the labels to center within the grid.
         GridPane.setHalignment( linearObjectLabelLabel, HPos.CENTER );
@@ -183,20 +159,27 @@ public class LinearObjectPropertiesPane extends BorderPane {
         _linearObjectPropertiesGrid.setHgap( 16d );
         _linearObjectPropertiesGrid.setVgap( 2.0d );
 
-        _linearObjectPropertiesGrid.add( linearObjectLabelLabel, COLUMN_LINEAR_OBJECT_LABEL, ROW_HEADER );
+        _linearObjectPropertiesGrid.add( linearObjectLabelLabel,
+                                         COLUMN_LINEAR_OBJECT_LABEL,
+                                         ROW_HEADER );
         _linearObjectPropertiesGrid.add( layerLabel, COLUMN_LAYER, ROW_HEADER );
-        _linearObjectPropertiesGrid.add( projectorLabel, COLUMN_PROJECTOR, ROW_HEADER );
-        _linearObjectPropertiesGrid.add( projectionZonesLabel, COLUMN_PROJECTION_ZONES, ROW_HEADER );
+        _linearObjectPropertiesGrid.add( projectorLabel,
+                                         COLUMN_PROJECTOR,
+                                         ROW_HEADER );
+        _linearObjectPropertiesGrid.add( projectionZonesLabel,
+                                         COLUMN_PROJECTION_ZONES,
+                                         ROW_HEADER );
 
         // Make the individual Linear Object Properties Controls and place in a
         // Grid.
-        _linearObjectPropertiesControls = new LinearObjectPropertiesControls( pClientProperties,
-                                                                              true,
-                                                                              linearObjectLabelDefault,
-                                                                              linearObjectCollection,
-                                                                              projectorType,
-                                                                              projectionZonesType,
-                                                                              projectionZonesUsageContext );
+        _linearObjectPropertiesControls = new LinearObjectPropertiesControls(
+                pClientProperties,
+                true,
+                linearObjectLabelDefault,
+                linearObjectCollection,
+                projectorType,
+                projectionZonesType,
+                projectionZonesUsageContext );
 
         _linearObjectPropertiesGrid.add( _linearObjectPropertiesControls._linearObjectLabelEditor,
                                          COLUMN_LINEAR_OBJECT_LABEL,
@@ -222,19 +205,51 @@ public class LinearObjectPropertiesPane extends BorderPane {
         // Prevent small drop-lists from minimizing their width below wide
         // labels.
         _linearObjectPropertiesControls._projectionZonesSelector.minWidthProperty()
-                .bind( projectionZonesLabel.widthProperty() );
+                                                                .bind( projectionZonesLabel.widthProperty() );
 
         // Bind the Linear Object Properties to their respective controls.
         bindProperties();
     }
 
+    private final void bindProperties() {
+        // Bind the Linear Object Properties to their respective controls.
+        // NOTE: Bind the label property to our custom value property vs. the
+        // textField's built-in text property, as this is designed to more
+        // reliably
+        // reflect committed edits vs. incomplete or uncorrected typing.
+        _linearObjectPropertiesControls._linearObjectLabelEditor.textProperty()
+                                                                .bindBidirectional(
+                                                                        _linearObjectProperties.labelProperty() );
+        _linearObjectPropertiesControls._layerSelector.valueProperty()
+                                                      .bindBidirectional(
+                                                              _linearObjectProperties.layerNameProperty() );
+        _linearObjectPropertiesControls._useAsProjectorCheckBox.selectedProperty()
+                                                               .bindBidirectional(
+                                                                       _linearObjectProperties.useAsProjectorProperty() );
+        _linearObjectPropertiesControls._projectionZonesSelector.valueProperty()
+                                                                .bindBidirectional(
+                                                                        _linearObjectProperties.numberOfProjectionZonesProperty() );
+    }
+
+    public final String getNewLinearObjectLabelDefault() {
+        // Forward this method to the Linear Object Properties Group.
+        return _linearObjectPropertiesControls.getNewLinearObjectLabelDefault();
+    }
+
+    public final String getUniqueLinearObjectLabel( final String linearObjectLabelCandidate ) {
+        // Forward this method to the Linear Object Properties Group.
+        return _linearObjectPropertiesControls.getUniqueLinearObjectLabel(
+                linearObjectLabelCandidate );
+    }
+
     // Find out if the candidate label is unique.
     public final boolean isLinearObjectLabelUnique( final String linearObjectLabelCandidate ) {
         // Forward this method to the Linear Object Properties Group.
-        return _linearObjectPropertiesControls.isLinearObjectLabelUnique( linearObjectLabelCandidate );
+        return _linearObjectPropertiesControls.isLinearObjectLabelUnique(
+                linearObjectLabelCandidate );
     }
 
-    public final void setLayerCollection( final List<Layer> layerCollection ) {
+    public final void setLayerCollection( final List< Layer > layerCollection ) {
         // Forward this method to the Linear Object Properties Group.
         _linearObjectPropertiesControls.setLayerCollection( layerCollection );
     }
@@ -242,15 +257,16 @@ public class LinearObjectPropertiesPane extends BorderPane {
     public final void updateLayerNameSelection( final GraphicalObject linearObject ) {
         // Forward this method to the Linear Object Properties Group.
         final String layerName = linearObject.getLayerName();
-        final SingleSelectionModel< String > selectionModel =
-                                                            _linearObjectPropertiesControls._layerSelector
-                                                                    .getSelectionModel();
+        final SingleSelectionModel< String > selectionModel
+                =
+                _linearObjectPropertiesControls._layerSelector.getSelectionModel();
         selectionModel.select( layerName );
     }
 
     public final void updateLinearObjectView( final LinearObject linearObject ) {
         // Update the table to match the new Linear Object Properties.
-        final LinearObjectProperties linearObjectProperties = getLinearObjectProperties();
+        final LinearObjectProperties linearObjectProperties
+                = getLinearObjectProperties();
         linearObjectProperties.setLabel( linearObject.getLabel() );
         linearObjectProperties.setLayerName( linearObject.getLayerName() );
 
@@ -259,14 +275,20 @@ public class LinearObjectPropertiesPane extends BorderPane {
         linearObjectProperties.setNumberOfProjectionZones( linearObject.getNumberOfProjectionZones() );
 
         // Make sure the cached textField value matches the latest saved label.
-        _linearObjectPropertiesControls._linearObjectLabelEditor.setValue( linearObject.getLabel() );
+        _linearObjectPropertiesControls._linearObjectLabelEditor.setValue(
+                linearObject.getLabel() );
+    }
+
+    public final LinearObjectProperties getLinearObjectProperties() {
+        return _linearObjectProperties;
     }
 
     public final void updateLayerNames( final boolean preserveSelectedLayerByIndex,
                                         final boolean preserveSelectedLayerByName ) {
         // Forward this method to the Linear Object Properties Group.
-        _linearObjectPropertiesControls._layerSelector.updateLayerNames( preserveSelectedLayerByIndex,
-                                                                         preserveSelectedLayerByName );
+        _linearObjectPropertiesControls._layerSelector.updateLayerNames(
+                preserveSelectedLayerByIndex,
+                preserveSelectedLayerByName );
     }
 
     public final void updateLayerNames( final int currentSelectedIndex ) {
@@ -277,9 +299,9 @@ public class LinearObjectPropertiesPane extends BorderPane {
                                         final boolean preserveSelectedLayerByIndex,
                                         final boolean preserveSelectedLayerByName ) {
         // Forward this method to the Linear Object Properties Group.
-        _linearObjectPropertiesControls._layerSelector.updateLayerNames( currentSelectedIndex,
-                                                                         preserveSelectedLayerByIndex,
-                                                                         preserveSelectedLayerByName );
+        _linearObjectPropertiesControls._layerSelector.updateLayerNames(
+                currentSelectedIndex,
+                preserveSelectedLayerByIndex,
+                preserveSelectedLayerByName );
     }
-
 }

@@ -48,5 +48,4 @@ public interface MacAppMenuEventHandler {
     void quit();
 
     void toFront();
-
 }

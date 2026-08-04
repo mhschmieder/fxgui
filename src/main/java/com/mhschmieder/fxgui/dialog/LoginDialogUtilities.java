@@ -34,11 +34,12 @@ import com.mhschmieder.fxcontrols.util.MessageFactory;
 import com.mhschmieder.fxgui.concurrent.service.AuthorizationRequestService;
 import com.mhschmieder.jcommons.security.LoginCredentials;
 import com.mhschmieder.jcommons.security.LoginType;
-import javafx.util.Callback;
-import javafx.util.Pair;
 
 import java.util.Locale;
 import java.util.Optional;
+
+import javafx.util.Callback;
+import javafx.util.Pair;
 
 /**
  * This is a utility class for showing dialogs related to security features such
@@ -47,27 +48,33 @@ import java.util.Optional;
 public final class LoginDialogUtilities {
 
     /**
-     * The default constructor is disabled, as this is a static utilities class.
+     * The default constructor is disabled, as this is a static utilities
+     * class.
      */
-    private LoginDialogUtilities() {}
+    private LoginDialogUtilities() {
+    }
 
-    public static boolean showLoginDialog(
-            final LoginType loginType,
-            final LoginCredentials loginCredentials,
-            final String productName,
-            final Locale locale,
-            final AuthorizationRequestService authorizationRequestService,
-            final boolean useAuthenticator ) {
+    public static boolean showLoginDialog( final LoginType loginType,
+                                           final LoginCredentials loginCredentials,
+                                           final String productName,
+                                           final Locale locale,
+                                           final AuthorizationRequestService authorizationRequestService,
+                                           final boolean useAuthenticator ) {
         // Block on the Login, passing in any cached Login Credentials.
-        final String title = MessageFactory.getLoginCredentialsTitle( loginType );
-        final String headerText = MessageFactory.getLoginCredentialsMasthead( loginType,
-                                                                              productName );
-        final Pair< String, String > initialUserInfo = new Pair<>( loginCredentials.getUserName(),
-                                                                   loginCredentials.getPassword() );
+        final String title
+                = MessageFactory.getLoginCredentialsTitle( loginType );
+        final String headerText = MessageFactory.getLoginCredentialsMasthead(
+                loginType,
+                productName );
+        final Pair< String, String > initialUserInfo = new Pair<>(
+                loginCredentials.getUserName(),
+                loginCredentials.getPassword() );
 
-        final Callback< Pair< String, String >, Void > authenticator = ( useAuthenticator && ( authorizationRequestService != null ) )
-                ? authorizationRequestService.makeAuthenticator()
-                : null; 
+        final Callback< Pair< String, String >, Void > authenticator
+                = ( useAuthenticator && ( authorizationRequestService
+                                          != null ) )
+                  ? authorizationRequestService.makeAuthenticator()
+                  : null;
         final XLoginDialog loginDialog = new XLoginDialog( title,
                                                            headerText,
                                                            locale,
@@ -76,7 +83,8 @@ public final class LoginDialogUtilities {
         if ( authorizationRequestService != null ) {
             authorizationRequestService.setLoginDialog( loginDialog );
         }
-        final Optional< Pair< String, String > > loginCredentialsResult = loginDialog.showAndWait();
+        final Optional< Pair< String, String > > loginCredentialsResult
+                = loginDialog.showAndWait();
 
         // Cache the new Login Credentials, unless the user canceled or didn't
         // supply non-empty strings for one or the other field.

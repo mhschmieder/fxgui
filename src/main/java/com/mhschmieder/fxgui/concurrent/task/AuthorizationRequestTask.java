@@ -36,29 +36,33 @@ import com.mhschmieder.jcommons.net.NetworkUtilities;
 import com.mhschmieder.jcommons.security.LoginCredentials;
 import com.mhschmieder.jcommons.security.ServerLoginCredentials;
 import com.mhschmieder.jcommons.util.ClientProperties;
+
+import java.net.HttpURLConnection;
+
 import javafx.concurrent.Task;
 import javafx.geometry.Rectangle2D;
 import javafx.stage.Screen;
 
-import java.net.HttpURLConnection;
+public class AuthorizationRequestTask
+        extends Task< AuthorizationServerResponse > {
 
-public class AuthorizationRequestTask extends Task< AuthorizationServerResponse > {
-
-    /** The Request Type name that this task will pass to the server. */
-    @SuppressWarnings("nls") public static String AUTHORIZATION_REQUEST_TYPE = "Authorize User";
-
-    /** Cache the Login Credentials to use for authorizing the request. */
-    protected LoginCredentials                    loginCredentials;
-
+    /**
+     * The Request Type name that this task will pass to the server.
+     */
+    @SuppressWarnings( "nls" )
+    public static String AUTHORIZATION_REQUEST_TYPE = "Authorize User";
     /**
      * Cache the Server Request Properties (Build ID, Client Type, etc.).
      */
-    public HttpServletRequestProperties                httpServletRequestProperties;
-
+    public HttpServletRequestProperties httpServletRequestProperties;
     /**
      * Cache the Client Properties (System Type, Locale, etc.).
      */
-    public ClientProperties                       clientProperties;
+    public ClientProperties clientProperties;
+    /**
+     * Cache the Login Credentials to use for authorizing the request.
+     */
+    protected LoginCredentials loginCredentials;
 
     public AuthorizationRequestTask( final LoginCredentials pLoginCredentials,
                                      final HttpServletRequestProperties pServerRequestProperties,
@@ -76,19 +80,21 @@ public class AuthorizationRequestTask extends Task< AuthorizationServerResponse 
     @Override
     protected AuthorizationServerResponse call() throws InterruptedException {
         // Open a connection to the Authorization Servlet.
-        final HttpURLConnection httpURLConnection = NetworkUtilities
-                .getHttpURLConnection( httpServletRequestProperties.httpServletUrl );
+        final HttpURLConnection httpURLConnection
+                = NetworkUtilities.getHttpURLConnection(
+                httpServletRequestProperties.httpServletUrl );
         if ( httpURLConnection == null ) {
             final String urlConnectionStatus =
-                                             "Server Connection Error: Authorization Service Not Found"; //$NON-NLS-1$
-            final AuthorizationServerResponse authorizationServerResponse =
-                                                                          new AuthorizationServerResponse( urlConnectionStatus,
-                                                                                                           null,
-                                                                                                           true,
-                                                                                                           null,
-                                                                                                           ServerLoginCredentials.EXPIRATION_DATE_DEFAULT,
-                                                                                                           null,
-                                                                                                           HttpURLConnection.HTTP_UNAVAILABLE );
+                    "Server Connection Error: Authorization Service Not "
+                    + "Found"; //$NON-NLS-1$
+            final AuthorizationServerResponse authorizationServerResponse
+                    = new AuthorizationServerResponse( urlConnectionStatus,
+                                                       null,
+                                                       true,
+                                                       null,
+                                                       ServerLoginCredentials.EXPIRATION_DATE_DEFAULT,
+                                                       null,
+                                                       HttpURLConnection.HTTP_UNAVAILABLE );
             return authorizationServerResponse;
         }
 
@@ -110,30 +116,34 @@ public class AuthorizationRequestTask extends Task< AuthorizationServerResponse 
                                                      screenHeight );
 
         // Request a user authorization based on Login Credentials.
-        final String servletErrorMessage = NetworkUtilities.connectToServlet( httpURLConnection,
-                                                                              "authorization" ); //$NON-NLS-1$
+        final String servletErrorMessage = NetworkUtilities.connectToServlet(
+                httpURLConnection,
+                "authorization" ); //$NON-NLS-1$
         if ( servletErrorMessage != null ) {
-            final AuthorizationServerResponse authorizationServerResponse =
-                                                                          new AuthorizationServerResponse( null,
-                                                                                                           servletErrorMessage,
-                                                                                                           true,
-                                                                                                           null,
-                                                                                                           ServerLoginCredentials.EXPIRATION_DATE_DEFAULT,
-                                                                                                           null,
-                                                                                                           HttpURLConnection.HTTP_UNAVAILABLE );
+            final AuthorizationServerResponse authorizationServerResponse
+                    = new AuthorizationServerResponse( null,
+                                                       servletErrorMessage,
+                                                       true,
+                                                       null,
+                                                       ServerLoginCredentials.EXPIRATION_DATE_DEFAULT,
+                                                       null,
+                                                       HttpURLConnection.HTTP_UNAVAILABLE );
             return authorizationServerResponse;
         }
 
         // Handle the authorization servlet's HTTP status, and echo the
         // formatted error response to the user if an HTTP error code is
         // detected and/or the authorization failed.
-        final AuthorizationServerResponse authorizationServerResponse = NetworkUtilities
-                .getAuthorizationServerResponse( httpURLConnection );
-        final String serverStatusMessage = authorizationServerResponse.getServerStatusMessage();
+        final AuthorizationServerResponse authorizationServerResponse
+                = NetworkUtilities.getAuthorizationServerResponse(
+                httpURLConnection );
+        final String serverStatusMessage
+                = authorizationServerResponse.getServerStatusMessage();
         if ( serverStatusMessage != null ) {
-            authorizationServerResponse.setServerStatusMessage( serverStatusMessage );
-            authorizationServerResponse
-                    .setHttpResponseCode( authorizationServerResponse.getHttpResponseCode() );
+            authorizationServerResponse.setServerStatusMessage(
+                    serverStatusMessage );
+            authorizationServerResponse.setHttpResponseCode(
+                    authorizationServerResponse.getHttpResponseCode() );
         }
 
         return authorizationServerResponse;

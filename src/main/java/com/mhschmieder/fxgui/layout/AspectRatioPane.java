@@ -33,7 +33,7 @@ package com.mhschmieder.fxgui.layout;
 import javafx.scene.Node;
 import javafx.scene.layout.Region;
 
-public class AspectRatioPane extends Region{
+public class AspectRatioPane extends Region {
 
     private final double aspectRatio;
     private final Node node;
@@ -53,29 +53,29 @@ public class AspectRatioPane extends Region{
         double targetWidth = widthPixels;
         double targetHeight = widthPixels / aspectRatio;
 
-        if (targetHeight > heightPixels) {
+        if ( targetHeight > heightPixels ) {
             targetHeight = heightPixels;
             targetWidth = heightPixels * aspectRatio;
         }
 
-        final double x = (widthPixels - targetWidth) / 2.0;
-        final double y = (heightPixels - targetHeight) / 2.0;
+        final double x = ( widthPixels - targetWidth ) / 2.0;
+        final double y = ( heightPixels - targetHeight ) / 2.0;
 
         node.resizeRelocate( x, y, targetWidth, targetHeight );
     }
 
     @Override
-    protected double computePrefWidth(double prefHeight) {
+    public boolean isResizable() {
+        return true;
+    }
+
+    @Override
+    protected double computePrefWidth( double prefHeight ) {
         return prefHeight * aspectRatio;
     }
 
     @Override
-    protected double computePrefHeight(double prefWidth) {
+    protected double computePrefHeight( double prefWidth ) {
         return prefWidth / aspectRatio;
-    }
-
-    @Override
-    public boolean isResizable() {
-        return true;
     }
 }

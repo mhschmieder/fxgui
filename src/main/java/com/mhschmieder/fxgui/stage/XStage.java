@@ -50,6 +50,20 @@ import com.mhschmieder.jcommons.util.ClientProperties;
 import com.mhschmieder.jcommons.util.GlobalUtilities;
 import com.mhschmieder.jcommons.util.PreferenceUtilities;
 import com.mhschmieder.jcommons.util.SystemType;
+import org.apache.commons.io.FileUtils;
+import org.apache.commons.math3.util.FastMath;
+
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.text.NumberFormat;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.prefs.BackingStoreException;
+import java.util.prefs.Preferences;
+import java.util.stream.Stream;
+
 import javafx.geometry.Dimension2D;
 import javafx.geometry.Rectangle2D;
 import javafx.scene.Node;
@@ -67,141 +81,105 @@ import javafx.stage.Screen;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import javafx.stage.Window;
-import org.apache.commons.io.FileUtils;
-import org.apache.commons.math3.util.FastMath;
-
-import java.io.File;
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.text.NumberFormat;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.prefs.BackingStoreException;
-import java.util.prefs.Preferences;
-import java.util.stream.Stream;
 
 /**
  * {@code XStage} is a skeletal abstract base class that extends the JavaFX
  * Stage class enough to serve as a better boilerplate starting point for most.
  */
-public abstract class XStage extends Stage implements ForegroundManager,
-        FileActionHandler, ApplicationWindowHandler {
+public abstract class XStage extends Stage
+        implements ForegroundManager, FileActionHandler,
+                   ApplicationWindowHandler {
 
     // To avoid cut/paste errors with resource references, make global constants
     // for the CSS theme to be used for dark vs. light backgrounds.
-    @SuppressWarnings("nls") public static final String DARK_BACKGROUND_CSS  =
-                                                                            "/css/theme-dark.css";
-    @SuppressWarnings("nls") public static final String LIGHT_BACKGROUND_CSS =
-                                                                             "/css/theme-light.css";
+    @SuppressWarnings( "nls" )
+    public static final String DARK_BACKGROUND_CSS = "/css/theme-dark.css";
+    @SuppressWarnings( "nls" )
+    public static final String LIGHT_BACKGROUND_CSS = "/css/theme-light.css";
 
-    private static final int                            TOOL_BAR_HEIGHT      = 40;
-
-    // Declare a root pane for centering the main content pane.
-    protected BorderPane                                _root;
-
-    // Declare an action pane for clients and derived classes to fill.
-    private BorderPane                                  _actionPane;
-
-    // Declare a main Content Node for clients and derived classes to fill.
-    protected Node                                      _content;
-
-    // Declare a flag for whether this window is its own frame title manager.
-    private final boolean                               _frameTitleManager;
-
-    // Cache a default title that is unique to each usage.
-    protected StringBuilder                             _defaultTitle;
-
-    // Cache a default window size that is unique to each usage.
-    protected Dimension2D                               _defaultWindowSize;
-
-    // Cache a preferred window size that is unique to each usage.
-    protected Dimension2D                               _preferredWindowSize;
-
-    // Flag for whether this window is exempt from handling Full Screen Mode.
-    protected boolean                                   _fullScreenModeExempt;
-
-    // Cache the window key prefix that is used for window layout preferences.
-    private final String                                _windowKeyPrefix;
-
-    // Declare a project number for assigning unique default names on File->New.
-    private int projectNumber;
-
-    // Declare a file object to hold the most recent directory used in a file
-    // chooser.
-    protected File                                      _defaultDirectory;
-
-    // Declare a reference to the optional MRU File actions.
-    protected MruFileActions                            _mruFileActions;
-
-    // Declare a cache for most recently used files.
-    public LinkedList< String >                         _mruFilenameCache;
-
-    // Cache the pop-up window owner for warning/error dialogs, pop-ups, etc.
-    protected final Window                              _popupOwner;
-
-    // Maintain a Scene Node reference for Image Graphics Export actions.
-    protected Node                                      _rasterGraphicsExportSource;
-
-    // Maintain a Scene Node reference for Vector Graphics Export actions.
-    protected Node                                      _vectorGraphicsExportSource;
-
-    // Declare file options for the various file modes and actions.
-    protected RasterGraphicsExportOptions               _rasterGraphicsExportOptions;
-    protected VectorGraphicsExportOptions               _vectorGraphicsExportOptions;
-    
-    // The Graphics Category, when relevant, cuts across all graphics file actions.
-    protected String graphicsCategory;
-
-    // Declare flag for whether this window shows the dirty flag.
-    private final boolean                               _showDirtyFlag;
-
-    // Number format cache used for locale-specific number formatting.
-    protected NumberFormat                              _numberFormat;
-
-    // Percent format cache used for locale-specific percent formatting.
-    protected NumberFormat                              _percentFormat;
-
-    // Number format cache used for locale-specific angle formatting.
-    protected NumberFormat                              _angleFormat;
-
-    // Number format cache used for locale-specific number parsing.
-    protected NumberFormat                              _numberParse;
-
-    // Percent format cache used for locale-specific percent parsing.
-    protected NumberFormat                              _percentParse;
-
-    // Cache a reference to the product branding information.
-    protected final ProductBranding                     _productBranding;
-
-    // Declare a flag for whether this window supports Rendered Graphics
-    // Export.
-    protected boolean               _supportsRenderedGraphicsExport;
-
+    private static final int TOOL_BAR_HEIGHT = 40;
     // Declare a Window Manager to act as a container for all window references.
-    public final WindowManager      _windowManager;
-    
-    // Declare a Print Manager so that all print functionality is usable anywhere.
+    public final WindowManager _windowManager;
+    // Declare a Print Manager so that all print functionality is usable
+    // anywhere.
     public final PrintManager printManager;
-
     /**
      * Cache the Client Properties (System Type, Locale, etc.).
      */
-    public final ClientProperties   clientProperties;
+    public final ClientProperties clientProperties;
+    // Cache the pop-up window owner for warning/error dialogs, pop-ups, etc.
+    protected final Window _popupOwner;
+    // Cache a reference to the product branding information.
+    protected final ProductBranding _productBranding;
+    // Declare a flag for whether this window is its own frame title manager.
+    private final boolean _frameTitleManager;
+    // Cache the window key prefix that is used for window layout preferences.
+    private final String _windowKeyPrefix;
+    // Declare flag for whether this window shows the dirty flag.
+    private final boolean _showDirtyFlag;
+    // Declare a cache for most recently used files.
+    public LinkedList< String > _mruFilenameCache;
+    // Declare a root pane for centering the main content pane.
+    protected BorderPane _root;
+    // Declare a main Content Node for clients and derived classes to fill.
+    protected Node _content;
+    // Cache a default title that is unique to each usage.
+    protected StringBuilder _defaultTitle;
+    // Cache a default window size that is unique to each usage.
+    protected Dimension2D _defaultWindowSize;
+    // Cache a preferred window size that is unique to each usage.
+    protected Dimension2D _preferredWindowSize;
+    // Flag for whether this window is exempt from handling Full Screen Mode.
+    protected boolean _fullScreenModeExempt;
+    // Declare a file object to hold the most recent directory used in a file
+    // chooser.
+    protected File _defaultDirectory;
+    // Declare a reference to the optional MRU File actions.
+    protected MruFileActions _mruFileActions;
+    // Maintain a Scene Node reference for Image Graphics Export actions.
+    protected Node _rasterGraphicsExportSource;
+    // Maintain a Scene Node reference for Vector Graphics Export actions.
+    protected Node _vectorGraphicsExportSource;
+    // Declare file options for the various file modes and actions.
+    protected RasterGraphicsExportOptions _rasterGraphicsExportOptions;
+    protected VectorGraphicsExportOptions _vectorGraphicsExportOptions;
+    // The Graphics Category, when relevant, cuts across all graphics file
+    // actions.
+    protected String graphicsCategory;
+    // Number format cache used for locale-specific number formatting.
+    protected NumberFormat _numberFormat;
+    // Percent format cache used for locale-specific percent formatting.
+    protected NumberFormat _percentFormat;
+    // Number format cache used for locale-specific angle formatting.
+    protected NumberFormat _angleFormat;
+    // Number format cache used for locale-specific number parsing.
+    protected NumberFormat _numberParse;
+    // Percent format cache used for locale-specific percent parsing.
+    protected NumberFormat _percentParse;
+    // Declare a flag for whether this window supports Rendered Graphics
+    // Export.
+    protected boolean _supportsRenderedGraphicsExport;
+    // Declare an action pane for clients and derived classes to fill.
+    private BorderPane _actionPane;
+    // Declare a project number for assigning unique default names on File->New.
+    private int projectNumber;
 
     public XStage() {
-        this( "", "", new ProductBranding(), GlobalUtilities.makeClientProperties() );
+        this( "",
+              "",
+              new ProductBranding(),
+              GlobalUtilities.makeClientProperties() );
     }
-    
+
     public XStage( final String title,
                    final String windowKeyPrefix,
                    final ProductBranding productBranding,
                    final ClientProperties pClientProperties ) {
-        this( title, 
-              windowKeyPrefix, 
-              false, 
-              false, 
-              productBranding, 
+        this( title,
+              windowKeyPrefix,
+              false,
+              false,
+              productBranding,
               pClientProperties );
     }
 
@@ -237,23 +215,6 @@ public abstract class XStage extends Stage implements ForegroundManager,
               pClientProperties );
     }
 
-   public XStage( final Modality modality,
-                  final String title,
-                  final String windowKeyPrefix,
-                  final boolean showDirtyFlag,
-                  final boolean frameTitleManager,
-                  final ProductBranding productBranding,
-                  final ClientProperties pClientProperties ) {
-       this( modality,
-             title,
-             windowKeyPrefix,
-             showDirtyFlag,
-             frameTitleManager,
-             false,
-             productBranding,
-             pClientProperties );
-    }
-
     public XStage( final Modality modality,
                    final String title,
                    final String windowKeyPrefix,
@@ -265,7 +226,8 @@ public abstract class XStage extends Stage implements ForegroundManager,
         // Always call the superclass constructor first!
         // NOTE: The commented-out example code shows how to remove the
         //  minimize and maximize buttons on the Mac. It isn't possible to just
-        //  remove the maximize button, nor is there a callback to ignore, and as
+        //  remove the maximize button, nor is there a callback to ignore,
+        //  and as
         //  we need the minimize button, this code is disabled for now.
         // super( SystemType.MACOS.equals( sessionContext.systemType ) ?
         // StageStyle.UTILITY : StageStyle.DECORATED );
@@ -288,7 +250,7 @@ public abstract class XStage extends Stage implements ForegroundManager,
         _supportsRenderedGraphicsExport = supportsRenderedGraphicsExport;
         _productBranding = productBranding;
         clientProperties = pClientProperties;
-        
+
         // Make sure this isn't null, as most classes don't need to set it.
         graphicsCategory = "";
 
@@ -302,59 +264,49 @@ public abstract class XStage extends Stage implements ForegroundManager,
 
         // Make the Window Manager in the base class as it is a stock utility.
         _windowManager = new WindowManager();
-        
+
         // Make the Print Manager at construction time, so Print Services are
         // available as early as possible. User Preferences might need to
         // access Page Setup, for instance.
         printManager = new PrintManager( this );
     }
-    
+
+    public XStage( final Modality modality,
+                   final String title,
+                   final String windowKeyPrefix,
+                   final boolean showDirtyFlag,
+                   final boolean frameTitleManager,
+                   final ProductBranding productBranding,
+                   final ClientProperties pClientProperties ) {
+        this( modality,
+              title,
+              windowKeyPrefix,
+              showDirtyFlag,
+              frameTitleManager,
+              false,
+              productBranding,
+              pClientProperties );
+    }
+
     /**
      * Returns the JAR-relative filename of the window's icon.
      * <p>
-     * NOTE: This method should be overridden by your application to provide
-     *  the filename of your window's icon.
-     * 
+     * NOTE: This method should be overridden by your application to provide the
+     * filename of your window's icon.
+     *
      * @return the JAR-relative filename of the application's splash screen
      */
     public String getJarRelativeIconFilename() {
         // Get the window icon filename, using a demo JavaFX placeholder image.
-        return IoUtilities.getJarResourceFilename( "/java/", 
-                                                   "JavaFxTextLogo", 
-                                                   "png" );        
+        return IoUtilities.getJarResourceFilename( "/java/",
+                                                   "JavaFxTextLogo",
+                                                   "png" );
     }
-
-    // Actions are not required for stages, so this method is not declared
-    // abstract but is instead given a default no-op implementation.
-    protected void addActionHandlers() {}
-
-    // Add all of the event listeners and handlers associated with common
-    // functionality.
-    private final void addAllListeners() {
-        // Add callback handlers for relevant actions.
-        addActionHandlers();
-
-        // Add callback listeners for relevant nodes.
-        addCallbackListeners();
-
-        // Add the Context Pop-Up Menu event listeners.
-        addContextMenuListeners();
-
-        // Initialize the Tool Bar event listeners.
-        addToolBarListeners();
-    }
-
-    // Callback listeners are not required for stages, so this method is not
-    // declared abstract but is instead given a default no-op implementation.
-    protected void addCallbackListeners() {}
-
-    // Context menus are not required for stages, so this method is not declared
-    // abstract but is instead given a default no-op implementation.
-    protected void addContextMenuListeners() {}
 
     // Dirty flags are not required for stages, so this method is not declared
     // abstract but is instead given a default no-op implementation.
-    protected void addDirtyFlagListeners() {}
+    protected void addDirtyFlagListeners() {
+    }
 
     // The MRU File List is handled uniformly, when supported, so register all
     // the action callbacks here as otherwise we would have cut/paste code that
@@ -372,74 +324,48 @@ public abstract class XStage extends Stage implements ForegroundManager,
         }
     }
 
-    // Tool bars are not required for stages, so this method is not declared
-    // abstract but is instead given a default no-op implementation.
-    protected void addToolBarListeners() {}
+    public final void doMruFile( final int mruFileNumber ) {
+        // Open a new project using the cached filename.
+        fileOpenMru( mruFileNumber );
+    }
 
     // Window size is handled uniformly, when supported, so register all the
     // action handlers here as otherwise we would have cut/paste code that
     // is hard to maintain and verify as complete and correct.
     public final void addWindowSizeActionHandlers( final WindowSizeActions windowSizeActions ) {
-        windowSizeActions._windowSizePreferredSizeAction
-                .setEventHandler( evt -> doWindowSizePreferredSize() );
-        windowSizeActions._windowSizeDefaultSizeAction
-                .setEventHandler( evt -> doWindowSizeDefaultSize() );
-        windowSizeActions._windowSizeMaximumSizeAction
-                .setEventHandler( evt -> doWindowSizeMaximumSize() );
+        windowSizeActions._windowSizePreferredSizeAction.setEventHandler( evt -> doWindowSizePreferredSize() );
+        windowSizeActions._windowSizeDefaultSizeAction.setEventHandler( evt -> doWindowSizeDefaultSize() );
+        windowSizeActions._windowSizeMaximumSizeAction.setEventHandler( evt -> doWindowSizeMaximumSize() );
     }
 
-    public final void addWindowSizeListeners() {
-        // The correct way to listen for window resizes is to add Change
-        // Listeners to the width and height properties of the scene.
-        // NOTE: These events happen incrementally, which is way too much.
-        // NOTE: Returning from Full Screen Mode works pretty well, if we
-        //  re-enable these listeners, but they don't really help with manual
-        //  resize actions.
-        getScene().widthProperty()
-                .addListener( ( observableValue,
-                                oldSceneWidth,
-                                newSceneWidth ) -> handleWindowWidthChange() );
-        getScene().heightProperty()
-                .addListener( ( observableValue,
-                                oldSceneHeight,
-                                newSceneHeight ) -> handleWindowHeighthChange() );
+    // Set the window to its configured default size.
+    public final void doWindowSizeDefaultSize() {
+        // Attempt to set the default window size.
+        setWindowSize( _defaultWindowSize );
     }
 
-    public final void adjustStageWithinBounds() {
-        // Unfortunately, the window may not be fully visible if it was last
-        // saved on a different screen setup, so if it is fully or partially on
-        // another screen, we need to re-center it on the main screen and adjust
-        // the size if necessary.
-        if ( FxWindowManager.isStageOutOfBounds( this ) ) {
-            // Get the compensated bounds for the primary screen. This is
-            // guaranteed to account for things like the dock, application menu
-            // bar, etc., regardless of which platform we are running on.
-            final Rectangle2D bounds = Screen.getPrimary().getVisualBounds();
+    // Set the window to Full Screen and Undecorated.
+    public final void doWindowSizeMaximumSize() {
+        // Attempt to set the maximum window size via Maximized Mode.
+        setMaximized( true );
 
-            // Adjust and cache the preferred size for this window.
-            final double adjustedWidth = FastMath.min( getWidth(), bounds.getWidth() );
-            final double adjustedHeight = FastMath.min( getHeight(), bounds.getHeight() );
-            setPreferredWindowSize( adjustedWidth, adjustedHeight );
+        // Make sure we explicitly exit Full Screen Mode.
+        setFullScreen( false );
+    }
 
-            // Adjust and set the window's location on the screen (in pixels).
-            final double adjustedX = bounds.getMinX()
-                    + ( 0.5d * ( bounds.getWidth() - adjustedWidth ) );
-            final double adjustedY = bounds.getMinY()
-                    + ( 0.5d * ( bounds.getHeight() - adjustedHeight ) );
-            setX( adjustedX );
-            setY( adjustedY );
-
-            // Attempt to explicitly set the adjusted preferred window size.
-            setWindowSize( _preferredWindowSize );
-        }
+    // Set the window to its last cached user preferred size.
+    public final void doWindowSizePreferredSize() {
+        // Attempt to set the preferred window size.
+        setWindowSize( _preferredWindowSize );
     }
 
     /**
-     * This method wraps behavior for clearing memory resources used by
-     * Graphics Export actions. It should be overridden by classes that need to
-     * clean up duplication of large memory resources.
+     * This method wraps behavior for clearing memory resources used by Graphics
+     * Export actions. It should be overridden by classes that need to clean up
+     * duplication of large memory resources.
      */
-    protected void clearImportedGraphics() {}
+    protected void clearImportedGraphics() {
+    }
 
     // Clear all of the User Preferences for all Windows.
     public final void clearAllPreferences() {
@@ -472,18 +398,7 @@ public abstract class XStage extends Stage implements ForegroundManager,
         // session ends, thus effectively undoing the Clear Preferences action.
         loadPreferences();
     }
-    
-    // NOTE: In some cases, more complex logic is required and may return
-    //  something other than the cached Graphics Category. Override if so.
-    public String getGraphicsCategory() {
-        return graphicsCategory;
-    }
 
-    public void setGraphicsCategory( final String pGraphicsCategory ) {
-        // Update the graphics category for the next Export request.
-        graphicsCategory = pGraphicsCategory;
-    }
- 
     // Hide all of Windows associated with this Stage, including this Stage.
     @Override
     public void hideAllWindows() {
@@ -492,12 +407,6 @@ public abstract class XStage extends Stage implements ForegroundManager,
 
         // Finally, hide this window as well, by setting it invisible.
         setVisible( false );
-    }
-
-    // Hide all of the Object Properties Editors and Insert Dialogs.
-    public void hideObjectPropertiesEditors() {
-        // Forward this method to the Window Manager.
-        _windowManager.hideObjectPropertiesEditors();
     }
 
     // Load the User Preferences for all Windows associated with this Stage.
@@ -510,16 +419,6 @@ public abstract class XStage extends Stage implements ForegroundManager,
         loadPreferences();
     }
 
-    protected void loadObjectPropertiesEditors() {}
-
-    // This method refreshes the Object Properties Editors when their
-    // properties are changed outside the textField, such as via mouse move/rotate.
-    public final void refreshObjectPropertiesEditors() {
-        // Forward this method to the Window manager.
-        _windowManager.refreshObjectPropertiesEditors();
-    }
-
-
     // Save the User Preferences for all Windows associated with this Stage.
     @Override
     public final void saveAllPreferences() {
@@ -530,11 +429,94 @@ public abstract class XStage extends Stage implements ForegroundManager,
         savePreferences();
     }
 
+    // Load all the User Preferences for this Stage.
+    // NOTE: Preferences are not applicable to all Stages, so this method is
+    //  not declared abstract and is instead given a default implementation
+    //  that at least loads basic shared functionality such as window layout,
+    //  background color, default directory, and MRU filename cache.
+    // TODO: Make a preferences object instead, with get/set methods, which
+    //  can be set from CSV, XML, or stored User Preferences? See the example
+    //  in Listing 3.3 on p. 37 of "More Java Pitfalls" (Wiley), and include
+    //  static default values for better modularity, or follow the examples
+    //  from Gralev, using an XML file for default preferences, first loading
+    //  all from the top app node then pass the hash set via Java Properties?
+    @Override
+    public Preferences loadPreferences() {
+        // Get the user node for this package/class, so that we get the
+        // preferences specific to this stage and the application's user.
+        final Preferences prefs = Preferences.userNodeForPackage( getClass() );
+
+        // First restore all the window layout details for the application.
+        restoreAllWindowLayouts( prefs );
+
+        // Load and set the background color for this window, if supported.
+        final String backgroundColor = prefs.get( "backgroundColor",
+                                                  getDefaultBackgroundColor() );
+        setBackgroundColor( backgroundColor );
+
+        // Reset the default directory for local file operations.
+        final File defaultDirectory
+                = PreferenceUtilities.loadDefaultDirectoryPreference( prefs );
+        setDefaultDirectory( defaultDirectory );
+
+        // Re-populate the MRU filename cache from the previous session.
+        final String[] mruFilenames = PreferenceUtilities.loadMruPreferences(
+                prefs );
+        loadMruCache( mruFilenames );
+
+        return prefs;
+    }
+
+    // Re-populate the MRU Filename Cache from the previous session.
+    protected final void loadMruCache( final String[] mruFilenames ) {
+        for ( final String mruFilename : mruFilenames ) {
+            // Trim all entries and make sure we don't add duplicates.
+            final String mruFilenameTrimmed = mruFilename.trim();
+            if ( !mruFilenameTrimmed.isEmpty() && !_mruFilenameCache.contains(
+                    mruFilenameTrimmed ) ) {
+                _mruFilenameCache.add( mruFilenameTrimmed );
+            }
+        }
+
+        // Update the MRU File actions in the overall File actions from the new
+        // MRU filename cache.
+        if ( _mruFileActions != null ) {
+            _mruFileActions.updateMruFileActions( _mruFilenameCache );
+        }
+    }
+
+    // Save all the User Preferences for this Stage.
+    // NOTE: Preferences are not applicable to all Stages, so this method is
+    //  not declared abstract and is instead given a default implementation
+    //  that at least saves basic shared functionality such as window layout,
+    //  background color, default directory, and MRU filename cache.
+    @Override
+    public Preferences savePreferences() {
+        // Get the user node for this package/class, so that we get the
+        // preferences specific to this stage and user.
+        final Preferences prefs = Preferences.userNodeForPackage( getClass() );
+
+        // First save all the window layout details for the application.
+        saveAllWindowLayouts( prefs );
+
+        // Save the background color for this window.
+        final String backgroundColor = getBackgroundColor();
+        prefs.put( "backgroundColor", backgroundColor );
+
+        // Save the Default Directory to User Preferences.
+        PreferenceUtilities.saveDefaultDirectoryPreference( _defaultDirectory,
+                                                            prefs );
+
+        // Save the MRU Filename Cache to User Preferences.
+        PreferenceUtilities.saveMruPreferences( _mruFilenameCache, prefs );
+
+        return prefs;
+    }
+
     /**
      * This method restores the Window Layout Preferences for all Windows.
      *
-     * @param prefs
-     *            The @Preferences reference for the key/value pairs
+     * @param prefs The @Preferences reference for the key/value pairs
      */
     @Override
     public final void restoreAllWindowLayouts( final Preferences prefs ) {
@@ -548,8 +530,7 @@ public abstract class XStage extends Stage implements ForegroundManager,
     /**
      * This method saves the Window Layout Preferences for all Windows.
      *
-     * @param prefs
-     *            The @Preferences reference for the key/value pairs
+     * @param prefs The @Preferences reference for the key/value pairs
      */
     @Override
     public final void saveAllWindowLayouts( final Preferences prefs ) {
@@ -560,130 +541,276 @@ public abstract class XStage extends Stage implements ForegroundManager,
         saveWindowLayout( prefs );
     }
 
-    // Update the Frame Titles with the dirty flag, where appropriate.
-    public final void updateFrameTitles( final File documentFile, final boolean documentModified ) {
-        // Update the Frame Title for this Stage.
-        updateFrameTitle( documentFile, documentModified );
-
-        // Forward this method to the Window Manager.
-        _windowManager.updateFrameTitles( documentFile, documentModified );
-    }
-
-    // NOTE: This method should be overridden if a Stage works with file
-    //  objects in an MDI context and instead needs to close the current document
-    //  (usually the window) and switch to another active and loaded document.
-    public void doCloseWindow() {
-        // Hide this window by setting invisible (was close() in Swing).
-        setVisible( false );
-    }
-
-    public void doExportImageGraphics() {
-        // Switch on export context, so we know the data type and format to save.
-        fileExportRasterGraphics( this, 
-                                  _defaultDirectory, 
-                                  clientProperties, 
-                                  getGraphicsCategory() );
-    }
-
-    public void doExportSessionLog() {
-        fileExportSessionLog( this, 
-                              _defaultDirectory, 
-                              clientProperties );
-    }
-
-    public void doExportVectorGraphics() {
-        // Switch on export context, so we know the data type and format to save.
-        fileExportVectorGraphics( this, 
-                                  _defaultDirectory, 
-                                  clientProperties, 
-                                  getGraphicsCategory() );
-    }
-
-    public void doImportTableData() {
-        // NOTE: Use the on-line example to take file load status into account.
-        fileImportTableData( this, _defaultDirectory );
-    }
-
-    protected final void doImportVectorGraphics() {
-        // NOTE: Use the on-line example to take file load status into account.
-        fileImportVectorGraphics( this, _defaultDirectory );
-    }
-
-    public final void doMruFile( final int mruFileNumber ) {
-        // Open a new project using the cached filename.
-        fileOpenMru( mruFileNumber );
-    }
-
-    public final void doPageSetup() {
-        printManager.pageSetup( clientProperties.systemType );
-    }
-
     /**
-     * Prints the main content {@link Node} for this {@link Stage}.
+     * This method restores the Window Layout Preferences for this window. It
+     * starts by checking the desired menu setting (if available), which is
+     * saved from the previous session. Only if "Preferred Size" is desired,
+     * does it also restore the cached window size from preferences.
      * <p>
-     * Not marked as final, as derived classes may need to go through the
-     * WebKit toolkit instead, via {@link WebEngine} printing.
+     * Generally this method is only called at the application level, so this
+     * override takes care of invoking it on all windows owned by the
+     * application.
+     *
+     * @param prefs The @Preferences reference for the key/value pairs
      */
-    public void doPrint() {
-        // TODO: Find a way to indicate and generate multiple pages.
-        printManager.print( getContent(), clientProperties.systemType );
-    }
+    @Override
+    public final void restoreWindowLayout( final Preferences prefs ) {
+        // Get the window key prefix for Window Layout Preferences.
+        final String windowKeyPrefix = getWindowKeyPrefix();
 
-    // Set the window to its configured default size.
-    public final void doWindowSizeDefaultSize() {
-        // Attempt to set the default window size.
-        setWindowSize( _defaultWindowSize );
-    }
+        // If this window has no key prefix, it can't restore preferences.
+        if ( ( windowKeyPrefix == null ) || windowKeyPrefix.isEmpty() ) {
+            // Attempt to set the default window size.
+            setWindowSize( _defaultWindowSize );
+            return;
+        }
 
-    // Set the window to Full Screen and Undecorated.
-    public final void doWindowSizeMaximumSize() {
-        // Attempt to set the maximum window size via Maximized Mode.
-        setMaximized( true );
+        // Restore the preferred window size from the last session.
+        final String windowWidthKey = windowKeyPrefix + "Width";
+        final double windowWidthValue = prefs.getDouble( windowWidthKey,
+                                                         _defaultWindowSize.getWidth() );
+        final String windowHeightKey = windowKeyPrefix + "Height";
+        final double windowHeightValue = prefs.getDouble( windowHeightKey,
+                                                          _defaultWindowSize.getHeight() );
+        setPreferredWindowSize( windowWidthValue, windowHeightValue );
 
-        // Make sure we explicitly exit Full Screen Mode.
-        setFullScreen( false );
-    }
+        // Determine whether the user was in Full Screen Mode when they exited.
+        final String fullScreenModeKey = windowKeyPrefix + "FullScreenMode";
+        final boolean fullScreenMode = prefs.getBoolean( fullScreenModeKey,
+                                                         false );
+        if ( fullScreenMode ) {
+            // Make sure we explicitly enter Full Screen Mode.
+            setFullScreen( true );
 
-    // Set the window to its last cached user preferred size.
-    public final void doWindowSizePreferredSize() {
-        // Attempt to set the preferred window size.
+            // Exit early, as we shouldn't try to set location or size for
+            // explicit modes like Full Screen Mode.
+            return;
+        }
+
+        // Determine whether the user was in Maximized Mode when they exited.
+        final String maximizedModeKey = windowKeyPrefix + "MaximizedMode";
+        final boolean maximizedMode = prefs.getBoolean( maximizedModeKey,
+                                                        false );
+        if ( maximizedMode ) {
+            // Make sure we explicitly enter Maximized Mode.
+            setMaximized( true );
+
+            // Exit early, as we shouldn't try to set location or size for
+            // explicit modes like Maximized Mode.
+            return;
+        }
+
+        // Restore the window's cached layout location from the last session.
+        // NOTE: Default location accounts for issues with corner areas on some
+        //  OS versions, but may be too much for smaller screens.
+        final String windowXKey = windowKeyPrefix + "X";
+        final double windowXValue = prefs.getDouble( windowXKey, 100d );
+        final String windowYKey = windowKeyPrefix + "Y";
+        final double windowYValue = prefs.getDouble( windowYKey, 100d );
+        setWindowLocation( windowXValue, windowYValue );
+
+        // Attempt to explicitly set the adjusted preferred window size.
         setWindowSize( _preferredWindowSize );
+
+        // If necessary, adjust this stage to be within bounds.
+        adjustStageWithinBounds();
+    }
+
+    public final void adjustStageWithinBounds() {
+        // Unfortunately, the window may not be fully visible if it was last
+        // saved on a different screen setup, so if it is fully or partially on
+        // another screen, we need to re-center it on the main screen and adjust
+        // the size if necessary.
+        if ( FxWindowManager.isStageOutOfBounds( this ) ) {
+            // Get the compensated bounds for the primary screen. This is
+            // guaranteed to account for things like the dock, application menu
+            // bar, etc., regardless of which platform we are running on.
+            final Rectangle2D bounds = Screen.getPrimary().getVisualBounds();
+
+            // Adjust and cache the preferred size for this window.
+            final double adjustedWidth = FastMath.min( getWidth(),
+                                                       bounds.getWidth() );
+            final double adjustedHeight = FastMath.min( getHeight(),
+                                                        bounds.getHeight() );
+            setPreferredWindowSize( adjustedWidth, adjustedHeight );
+
+            // Adjust and set the window's location on the screen (in pixels).
+            final double adjustedX = bounds.getMinX() + ( 0.5d * (
+                    bounds.getWidth() - adjustedWidth ) );
+            final double adjustedY = bounds.getMinY() + ( 0.5d * (
+                    bounds.getHeight() - adjustedHeight ) );
+            setX( adjustedX );
+            setY( adjustedY );
+
+            // Attempt to explicitly set the adjusted preferred window size.
+            setWindowSize( _preferredWindowSize );
+        }
     }
 
     /**
-     * @return The main Content Node
+     * This method saves the Window Layout Preferences for this window. It
+     * starts by checking the current menu setting (if available), which is
+     * saved for the next session. Only if "Preferred Size" is currently
+     * selected, does it also store the current window size as a preference.
+     *
+     * @param prefs The @Preferences reference for the key/value pairs
      */
-    public final Node getContent() {
-        return _content;
-    }
-
-    // NOTE: StringBuilder returns a reference and thus can result in side
-    //  effects if a copy is not returned; unlike String which can be set
-    //  directly to another String with no side effects.
     @Override
-    public final StringBuilder getDefaultTitle() {
-        return new StringBuilder( _defaultTitle );
+    public final void saveWindowLayout( final Preferences prefs ) {
+        // Get the window key prefix for Window Layout Preferences.
+        final String windowKeyPrefix = getWindowKeyPrefix();
+
+        // If this window has no key prefix, it can't save preferences.
+        if ( ( windowKeyPrefix == null ) || windowKeyPrefix.isEmpty() ) {
+            return;
+        }
+
+        // Save the window's preferred layout location.
+        final String windowXKey = windowKeyPrefix + "X";
+        final double windowXValue = getX();
+        prefs.putDouble( windowXKey, windowXValue );
+        final String windowYKey = windowKeyPrefix + "Y";
+        final double windowYValue = getY();
+        prefs.putDouble( windowYKey, windowYValue );
+
+        // Determine whether the user was in Full Screen Mode when they exited.
+        final String fullScreenModeKey = windowKeyPrefix + "FullScreenMode";
+        final boolean fullScreenMode = isFullScreen();
+        prefs.putBoolean( fullScreenModeKey, fullScreenMode );
+
+        // Determine whether the user was in Maximized Mode when they exited.
+        final String maximizedModeKey = windowKeyPrefix + "MaximizedMode";
+        final boolean maximizedMode = isMaximized();
+        prefs.putBoolean( maximizedModeKey, maximizedMode );
+
+        // Save the window's current size as the new preferred layout bounds,
+        // unless in Full Screen Mode or Maximized Mode, where it is safer to
+        // save the last cached Preferred Size instead, as Full Screen Mode Size
+        // and Maximized Mode Size should only be modes and never used directly
+        // (the OS knows best how to apply them).
+        final String windowWidthKey = windowKeyPrefix + "Width";
+        final double windowWidthValue = ( fullScreenMode || maximizedMode )
+                                        ? _preferredWindowSize.getWidth()
+                                        : getWidth();
+        prefs.putDouble( windowWidthKey, windowWidthValue );
+        final String windowHeightKey = windowKeyPrefix + "Height";
+        final double windowHeightValue = ( fullScreenMode || maximizedMode )
+                                         ? _preferredWindowSize.getHeight()
+                                         : getHeight();
+        prefs.putDouble( windowHeightKey, windowHeightValue );
     }
 
     @Override
-    public final File getMruFile( final int mruId ) {
-        // Avoid side effects of the user saving the current file and thereby
-        // changing the cache order.
-        try {
-            final int mruIndex = mruId - 1;
-            final String mruFilename = _mruFilenameCache.get( mruIndex );
-            final File mruFile = new File( mruFilename );
-            return mruFile;
-        }
-        catch ( final IndexOutOfBoundsException | NullPointerException e ) {
-            e.printStackTrace();
-            return null;
-        }
+    public final void setDefaultWindowSize( final double defaultWidth,
+                                            final double defaultHeight ) {
+        // Cache the default size so it can be reasserted via the menu.
+        _defaultWindowSize = new Dimension2D( defaultWidth, defaultHeight );
+
+        // Also use this as the initial preferred size, in case absent from user
+        // preferences. This can be overwritten later during preference loading.
+        _preferredWindowSize = new Dimension2D( defaultWidth, defaultHeight );
     }
 
-    @Override    
+    @Override
     public final Dimension2D getPreferredWindowSize() {
         return _preferredWindowSize;
+    }
+
+    @Override
+    public void setPreferredWindowSize( final double stageWidth,
+                                        final double stageHeight ) {
+        // To prevent Application startup issues with Windows only having a
+        // minimal Frame Title Bar and no Content Pane (due to exceptions or
+        // other problems), we enforce minimum dimensions (taken as the cached
+        // default Window Size).
+        double stageWidthAdjusted = ( stageWidth
+                                      > GuiUtilities.MINIMUM_WINDOW_WIDTH )
+                                    ? stageWidth
+                                    : _defaultWindowSize.getWidth();
+        double stageHeightAdjusted = ( stageHeight
+                                       > GuiUtilities.MINIMUM_WINDOW_HEIGHT )
+                                     ? stageHeight
+                                     : _defaultWindowSize.getHeight();
+
+        // Get the user's screen size, for Full Screen Mode and user statistics.
+        // TODO: Also get and cache the minimum point, which may not be zero.
+        // NOTE: This query is done on-the-fly as the user may switch screens
+        //  between server calls.
+        final Rectangle2D visualBounds = Screen.getPrimary().getVisualBounds();
+        final double screenWidth = visualBounds.getWidth();
+        final double screenHeight = visualBounds.getHeight();
+
+        // Likewise, as the Screen Size or resolution may have changed since the
+        // previous session, we ensure that the Preferred Size can still fit.
+        // NOTE: We subtract a bit of a margin to make sure the Window can be
+        //  grabbed, resized, dragged, just in case decorations cause overflow,
+        //  and also to account for the dock and other related OS-level stuff.
+        stageWidthAdjusted = FastMath.min( screenWidth - 60,
+                                           stageWidthAdjusted );
+        stageHeightAdjusted = FastMath.min( screenHeight - 60,
+                                            stageHeightAdjusted );
+
+        // Cache the Window's adjusted Preferred Size on the Screen (in pixels).
+        _preferredWindowSize = new Dimension2D( stageWidthAdjusted,
+                                                stageHeightAdjusted );
+    }
+
+    /**
+     * This method exits Full Screen Mode and sets the supplied window size.
+     *
+     * @param windowSize The window size to set as current window size
+     */
+    @Override
+    public void setWindowSize( final Dimension2D windowSize ) {
+        // Make sure we explicitly exit Full Screen Mode.
+        setFullScreen( false );
+
+        // Make sure we explicitly exit Maximized Mode.
+        setMaximized( false );
+
+        // Set the new window size, but don't bother checking if the window is
+        // resizable as we wouldn't have reached this method if the window
+        // width and height change listeners are registered on a non-resizable
+        // window. JavaFX takes care of managing these rules for us.
+        setWidth( windowSize.getWidth() );
+        setHeight( windowSize.getHeight() );
+    }
+
+    @Override
+    public void setWindowLocation( final double stageX,
+                                   final double stageY ) {
+        // Get the full list of screens that are currently accessible.
+        final List< Screen > screenList = Screen.getScreens();
+
+        // If there are no accessible screens, don't try to set location.
+        if ( screenList.size() < 1 ) {
+            return;
+        }
+
+        // Make sure the coordinates are within range of the full set of
+        // available screens.
+        boolean locationOutOfBounds = true;
+        for ( final Screen screen : screenList ) {
+            final Rectangle2D bounds = screen.getVisualBounds();
+
+            if ( bounds.contains( stageX, stageY ) ) {
+                locationOutOfBounds = false;
+                break;
+            }
+        }
+
+        // Adjust the window location if it is out of bounds.
+        final Rectangle2D bounds = Screen.getPrimary().getVisualBounds();
+        final double windowX = locationOutOfBounds
+                               ? bounds.getMinX()
+                               : stageX;
+        final double windowY = locationOutOfBounds
+                               ? bounds.getMinY()
+                               : stageY;
+
+        // Set and cache the window's location on the screen (in pixels).
+        setX( windowX );
+        setY( windowY );
     }
 
     /**
@@ -697,25 +824,190 @@ public abstract class XStage extends Stage implements ForegroundManager,
         return _windowKeyPrefix;
     }
 
-    protected void handleWindowHeighthChange() {
-        // The correct way to listen for window resizes is to add Change
-        // Listeners to the width and height properties of the scene.
-        // NOTE: These events happen incrementally, which is way too much.
-        // NOTE: Returning from Full Screen Mode works pretty well, if we
-        //  re-enable this listener, but it doesn't really help with manual
-        //  resize actions.
-        if ( !isFullScreen() && !isMaximized() ) {
-            // If neither in Full Screen Mode nor Maximized Mode, cache the new
-            // window height as the preferred size's new height.
-            _preferredWindowSize = new Dimension2D( _preferredWindowSize.getWidth(), getHeight() );
+    // NOTE: StringBuilder returns a reference and thus can result in side
+    //  effects if a copy is not returned; unlike String which can be set
+    //  directly to another String with no side effects.
+    @Override
+    public final StringBuilder getDefaultTitle() {
+        return new StringBuilder( _defaultTitle );
+    }
+
+    // Conditionally append an asterisk to the filename, if document modified.
+    // TODO: Learn how to set the black dot in the red circle in JavaFX --
+    //  perhaps this is documented in the Stage API docs, or search for a tool.
+    @Override
+    public final void updateFrameTitle( final File documentFile,
+                                        final boolean documentModified ) {
+        final StringBuilder frameTitle = new StringBuilder( getDefaultTitle() );
+        if ( _showDirtyFlag ) {
+            frameTitle.append( getSubtitle( documentFile.getName(),
+                                            documentModified ) );
+        }
+        setTitle( frameTitle.toString() );
+
+        // The Mac handles window-associated documents and modification markers
+        // differently from Windows and other OS's.
+        // TODO: Port this logic to JavaFX, if possible.
+        if ( SystemType.MACOS.equals( clientProperties.systemType ) ) {
+            // final JRootPane rootPane = getRootPane();
+            // rootPane.putClientProperty( "Window.documentFile", documentFile
+            // );
+            // rootPane.putClientProperty( "Window.documentModified",
+            // documentModified );
         }
     }
 
-    protected void handleWindowWidthChange() {
-        if ( !isFullScreen() && !isMaximized() ) {
-            // If neither in Full Screen Mode nor Maximized Mode, cache the new
-            // window width as the preferred size's new width.
-            _preferredWindowSize = new Dimension2D( getWidth(), _preferredWindowSize.getHeight() );
+    @Override
+    public final void setIcon( final String jarRelativeIconFilename ) {
+        // NOTE: It is traditional to not use title bar icons on the Mac.
+        if ( SystemType.MACOS.equals( clientProperties.systemType ) ) {
+            return;
+        }
+
+        // Load the Title Bar's Minimize Icon Image as a JAR-resident resource.
+        final Image minimizeIconImage = ImageUtilities.loadImageAsJarResource(
+                jarRelativeIconFilename,
+                false );
+        if ( minimizeIconImage == null ) {
+            return;
+        }
+
+        // Add the Icon to the Title Bar.
+        // NOTE: It is recommended to add the Icons vs. using setAll() to
+        //  replace them all, so we don't lose platform-provided Icons.
+        // TODO: Supply both a 16x16 and 32x32 Icon for each Stage? We only
+        //  supply 16x16 currently. Some platforms use the biggest they can.
+        getIcons().add( minimizeIconImage );
+    }
+
+    /**
+     * Returns the background color for this window, or default if unsupported.
+     * <p>
+     * Derived classes should override this method to point to an associated
+     * {@code Action} if the window supports background color setting.
+     *
+     * @return the background color for this window, or default if unsupported
+     */
+    public String getBackgroundColor() {
+        return getDefaultBackgroundColor();
+    }
+
+    /**
+     * Sets and selects the background color for this window, if applicable.
+     *
+     * @param backgroundColorName the Background Color to set for this window.
+     */
+    public void setBackgroundColor( final String backgroundColorName ) {
+        // Set the background color for most layout content.
+        // NOTE: This is mostly needed so that the CSS theme gets loaded and
+        //  its tags are available for custom button rendering.
+        final Color backgroundColor = BackgroundColorChoices.getBackgroundColor(
+                backgroundColorName );
+        setForegroundFromBackground( backgroundColor );
+
+        // Select the background color for this window, if applicable.
+        selectBackgroundColor( backgroundColorName );
+    }
+
+    /**
+     * Selects the background color for this window, if applicable.
+     * <p>
+     * Derived classes should override this method to point to an associated
+     * {code Action}, if the window supports background color setting.
+     *
+     * @param backgroundColorName the Background Color to select.
+     */
+    public void selectBackgroundColor( final String backgroundColorName ) {
+    }
+
+    // NOTE: Do not set background on the Stage itself, as this ends up
+    //  affecting Tool Bars, Status Bars, and possibly even Menu Bars.
+    // NOTE: This method is a minimal implementation shared by all windows,
+    //  whether they need to override for more complex layout forwarding or not.
+    @Override
+    public void setForegroundFromBackground( final Color backColor ) {
+        // Set the new Background first, so it sets context for CSS derivations.
+        // NOTE: It appears to be more reliable to set this before loading CSS,
+        //  as otherwise we seem to occasionally get cases where subtle changes
+        //  in background color cause the CSS loading to be ignored. Perhaps
+        //  this
+        //  is because a switch from dark to light background causes the removal
+        //  of one CSS before adding the new one. So maybe there is a race
+        //  condition of sorts, regarding derivation within the infrastructure.
+        //  More likely still, Core JavaFX CSS calls get triggered by the
+        //  background property change and/or Java API calls happen, that
+        //  step on
+        //  our own custom CSS settings, due to Java taking precedence over CSS,
+        //  or the CSS being on a deferred thread that executes after this one.
+        final Background background = RegionUtilities.makeRegionBackground(
+                backColor );
+        _root.setBackground( background );
+
+        // Try to globally change the foreground theme for elements not exposed
+        // in Java API calls, using our custom dark vs. light theme CSS files.
+        // NOTE: In many cases, we need to load the main CSS first, before
+        //  applying styles to layout children, as there are additional CSS
+        //  stylesheets to load that depend on symbols defined in the main ones.
+        final Scene scene = _content.getScene();
+        GuiUtilities.setStylesheetForTheme( scene,
+                                            backColor,
+                                            DARK_BACKGROUND_CSS,
+                                            LIGHT_BACKGROUND_CSS );
+    }
+
+    /**
+     * Returns the default background color for this window.
+     * <p>
+     * Derived classes should override this method if their preferred default
+     * background color is something other than the one set here.
+     *
+     * @return the default background color for this window
+     */
+    public String getDefaultBackgroundColor() {
+        return BackgroundColorChoices.DEFAULT_BACKGROUND_COLOR_NAME;
+    }
+
+    // TODO: Improve these comments in javadocs format.
+    // NOTE: This method is a wrapper around show() and hide(), to enforce
+    //  legal use of those methods as exceptions are thrown if you show
+    //  something that is already being shown or if you hide something that is
+    //  already hidden. This may not be the best name for this method, but it
+    //  is also illegal to override show() and hide() so I decided to combine.
+    // TODO: Make greater use of this method in place of having manually
+    //  duplicated it in so many places before enhancing our JavaFX base class
+    //  with more of the functionality from our older Swing base class.
+    public void setVisible( final boolean visible ) {
+        setVisible( visible, true );
+    }
+
+    // TODO: Improve these comments in javadocs format.
+    // NOTE: This method is a wrapper around show() and hide(), to enforce
+    //  legal use of those methods as exceptions are thrown if you show
+    //  something that is already being shown or if you hide something that is
+    //  already hidden. This may not be the best name for this method, but it
+    //  is also illegal to override show() and hide() so I decided to combine.
+    // NOTE: This is an enhanced version for when "force to front" is optional.
+    // TODO: Make greater use of this method in place of having manually
+    //  duplicated it in so many places before enhancing our JavaFX base class
+    //  with more of the functionality from our older Swing base class.
+    public void setVisible( final boolean visible,
+                            final boolean forceToFront ) {
+        if ( visible ) {
+            if ( isIconified() ) {
+                setIconified( false );
+            }
+            else if ( !isShowing() ) {
+                show();
+            }
+
+            if ( forceToFront ) {
+                toFront();
+            }
+        }
+        else {
+            if ( isShowing() ) {
+                hide();
+            }
         }
     }
 
@@ -730,19 +1022,124 @@ public abstract class XStage extends Stage implements ForegroundManager,
         super.hide();
     }
 
+    // Hide all of the Object Properties Editors and Insert Dialogs.
+    public void hideObjectPropertiesEditors() {
+        // Forward this method to the Window Manager.
+        _windowManager.hideObjectPropertiesEditors();
+    }
+
+    // This method refreshes the Object Properties Editors when their
+    // properties are changed outside the textField, such as via mouse
+    // move/rotate.
+    public final void refreshObjectPropertiesEditors() {
+        // Forward this method to the Window manager.
+        _windowManager.refreshObjectPropertiesEditors();
+    }
+
+    // Update the Frame Titles with the dirty flag, where appropriate.
+    public final void updateFrameTitles( final File documentFile,
+                                         final boolean documentModified ) {
+        // Update the Frame Title for this Stage.
+        updateFrameTitle( documentFile, documentModified );
+
+        // Forward this method to the Window Manager.
+        _windowManager.updateFrameTitles( documentFile, documentModified );
+    }
+
+    // NOTE: This method should be overridden if a Stage works with file
+    //  objects in an MDI context and instead needs to close the current
+    //  document
+    //  (usually the window) and switch to another active and loaded document.
+    public void doCloseWindow() {
+        // Hide this window by setting invisible (was close() in Swing).
+        setVisible( false );
+    }
+
+    public void doExportImageGraphics() {
+        // Switch on export context, so we know the data type and format to
+        // save.
+        fileExportRasterGraphics( this,
+                                  _defaultDirectory,
+                                  clientProperties,
+                                  getGraphicsCategory() );
+    }
+
+    // NOTE: In some cases, more complex logic is required and may return
+    //  something other than the cached Graphics Category. Override if so.
+    public String getGraphicsCategory() {
+        return graphicsCategory;
+    }
+
+    public void setGraphicsCategory( final String pGraphicsCategory ) {
+        // Update the graphics category for the next Export request.
+        graphicsCategory = pGraphicsCategory;
+    }
+
+    public void doExportSessionLog() {
+        fileExportSessionLog( this, _defaultDirectory, clientProperties );
+    }
+
+    public void doExportVectorGraphics() {
+        // Switch on export context, so we know the data type and format to
+        // save.
+        fileExportVectorGraphics( this,
+                                  _defaultDirectory,
+                                  clientProperties,
+                                  getGraphicsCategory() );
+    }
+
+    public void doImportTableData() {
+        // NOTE: Use the on-line example to take file load status into account.
+        fileImportTableData( this, _defaultDirectory );
+    }
+
+    protected final void doImportVectorGraphics() {
+        // NOTE: Use the on-line example to take file load status into account.
+        fileImportVectorGraphics( this, _defaultDirectory );
+    }
+
+    public final void doPageSetup() {
+        printManager.pageSetup( clientProperties.systemType );
+    }
+
+    /**
+     * Prints the main content {@link Node} for this {@link Stage}.
+     * <p>
+     * Not marked as final, as derived classes may need to go through the WebKit
+     * toolkit instead, via {@link WebEngine} printing.
+     */
+    public void doPrint() {
+        // TODO: Find a way to indicate and generate multiple pages.
+        printManager.print( getContent(), clientProperties.systemType );
+    }
+
+    /**
+     * @return The main Content Node
+     */
+    public final Node getContent() {
+        return _content;
+    }
+
+    // This method enforces a certain consistent layout strategy at the
+    // outer-most level of stages, with the idea that every stage has a centered
+    // primary content node that is separate from standard stuff like window
+    // decorators, menu bars, tool bars, and action button bars.
+    public final void setContent( final Node content ) {
+        // Cache the main Content Node so we can apply CSS styles later on.
+        _content = content;
+
+        // Make sure the main Content Node is centered in all contexts.
+        _root.setCenter( _content );
+    }
+
     // Hide secondary windows that depend on state.
-    public void hideSecondaryWindows() {}
-
-    // NOTE: Not all stages have file loaders, so a concrete no-op
-    //  implementation is provided rather than making this method abstract and
-    //  requiring all derived classes to implement it.
-    protected void initFileLoaders() {}
-
-    protected void initProperties() {}
+    public void hideSecondaryWindows() {
+    }
 
     // This is the main Stage initializer.
     // NOTE It is the responsibility of the subclasses to invoke this method,
-    //  as it needs to happen after basic initialization is completed and as this
+    //  as it needs to happen after basic initialization is completed and as
+    //  this
     //  avoids complicated parameter lists.
     // NOTE: This is declared "final" to reduce the chance of accidentally
     //  overriding it and losing the contracted behavior in a subclass.
@@ -783,7 +1180,10 @@ public abstract class XStage extends Stage implements ForegroundManager,
         // that we don't use these values if the window isn't resizable, as the
         // window becomes too large in such cases, due to thread execution order
         // vs. our later preferred size assertions.
-        final Scene scene = loadScene( _root, defaultWidth, defaultHeight, resizable );
+        final Scene scene = loadScene( _root,
+                                       defaultWidth,
+                                       defaultHeight,
+                                       resizable );
 
         // Load all of the relevant actions, if any are declared for this Stage.
         loadActions();
@@ -804,8 +1204,12 @@ public abstract class XStage extends Stage implements ForegroundManager,
         // NOTE: Non-resizable windows should have smaller minimum height and
         // width, as they likely are small windows and we don't want to force
         // unnecessary empty space.
-        setMinWidth( resizable ? 400d : 300d );
-        setMinHeight( resizable ? 400d : 200d );
+        setMinWidth( resizable
+                     ? 400d
+                     : 300d );
+        setMinHeight( resizable
+                      ? 400d
+                      : 200d );
 
         // Load all of the secondary Windows associated with this Stage.
         loadAllWindows();
@@ -820,6 +1224,45 @@ public abstract class XStage extends Stage implements ForegroundManager,
         prepareForInput( menuBar );
     }
 
+    // Add all of the event listeners and handlers associated with common
+    // functionality.
+    private final void addAllListeners() {
+        // Add callback handlers for relevant actions.
+        addActionHandlers();
+
+        // Add callback listeners for relevant nodes.
+        addCallbackListeners();
+
+        // Add the Context Pop-Up Menu event listeners.
+        addContextMenuListeners();
+
+        // Initialize the Tool Bar event listeners.
+        addToolBarListeners();
+    }
+
+    // Actions are not required for stages, so this method is not declared
+    // abstract but is instead given a default no-op implementation.
+    protected void addActionHandlers() {
+    }
+
+    // Callback listeners are not required for stages, so this method is not
+    // declared abstract but is instead given a default no-op implementation.
+    protected void addCallbackListeners() {
+    }
+
+    // Context menus are not required for stages, so this method is not declared
+    // abstract but is instead given a default no-op implementation.
+    protected void addContextMenuListeners() {
+    }
+
+    // Tool bars are not required for stages, so this method is not declared
+    // abstract but is instead given a default no-op implementation.
+    protected void addToolBarListeners() {
+    }
+
+    protected void initProperties() {
+    }
+
     protected void initVariables() {
         _rasterGraphicsExportOptions = new RasterGraphicsExportOptions();
         _vectorGraphicsExportOptions = new VectorGraphicsExportOptions();
@@ -827,8 +1270,10 @@ public abstract class XStage extends Stage implements ForegroundManager,
         // Cache the number formats so that we don't have to get information
         // about locale, language, etc. from the OS each time we format a
         // number.
-        _numberFormat = NumberFormat.getNumberInstance( clientProperties.locale );
-        _percentFormat = NumberFormat.getPercentInstance( clientProperties.locale );
+        _numberFormat
+                = NumberFormat.getNumberInstance( clientProperties.locale );
+        _percentFormat
+                = NumberFormat.getPercentInstance( clientProperties.locale );
         _angleFormat = ( NumberFormat ) _numberFormat.clone();
         _numberParse = ( NumberFormat ) _numberFormat.clone();
         _percentParse = ( NumberFormat ) _percentFormat.clone();
@@ -844,98 +1289,13 @@ public abstract class XStage extends Stage implements ForegroundManager,
         _numberParse.setMaximumFractionDigits( 10 );
         _percentParse.setMinimumFractionDigits( 0 );
         _percentParse.setMaximumFractionDigits( 10 );
-        
+
         // NOTE: Start project number at zero as we pre-increment on calls
         //  to getDefaultProjectFile().
         projectNumber = 0;
 
         // By default, the MRU Cache is non-null and empty.
         _mruFilenameCache = new LinkedList<>();
-    }
-
-    /**
-     * Returns a project file with a unique name to avoid overwriting files.
-     *
-     * @param defaultBaseFilename the default base filename to apply the
-     *                            running project number to, for uniqueness
-     * @param defaultFileSuffix the file suffix to append to the default name
-     * @return a project file with a unique name to avoid overwriting files
-     */
-    public File getDefaultProjectFile( final String defaultBaseFilename,
-                                       final String defaultFileSuffix ) {
-        // If the current default directory is null, switch to the current
-        // user directory as more likely to always be valid and non-null.
-        File defaultDirectory = getDefaultDirectory();
-        if ( defaultDirectory == null ) {
-            defaultDirectory = new File( System.getProperty( "user.dir" ) );
-        }
-        Path defaultDirectoryPath = null;
-
-        try {
-            // Check if the default directory exists and is writable. Otherwise,
-            // use the current user directory (if valid).
-            defaultDirectoryPath = defaultDirectory.toPath();
-            if ( !Files.isDirectory( defaultDirectoryPath )
-                    || !Files.isWritable( defaultDirectoryPath ) ) {
-                defaultDirectory = FileUtils.getUserDirectory();
-                defaultDirectoryPath = defaultDirectory.toPath();
-                if ( !Files.isDirectory( defaultDirectoryPath )
-                        || !Files.isWritable( defaultDirectoryPath ) ) {
-                    // As a last resort, use the system's temporary directory.
-                    defaultDirectory = FileUtils.getTempDirectory();
-                    defaultDirectoryPath = defaultDirectory.toPath();
-                }
-            }
-        }
-        catch ( final Exception e ) {
-            e.printStackTrace();
-        }
-
-        File defaultProjectFile = null;
-        boolean fileExists = true;
-        while ( fileExists ) {
-            projectNumber++;
-            final String defaultFilename = defaultBaseFilename
-                    + Integer.toString( projectNumber ) + defaultFileSuffix;
-            final File defaultFile = new File(
-                    defaultDirectory, defaultFilename );
-
-            try ( final Stream< Path > directoryEntries = Files.list(
-                    defaultDirectoryPath ) ) {
-                if ( !directoryEntries.anyMatch( directoryEntry ->
-                        directoryEntry.equals( defaultFile.toPath() ) ) ) {
-                    defaultProjectFile = defaultFile;
-                    fileExists = false;
-                }
-            }
-            catch ( final Exception e ) {
-                e.printStackTrace();
-            }
-        }
-
-        return defaultProjectFile;
-    }
-
-    public final boolean isFrameTitleManager() {
-        return _frameTitleManager;
-    }
-
-    // Re-populate the MRU Filename Cache from the previous session.
-    protected final void loadMruCache( final String[] mruFilenames ) {
-        for ( final String mruFilename : mruFilenames ) {
-            // Trim all entries and make sure we don't add duplicates.
-            final String mruFilenameTrimmed = mruFilename.trim();
-            if ( !mruFilenameTrimmed.isEmpty() 
-                    && !_mruFilenameCache.contains( mruFilenameTrimmed ) ) {
-                _mruFilenameCache.add( mruFilenameTrimmed );
-            }
-        }
-
-        // Update the MRU File actions in the overall File actions from the new
-        // MRU filename cache.
-        if ( _mruFileActions != null ) {
-            _mruFileActions.updateMruFileActions( _mruFilenameCache );
-        }
     }
 
     protected MenuBar loadActionPane() {
@@ -962,11 +1322,39 @@ public abstract class XStage extends Stage implements ForegroundManager,
         return menuBar;
     }
 
+    // Menu bars are not required for Stages, so this method is not declared
+    // abstract but is instead given a default no-op implementation.
+    protected MenuBar loadMenuBar() {
+        return null;
+    }
+
+    // Tool bars are not required for Stages, so this method is not declared
+    // abstract but is instead given a default no-op implementation.
+    protected ToolBar loadToolBar() {
+        return null;
+    }
+
+    public void setMenuBar( final MenuBar menuBar ) {
+        // Make sure the Menu Bar displays above the Tool Bar.
+        // NOTE: The Menu Bar must be added to the Stage's Layout even if it is
+        // going to be set to use the System Menu Bar.
+        _actionPane.setTop( menuBar );
+    }
+
+    public void setToolBar( final ToolBar toolBar ) {
+        // TODO: Review whether we want to enforce this sizing anymore.
+        toolBar.setPrefHeight( TOOL_BAR_HEIGHT );
+        toolBar.setMinHeight( TOOL_BAR_HEIGHT );
+        toolBar.setMaxHeight( TOOL_BAR_HEIGHT );
+
+        // Make sure the Tool Bar displays beneath the Menu Bar.
+        _actionPane.setBottom( toolBar );
+    }
+
     // Actions are not required for Stages, so this method is not declared
     // abstract but is instead given a default no-op implementation.
-    protected void loadActions() {}
-
-    protected void loadAllStages() {}
+    protected void loadActions() {
+    }
 
     // Load all of the Windows associated with this Stage.
     public void loadAllWindows() {
@@ -975,164 +1363,49 @@ public abstract class XStage extends Stage implements ForegroundManager,
 
         // Load all of the Primary and Secondary Stages.
         loadAllStages();
-    
+
         // Load all of the Object Properties Editors and Insert Dialogs.
         loadObjectPropertiesEditors();
     }
 
+    protected void loadObjectPropertiesEditors() {
+    }
+
+    protected void loadAllStages() {
+    }
+
+    protected void loadPopups() {
+    }
+
     // Every stage must have a Main Content Node, so this method is mandated.
     protected abstract Node loadContent();
-
-    // Menu bars are not required for Stages, so this method is not declared
-    // abstract but is instead given a default no-op implementation.
-    protected MenuBar loadMenuBar() {
-        return null;
-    }
-
-    protected void loadPopups() {}
-
-    // Load all the User Preferences for this Stage.
-    // NOTE: Preferences are not applicable to all Stages, so this method is
-    //  not declared abstract and is instead given a default implementation
-    //  that at least loads basic shared functionality such as window layout,
-    //  background color, default directory, and MRU filename cache.
-    // TODO: Make a preferences object instead, with get/set methods, which
-    //  can be set from CSV, XML, or stored User Preferences? See the example
-    //  in Listing 3.3 on p. 37 of "More Java Pitfalls" (Wiley), and include
-    //  static default values for better modularity, or follow the examples
-    //  from Gralev, using an XML file for default preferences, first loading 
-    //  all from the top app node then pass the hash set via Java Properties?
-    @Override
-    public Preferences loadPreferences() {
-        // Get the user node for this package/class, so that we get the
-        // preferences specific to this stage and the application's user.
-        final Preferences prefs = Preferences.userNodeForPackage( getClass() );
-
-        // First restore all the window layout details for the application.
-        restoreAllWindowLayouts( prefs );
-
-        // Load and set the background color for this window, if supported.
-        final String backgroundColor = prefs.get( 
-                "backgroundColor",
-                getDefaultBackgroundColor() );
-        setBackgroundColor( backgroundColor );
-       
-        // Reset the default directory for local file operations.
-        final File defaultDirectory = PreferenceUtilities
-                .loadDefaultDirectoryPreference( prefs );
-        setDefaultDirectory( defaultDirectory );
-
-        // Re-populate the MRU filename cache from the previous session.
-        final String[] mruFilenames = PreferenceUtilities.loadMruPreferences( prefs );
-        loadMruCache( mruFilenames );
-
-        return prefs;
-    }
-
-    // Save all the User Preferences for this Stage.
-    // NOTE: Preferences are not applicable to all Stages, so this method is
-    //  not declared abstract and is instead given a default implementation
-    //  that at least saves basic shared functionality such as window layout,
-    //  background color, default directory, and MRU filename cache.
-    @Override
-    public Preferences savePreferences() {
-        // Get the user node for this package/class, so that we get the
-        // preferences specific to this stage and user.
-        final Preferences prefs = Preferences.userNodeForPackage( getClass() );
-
-        // First save all the window layout details for the application.
-        saveAllWindowLayouts( prefs );
-        
-        // Save the background color for this window.
-        final String backgroundColor = getBackgroundColor();
-        prefs.put( "backgroundColor", backgroundColor );
-
-        // Save the Default Directory to User Preferences.
-        PreferenceUtilities.saveDefaultDirectoryPreference( _defaultDirectory, prefs );
-
-        // Save the MRU Filename Cache to User Preferences.
-        PreferenceUtilities.saveMruPreferences( _mruFilenameCache, prefs );
-        
-        return prefs;
-    }
-    
-    /**
-     * Returns the default background color for this window.
-     * <p>
-     * Derived classes should override this method if their preferred default
-     * background color is something other than the one set here.
-     * 
-     * @return the default background color for this window
-     */
-    public String getDefaultBackgroundColor() {
-        return BackgroundColorChoices.DEFAULT_BACKGROUND_COLOR_NAME;
-    }
-    
-    /**
-     * Returns the background color for this window, or default if unsupported.
-     * <p>
-     * Derived classes should override this method to point to an associated
-     * {@code Action} if the window supports background color setting.
-     * 
-     * @return the background color for this window, or default if unsupported
-     */
-    public String getBackgroundColor() {
-        return getDefaultBackgroundColor();
-    }
-   
-    /**
-     * Sets and selects the background color for this window, if applicable.
-     * 
-     * @param backgroundColorName the Background Color to set for this window.
-     */
-    public void setBackgroundColor( final String backgroundColorName ) {
-        // Set the background color for most layout content.
-        // NOTE: This is mostly needed so that the CSS theme gets loaded and
-        //  its tags are available for custom button rendering.
-        final Color backgroundColor = BackgroundColorChoices
-                .getBackgroundColor( backgroundColorName );
-        setForegroundFromBackground( backgroundColor );
-        
-        // Select the background color for this window, if applicable.
-        selectBackgroundColor( backgroundColorName );
-    }
-    
-    /**
-     * Selects the background color for this window, if applicable.
-     * <p>
-     * Derived classes should override this method to point to an associated
-     * {code Action}, if the window supports background color setting.
-     * 
-     * @param backgroundColorName the Background Color to select.
-     */
-    public void selectBackgroundColor( final String backgroundColorName ) {}
 
     protected final Scene loadScene( final Parent parent,
                                      final double defaultWidth,
                                      final double defaultHeight,
                                      final boolean resizable ) {
         // NOTE: Our CSS default is already White, as is the JavaFX default,
-        //  but setting it in code here, does no harm as it just avoids one level
+        //  but setting it in code here, does no harm as it just avoids one
+        //  level
         //  of constructor wrapping and gives us more flexibility if we change
         //  our minds about the default background color later on.
         final Scene scene = resizable
-            ? new Scene( parent, defaultWidth, defaultHeight, Color.WHITE )
-            : new Scene( parent, Color.WHITE );
+                            ? new Scene( parent,
+                                         defaultWidth,
+                                         defaultHeight,
+                                         Color.WHITE )
+                            : new Scene( parent, Color.WHITE );
 
         // TODO: Move the core CSS setting to the Application startup, so that
         //  non-stage windows also use our preferred styles?
         // NOTE: Unfortunately, the only way to do this involves Private API.
-        final List< String > jarRelativeStylesheetFilenames = GuiUtilities
-                .getJarRelativeStylesheetFilenames( clientProperties.systemType );
-        GuiUtilities.addStylesheetsAsJarResource( scene, jarRelativeStylesheetFilenames );
+        final List< String > jarRelativeStylesheetFilenames
+                = GuiUtilities.getJarRelativeStylesheetFilenames(
+                clientProperties.systemType );
+        GuiUtilities.addStylesheetsAsJarResource( scene,
+                                                  jarRelativeStylesheetFilenames );
 
         return scene;
-    }
-
-    // Tool bars are not required for Stages, so this method is not declared
-    // abstract but is instead given a default no-op implementation.
-    protected ToolBar loadToolBar() {
-        return null;
     }
 
     // Prepare the Stage and its subsidiary windows for input.
@@ -1157,7 +1430,8 @@ public abstract class XStage extends Stage implements ForegroundManager,
         // NOTE: If this isn't run on a deferred thread, some menu shortcuts
         //  using the Alt/Option key don't work on macOS for some reason.
         // NOTE: After countless experiments (all removed from the code by
-        //  now), we are temporarily giving up on the Apple Application Menu Bar,
+        //  now), we are temporarily giving up on the Apple Application Menu
+        //  Bar,
         //  as it has continued to backslide while Oracle falls behind Apple's
         //  continuous changes that they keep private to themselves. Using the
         //  standard window-level menu bar fixes numerous problems on the macOS
@@ -1168,163 +1442,123 @@ public abstract class XStage extends Stage implements ForegroundManager,
         }
     }
 
-    // Callback listeners are not required for stages, so this method is not
-    // declared abstract but is instead given a default no-op implementation.
-    protected void removeCallbackListeners() {}
+    public final void addWindowSizeListeners() {
+        // The correct way to listen for window resizes is to add Change
+        // Listeners to the width and height properties of the scene.
+        // NOTE: These events happen incrementally, which is way too much.
+        // NOTE: Returning from Full Screen Mode works pretty well, if we
+        //  re-enable these listeners, but they don't really help with manual
+        //  resize actions.
+        getScene().widthProperty()
+                  .addListener( ( observableValue, oldSceneWidth,
+                                  newSceneWidth ) -> handleWindowWidthChange() );
+        getScene().heightProperty()
+                  .addListener( ( observableValue, oldSceneHeight,
+                                  newSceneHeight ) -> handleWindowHeighthChange() );
+    }
+
+    // NOTE: Not all stages have file loaders, so a concrete no-op
+    //  implementation is provided rather than making this method abstract and
+    //  requiring all derived classes to implement it.
+    protected void initFileLoaders() {
+    }
 
     public final void removeWindowSizeListeners() {
         getScene().widthProperty()
-                .removeListener( ( observableValue,
-                                   oldSceneWidth,
-                                   newSceneWidth ) -> handleWindowWidthChange() );
+                  .removeListener( ( observableValue, oldSceneWidth,
+                                     newSceneWidth ) -> handleWindowWidthChange() );
         getScene().heightProperty()
-                .removeListener( ( observableValue,
-                                   oldSceneHeight,
-                                   newSceneHeight ) -> handleWindowHeighthChange() );
+                  .removeListener( ( observableValue, oldSceneHeight,
+                                     newSceneHeight ) -> handleWindowHeighthChange() );
     }
 
-    // A reset capability is not required for Stages, so this method is not
-    // declared abstract and is instead given a default no-op implementation.
-    protected void reset() {}
-
-    /**
-     * This method restores the Window Layout Preferences for this window. It
-     * starts by checking the desired menu setting (if available), which is
-     * saved from the previous session. Only if "Preferred Size" is desired,
-     * does it also restore the cached window size from preferences.
-     * <p>
-     * Generally this method is only called at the application level, so this
-     * override takes care of invoking it on all windows owned by the
-     * application.
-     *
-     * @param prefs
-     *            The @Preferences reference for the key/value pairs
-     */
-    @Override
-    public final void restoreWindowLayout( final Preferences prefs ) {
-        // Get the window key prefix for Window Layout Preferences.
-        final String windowKeyPrefix = getWindowKeyPrefix();
-
-        // If this window has no key prefix, it can't restore preferences.
-        if ( ( windowKeyPrefix == null ) || windowKeyPrefix.isEmpty() ) {
-            // Attempt to set the default window size.
-            setWindowSize( _defaultWindowSize );
-            return;
+    protected void handleWindowHeighthChange() {
+        // The correct way to listen for window resizes is to add Change
+        // Listeners to the width and height properties of the scene.
+        // NOTE: These events happen incrementally, which is way too much.
+        // NOTE: Returning from Full Screen Mode works pretty well, if we
+        //  re-enable this listener, but it doesn't really help with manual
+        //  resize actions.
+        if ( !isFullScreen() && !isMaximized() ) {
+            // If neither in Full Screen Mode nor Maximized Mode, cache the new
+            // window height as the preferred size's new height.
+            _preferredWindowSize
+                    = new Dimension2D( _preferredWindowSize.getWidth(),
+                                       getHeight() );
         }
+    }
 
-        // Restore the preferred window size from the last session.
-        final String windowWidthKey = windowKeyPrefix + "Width";
-        final double windowWidthValue = prefs.getDouble( windowWidthKey,
-                                                         _defaultWindowSize.getWidth() );
-        final String windowHeightKey = windowKeyPrefix + "Height";
-        final double windowHeightValue = prefs.getDouble( windowHeightKey,
-                                                          _defaultWindowSize.getHeight() );
-        setPreferredWindowSize( windowWidthValue, windowHeightValue );
-
-        // Determine whether the user was in Full Screen Mode when they exited.
-        final String fullScreenModeKey = windowKeyPrefix + "FullScreenMode";
-        final boolean fullScreenMode = prefs.getBoolean( fullScreenModeKey, false );
-        if ( fullScreenMode ) {
-            // Make sure we explicitly enter Full Screen Mode.
-            setFullScreen( true );
-
-            // Exit early, as we shouldn't try to set location or size for
-            // explicit modes like Full Screen Mode.
-            return;
+    protected void handleWindowWidthChange() {
+        if ( !isFullScreen() && !isMaximized() ) {
+            // If neither in Full Screen Mode nor Maximized Mode, cache the new
+            // window width as the preferred size's new width.
+            _preferredWindowSize = new Dimension2D( getWidth(),
+                                                    _preferredWindowSize.getHeight() );
         }
-
-        // Determine whether the user was in Maximized Mode when they exited.
-        final String maximizedModeKey = windowKeyPrefix + "MaximizedMode";
-        final boolean maximizedMode = prefs.getBoolean( maximizedModeKey, false );
-        if ( maximizedMode ) {
-            // Make sure we explicitly enter Maximized Mode.
-            setMaximized( true );
-
-            // Exit early, as we shouldn't try to set location or size for
-            // explicit modes like Maximized Mode.
-            return;
-        }
-
-        // Restore the window's cached layout location from the last session.
-        // NOTE: Default location accounts for issues with corner areas on some
-        //  OS versions, but may be too much for smaller screens.
-        final String windowXKey = windowKeyPrefix + "X";
-        final double windowXValue = prefs.getDouble( windowXKey, 100d );
-        final String windowYKey = windowKeyPrefix + "Y";
-        final double windowYValue = prefs.getDouble( windowYKey, 100d );
-        setWindowLocation( windowXValue, windowYValue );
-
-        // Attempt to explicitly set the adjusted preferred window size.
-        setWindowSize( _preferredWindowSize );
-
-        // If necessary, adjust this stage to be within bounds.
-        adjustStageWithinBounds();
     }
 
     /**
-     * This method saves the Window Layout Preferences for this window. It
-     * starts by checking the current menu setting (if available), which is
-     * saved for the next session. Only if "Preferred Size" is currently
-     * selected, does it also store the current window size as a preference.
+     * Returns a project file with a unique name to avoid overwriting files.
      *
-     * @param prefs
-     *            The @Preferences reference for the key/value pairs
+     * @param defaultBaseFilename the default base filename to apply the running
+     *                            project number to, for uniqueness
+     * @param defaultFileSuffix   the file suffix to append to the default name
+     * @return a project file with a unique name to avoid overwriting files
      */
-    @Override
-    public final void saveWindowLayout( final Preferences prefs ) {
-        // Get the window key prefix for Window Layout Preferences.
-        final String windowKeyPrefix = getWindowKeyPrefix();
+    public File getDefaultProjectFile( final String defaultBaseFilename,
+                                       final String defaultFileSuffix ) {
+        // If the current default directory is null, switch to the current
+        // user directory as more likely to always be valid and non-null.
+        File defaultDirectory = getDefaultDirectory();
+        if ( defaultDirectory == null ) {
+            defaultDirectory = new File( System.getProperty( "user.dir" ) );
+        }
+        Path defaultDirectoryPath = null;
 
-        // If this window has no key prefix, it can't save preferences.
-        if ( ( windowKeyPrefix == null ) || windowKeyPrefix.isEmpty() ) {
-            return;
+        try {
+            // Check if the default directory exists and is writable. Otherwise,
+            // use the current user directory (if valid).
+            defaultDirectoryPath = defaultDirectory.toPath();
+            if ( !Files.isDirectory( defaultDirectoryPath )
+                 || !Files.isWritable( defaultDirectoryPath ) ) {
+                defaultDirectory = FileUtils.getUserDirectory();
+                defaultDirectoryPath = defaultDirectory.toPath();
+                if ( !Files.isDirectory( defaultDirectoryPath )
+                     || !Files.isWritable( defaultDirectoryPath ) ) {
+                    // As a last resort, use the system's temporary directory.
+                    defaultDirectory = FileUtils.getTempDirectory();
+                    defaultDirectoryPath = defaultDirectory.toPath();
+                }
+            }
+        }
+        catch ( final Exception e ) {
+            e.printStackTrace();
         }
 
-        // Save the window's preferred layout location.
-        final String windowXKey = windowKeyPrefix + "X";
-        final double windowXValue = getX();
-        prefs.putDouble( windowXKey, windowXValue );
-        final String windowYKey = windowKeyPrefix + "Y";
-        final double windowYValue = getY();
-        prefs.putDouble( windowYKey, windowYValue );
+        File defaultProjectFile = null;
+        boolean fileExists = true;
+        while ( fileExists ) {
+            projectNumber++;
+            final String defaultFilename = defaultBaseFilename
+                                           + Integer.toString( projectNumber )
+                                           + defaultFileSuffix;
+            final File defaultFile = new File( defaultDirectory,
+                                               defaultFilename );
 
-        // Determine whether the user was in Full Screen Mode when they exited.
-        final String fullScreenModeKey = windowKeyPrefix + "FullScreenMode";
-        final boolean fullScreenMode = isFullScreen();
-        prefs.putBoolean( fullScreenModeKey, fullScreenMode );
+            try ( final Stream< Path > directoryEntries = Files.list(
+                    defaultDirectoryPath ) ) {
+                if ( !directoryEntries.anyMatch( directoryEntry -> directoryEntry.equals(
+                        defaultFile.toPath() ) ) ) {
+                    defaultProjectFile = defaultFile;
+                    fileExists = false;
+                }
+            }
+            catch ( final Exception e ) {
+                e.printStackTrace();
+            }
+        }
 
-        // Determine whether the user was in Maximized Mode when they exited.
-        final String maximizedModeKey = windowKeyPrefix + "MaximizedMode";
-        final boolean maximizedMode = isMaximized();
-        prefs.putBoolean( maximizedModeKey, maximizedMode );
-
-        // Save the window's current size as the new preferred layout bounds,
-        // unless in Full Screen Mode or Maximized Mode, where it is safer to
-        // save the last cached Preferred Size instead, as Full Screen Mode Size
-        // and Maximized Mode Size should only be modes and never used directly
-        // (the OS knows best how to apply them).
-        final String windowWidthKey = windowKeyPrefix + "Width";
-        final double windowWidthValue = ( fullScreenMode || maximizedMode )
-            ? _preferredWindowSize.getWidth()
-            : getWidth();
-        prefs.putDouble( windowWidthKey, windowWidthValue );
-        final String windowHeightKey = windowKeyPrefix + "Height";
-        final double windowHeightValue = ( fullScreenMode || maximizedMode )
-            ? _preferredWindowSize.getHeight()
-            : getHeight();
-        prefs.putDouble( windowHeightKey, windowHeightValue );
-    }
-
-    // This method enforces a certain consistent layout strategy at the
-    // outer-most level of stages, with the idea that every stage has a centered
-    // primary content node that is separate from standard stuff like window
-    // decorators, menu bars, tool bars, and action button bars.
-    public final void setContent( final Node content ) {
-        // Cache the main Content Node so we can apply CSS styles later on.
-        _content = content;
-
-        // Make sure the main Content Node is centered in all contexts.
-        _root.setCenter( _content );
+        return defaultProjectFile;
     }
 
     public File getDefaultDirectory() {
@@ -1332,7 +1566,8 @@ public abstract class XStage extends Stage implements ForegroundManager,
     }
 
     // NOTE: Unlike most applications, we allow separate default directories
-    //  per window as usually there is different functionality that may use files
+    //  per window as usually there is different functionality that may use
+    //  files
     //  that need to be in different locations due to how they are used in
     //  overall user workflow with other applications.
     @Override
@@ -1340,252 +1575,13 @@ public abstract class XStage extends Stage implements ForegroundManager,
         _defaultDirectory = defaultDirectory;
     }
 
+    // NOTE: The FileActionHandler interface can't return a class variable,
+    //  but is a better place to declare this method with its default
+    //  implementation that returns null than declaring it on this abstract
+    //  base class, as not all implementors of FileActionHandler are Stages.
     @Override
-    public final void setDefaultWindowSize( final double defaultWidth,
-                                            final double defaultHeight ) {
-        // Cache the default size so it can be reasserted via the menu.
-        _defaultWindowSize = new Dimension2D( defaultWidth, defaultHeight );
-
-        // Also use this as the initial preferred size, in case absent from user
-        // preferences. This can be overwritten later during preference loading.
-        _preferredWindowSize = new Dimension2D( defaultWidth, defaultHeight );
-    }
-
-    // NOTE: Do not set background on the Stage itself, as this ends up
-    //  affecting Tool Bars, Status Bars, and possibly even Menu Bars.
-    // NOTE: This method is a minimal implementation shared by all windows,
-    //  whether they need to override for more complex layout forwarding or not.
-    @Override
-    public void setForegroundFromBackground( final Color backColor ) {
-        // Set the new Background first, so it sets context for CSS derivations.
-        // NOTE: It appears to be more reliable to set this before loading CSS,
-        //  as otherwise we seem to occasionally get cases where subtle changes
-        //  in background color cause the CSS loading to be ignored. Perhaps this
-        //  is because a switch from dark to light background causes the removal
-        //  of one CSS before adding the new one. So maybe there is a race
-        //  condition of sorts, regarding derivation within the infrastructure.
-        //  More likely still, Core JavaFX CSS calls get triggered by the
-        //  background property change and/or Java API calls happen, that step on
-        //  our own custom CSS settings, due to Java taking precedence over CSS,
-        //  or the CSS being on a deferred thread that executes after this one.
-        final Background background = RegionUtilities.makeRegionBackground( backColor );
-        _root.setBackground( background );
-
-        // Try to globally change the foreground theme for elements not exposed
-        // in Java API calls, using our custom dark vs. light theme CSS files.
-        // NOTE: In many cases, we need to load the main CSS first, before
-        //  applying styles to layout children, as there are additional CSS
-        //  stylesheets to load that depend on symbols defined in the main ones.
-        final Scene scene = _content.getScene();
-        GuiUtilities.setStylesheetForTheme( scene,
-                                            backColor,
-                                            DARK_BACKGROUND_CSS,
-                                            LIGHT_BACKGROUND_CSS );
-    }
-
-    @Override
-    public final void setIcon( final String jarRelativeIconFilename ) {
-        // NOTE: It is traditional to not use title bar icons on the Mac.
-        if ( SystemType.MACOS.equals( clientProperties.systemType ) ) {
-            return;
-        }
-
-        // Load the Title Bar's Minimize Icon Image as a JAR-resident resource.
-        final Image minimizeIconImage = ImageUtilities
-                .loadImageAsJarResource( jarRelativeIconFilename, false );
-        if ( minimizeIconImage == null ) {
-            return;
-        }
-
-        // Add the Icon to the Title Bar.
-        // NOTE: It is recommended to add the Icons vs. using setAll() to
-        //  replace them all, so we don't lose platform-provided Icons.
-        // TODO: Supply both a 16x16 and 32x32 Icon for each Stage? We only
-        //  supply 16x16 currently. Some platforms use the biggest they can.
-        getIcons().add( minimizeIconImage );
-    }
-
-    public void setMenuBar( final MenuBar menuBar ) {
-        // Make sure the Menu Bar displays above the Tool Bar.
-        // NOTE: The Menu Bar must be added to the Stage's Layout even if it is
-        // going to be set to use the System Menu Bar.
-        _actionPane.setTop( menuBar );
-    }
-
-    @Override
-    public void setPreferredWindowSize( final double stageWidth, 
-                                        final double stageHeight ) {
-        // To prevent Application startup issues with Windows only having a
-        // minimal Frame Title Bar and no Content Pane (due to exceptions or
-        // other problems), we enforce minimum dimensions (taken as the cached
-        // default Window Size).
-        double stageWidthAdjusted = ( stageWidth > GuiUtilities.MINIMUM_WINDOW_WIDTH )
-            ? stageWidth
-            : _defaultWindowSize.getWidth();
-        double stageHeightAdjusted = ( stageHeight > GuiUtilities.MINIMUM_WINDOW_HEIGHT )
-            ? stageHeight
-            : _defaultWindowSize.getHeight();
-
-        // Get the user's screen size, for Full Screen Mode and user statistics.
-        // TODO: Also get and cache the minimum point, which may not be zero.
-        // NOTE: This query is done on-the-fly as the user may switch screens
-        //  between server calls.
-        final Rectangle2D visualBounds = Screen.getPrimary().getVisualBounds();
-        final double screenWidth = visualBounds.getWidth();
-        final double screenHeight = visualBounds.getHeight();
-
-        // Likewise, as the Screen Size or resolution may have changed since the
-        // previous session, we ensure that the Preferred Size can still fit.
-        // NOTE: We subtract a bit of a margin to make sure the Window can be
-        //  grabbed, resized, dragged, just in case decorations cause overflow,
-        //  and also to account for the dock and other related OS-level stuff.
-        stageWidthAdjusted = FastMath.min( screenWidth - 60, stageWidthAdjusted );
-        stageHeightAdjusted = FastMath.min( screenHeight - 60, stageHeightAdjusted );
-
-        // Cache the Window's adjusted Preferred Size on the Screen (in pixels).
-        _preferredWindowSize = new Dimension2D( stageWidthAdjusted, stageHeightAdjusted );
-    }
-
-    public void setToolBar( final ToolBar toolBar ) {
-        // TODO: Review whether we want to enforce this sizing anymore.
-        toolBar.setPrefHeight( TOOL_BAR_HEIGHT );
-        toolBar.setMinHeight( TOOL_BAR_HEIGHT );
-        toolBar.setMaxHeight( TOOL_BAR_HEIGHT );
-
-        // Make sure the Tool Bar displays beneath the Menu Bar.
-        _actionPane.setBottom( toolBar );
-    }
-
-    // TODO: Improve these comments in javadocs format.
-    // NOTE: This method is a wrapper around show() and hide(), to enforce
-    //  legal use of those methods as exceptions are thrown if you show
-    //  something that is already being shown or if you hide something that is
-    //  already hidden. This may not be the best name for this method, but it
-    //  is also illegal to override show() and hide() so I decided to combine.
-    // TODO: Make greater use of this method in place of having manually
-    //  duplicated it in so many places before enhancing our JavaFX base class
-    //  with more of the functionality from our older Swing base class.
-    public void setVisible( final boolean visible ) {
-        setVisible( visible, true );
-    }
-
-    // TODO: Improve these comments in javadocs format.
-    // NOTE: This method is a wrapper around show() and hide(), to enforce
-    //  legal use of those methods as exceptions are thrown if you show
-    //  something that is already being shown or if you hide something that is
-    //  already hidden. This may not be the best name for this method, but it
-    //  is also illegal to override show() and hide() so I decided to combine.
-    // NOTE: This is an enhanced version for when "force to front" is optional.
-    // TODO: Make greater use of this method in place of having manually
-    //  duplicated it in so many places before enhancing our JavaFX base class
-    //  with more of the functionality from our older Swing base class.
-    public void setVisible( final boolean visible, final boolean forceToFront ) {
-        if ( visible ) {
-            if ( isIconified() ) {
-                setIconified( false );
-            }
-            else if ( !isShowing() ) {
-                show();
-            }
-
-            if ( forceToFront ) {
-                toFront();
-            }
-        }
-        else {
-            if ( isShowing() ) {
-                hide();
-            }
-        }
-    }
-
-    @Override
-    public void setWindowLocation( final double stageX, final double stageY ) {
-        // Get the full list of screens that are currently accessible.
-        final List< Screen > screenList = Screen.getScreens();
-
-        // If there are no accessible screens, don't try to set location.
-        if ( screenList.size() < 1 ) {
-            return;
-        }
-
-        // Make sure the coordinates are within range of the full set of
-        // available screens.
-        boolean locationOutOfBounds = true;
-        for ( final Screen screen : screenList ) {
-            final Rectangle2D bounds = screen.getVisualBounds();
-
-            if ( bounds.contains( stageX, stageY ) ) {
-                locationOutOfBounds = false;
-                break;
-            }
-        }
-
-        // Adjust the window location if it is out of bounds.
-        final Rectangle2D bounds = Screen.getPrimary().getVisualBounds();
-        final double windowX = locationOutOfBounds ? bounds.getMinX() : stageX;
-        final double windowY = locationOutOfBounds ? bounds.getMinY() : stageY;
-
-        // Set and cache the window's location on the screen (in pixels).
-        setX( windowX );
-        setY( windowY );
-    }
-
-    /**
-     * This method exits Full Screen Mode and sets the supplied window size.
-     *
-     * @param windowSize
-     *            The window size to set as current window size
-     */
-    @Override
-    public void setWindowSize( final Dimension2D windowSize ) {
-        // Make sure we explicitly exit Full Screen Mode.
-        setFullScreen( false );
-
-        // Make sure we explicitly exit Maximized Mode.
-        setMaximized( false );
-
-        // Set the new window size, but don't bother checking if the window is
-        // resizable as we wouldn't have reached this method if the window
-        // width and height change listeners are registered on a non-resizable
-        // window. JavaFX takes care of managing these rules for us.
-        setWidth( windowSize.getWidth() );
-        setHeight( windowSize.getHeight() );
-    }
-
-    // NOTE: We generally only sync in one direction as the model is mostly in
-    // the Main Application Stage.
-    public void updateModel() {}
-
-    public void updateView() {}
-
-    // NOTE: Not all Stages have contextual settings, so a concrete no-op
-    //  implementation is provided rather than making this method abstract and
-    //  requiring all derived classes to implement it.
-    public void updateContextualSettings() {}
-
-    // Conditionally append an asterisk to the filename, if document modified.
-    // TODO: Learn how to set the black dot in the red circle in JavaFX --
-    //  perhaps this is documented in the Stage API docs, or search for a tool.
-    @Override
-    public final void updateFrameTitle( final File documentFile, 
-                                        final boolean documentModified ) {
-        final StringBuilder frameTitle = new StringBuilder( getDefaultTitle() );
-        if ( _showDirtyFlag ) {
-            frameTitle.append( getSubtitle( documentFile.getName(), documentModified ) );
-        }
-        setTitle( frameTitle.toString() );
-
-        // The Mac handles window-associated documents and modification markers
-        // differently from Windows and other OS's.
-        // TODO: Port this logic to JavaFX, if possible.
-        if ( SystemType.MACOS.equals( clientProperties.systemType ) ) {
-            // final JRootPane rootPane = getRootPane();
-            // rootPane.putClientProperty( "Window.documentFile", documentFile
-            // );
-            // rootPane.putClientProperty( "Window.documentModified",
-            // documentModified );
-        }
+    public Node getRasterGraphicsExportSource() {
+        return _rasterGraphicsExportSource;
     }
 
     // Unless more granularity is supported via the Export Options, it should
@@ -1606,8 +1602,63 @@ public abstract class XStage extends Stage implements ForegroundManager,
         _vectorGraphicsExportSource = _content;
     }
 
+    // NOTE: The FileActionHandler interface can't return a class variable,
+    //  but is a better place to declare this method with its default
+    //  implementation that returns null than declaring it on this abstract
+    //  base class, as not all implementors of FileActionHandler are Stages.
     @Override
-    public final void updateMruCache( final File file, 
+    public RasterGraphicsExportOptions getRasterGraphicsExportOptions() {
+        return _rasterGraphicsExportOptions;
+    }
+
+    // NOTE: The FileActionHandler interface can't return a class variable,
+    //  but is a better place to declare this method with its default
+    //  implementation that returns null than declaring it on this abstract
+    //  base class, as not all implementors of FileActionHandler are Stages.
+    @Override
+    public VectorGraphicsExportOptions getVectorGraphicsExportOptions() {
+        return _vectorGraphicsExportOptions;
+    }
+
+    // NOTE: The FileActionHandler interface can't return a class variable,
+    //  but is a better place to declare this method with its default
+    //  implementation that returns null than declaring it on this abstract
+    //  base class, as not all implementors of FileActionHandler are Stages.
+    @Override
+    public Node getVectorGraphicsExportSource() {
+        return _vectorGraphicsExportSource;
+    }
+
+    public final boolean isFrameTitleManager() {
+        return _frameTitleManager;
+    }
+
+    // Callback listeners are not required for stages, so this method is not
+    // declared abstract but is instead given a default no-op implementation.
+    protected void removeCallbackListeners() {
+    }
+
+    // A reset capability is not required for Stages, so this method is not
+    // declared abstract and is instead given a default no-op implementation.
+    protected void reset() {
+    }
+
+    // NOTE: We generally only sync in one direction as the model is mostly in
+    // the Main Application Stage.
+    public void updateModel() {
+    }
+
+    public void updateView() {
+    }
+
+    // NOTE: Not all Stages have contextual settings, so a concrete no-op
+    //  implementation is provided rather than making this method abstract and
+    //  requiring all derived classes to implement it.
+    public void updateContextualSettings() {
+    }
+
+    @Override
+    public final void updateMruCache( final File file,
                                       final boolean addToCache ) {
         try {
             // Add the specified file to the head of the MRU Filename Cache if
@@ -1615,14 +1666,16 @@ public abstract class XStage extends Stage implements ForegroundManager,
             // already present. If the cache is full and the specified file is
             // not yet in the cache, remove the last filename from the cache.
             // NOTE: We special case for whether the file exists and is
-            //  read-enabled, to remove deleted and invalid files from the cache.
+            //  read-enabled, to remove deleted and invalid files from the
+            //  cache.
             //  It is the caller's responsibility to determine this criteria and
             //  pass it in using the "addToCache" flag.
             final String filename = file.getCanonicalPath();
             if ( _mruFilenameCache.contains( filename ) ) {
                 _mruFilenameCache.remove( filename );
             }
-            else if ( _mruFilenameCache.size() >= PreferenceUtilities.MRU_CACHE_SIZE ) {
+            else if ( _mruFilenameCache.size()
+                      >= PreferenceUtilities.MRU_CACHE_SIZE ) {
                 if ( addToCache ) {
                     _mruFilenameCache.removeLast();
                 }
@@ -1645,53 +1698,65 @@ public abstract class XStage extends Stage implements ForegroundManager,
         }
     }
 
+    @Override
+    public final File getMruFile( final int mruId ) {
+        // Avoid side effects of the user saving the current file and thereby
+        // changing the cache order.
+        try {
+            final int mruIndex = mruId - 1;
+            final String mruFilename = _mruFilenameCache.get( mruIndex );
+            final File mruFile = new File( mruFilename );
+            return mruFile;
+        }
+        catch ( final IndexOutOfBoundsException | NullPointerException e ) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
     // Background color is handled uniformly, when supported, so register all
     // the action handlers here as otherwise we would have cut/paste code that
     // is hard to maintain and verify as complete and correct.
     public final void addBackgroundColorChoiceHandlers( final BackgroundColorChoices backgroundColorChoices ) {
         // Register handlers for all of the equal weighted gray scale colors.
-        backgroundColorChoices._backgroundColorBlackChoice
-                .setEventHandler( evt -> doBackgroundColorBlack() );
-        backgroundColorChoices._backgroundColorNightChoice
-                .setEventHandler( evt -> doBackgroundColorNight() );
-        backgroundColorChoices._backgroundColorDarkCharcoalChoice
-                .setEventHandler( evt -> doBackgroundColorDarkCharcoal() );
-         backgroundColorChoices._backgroundColorDavysGrayChoice
-                .setEventHandler( evt -> doBackgroundColorDavysGray() );
-        backgroundColorChoices._backgroundColorDimGrayChoice
-                .setEventHandler( evt -> doBackgroundColorDimGray() );
-        backgroundColorChoices._backgroundColorSpanishGrayChoice
-                .setEventHandler( evt -> doBackgroundColorSpanishGray() );
-        backgroundColorChoices._backgroundColorDarkGrayChoice
-                .setEventHandler( evt -> doBackgroundColorDarkGray() );
-        backgroundColorChoices._backgroundColorMediumGrayChoice
-                .setEventHandler( evt -> doBackgroundColorMediumGray() );
-        backgroundColorChoices._backgroundColorLightGrayChoice
-                .setEventHandler( evt -> doBackgroundColorLightGray() );
-        backgroundColorChoices._backgroundColorGainsboroChoice
-                .setEventHandler( evt -> doBackgroundColorGainsboro() );
-        backgroundColorChoices._backgroundColorDayChoice
-                .setEventHandler( evt -> doBackgroundColorDay() );
-        backgroundColorChoices._backgroundColorWhiteSmokeChoice
-                .setEventHandler( evt -> doBackgroundColorWhiteSmoke() );
-        backgroundColorChoices._backgroundColorWhiteChoice
-                .setEventHandler( evt -> doBackgroundColorWhite() );
+        backgroundColorChoices._backgroundColorBlackChoice.setEventHandler( evt -> doBackgroundColorBlack() );
+        backgroundColorChoices._backgroundColorNightChoice.setEventHandler( evt -> doBackgroundColorNight() );
+        backgroundColorChoices._backgroundColorDarkCharcoalChoice.setEventHandler(
+                evt -> doBackgroundColorDarkCharcoal() );
+        backgroundColorChoices._backgroundColorDavysGrayChoice.setEventHandler(
+                evt -> doBackgroundColorDavysGray() );
+        backgroundColorChoices._backgroundColorDimGrayChoice.setEventHandler(
+                evt -> doBackgroundColorDimGray() );
+        backgroundColorChoices._backgroundColorSpanishGrayChoice.setEventHandler(
+                evt -> doBackgroundColorSpanishGray() );
+        backgroundColorChoices._backgroundColorDarkGrayChoice.setEventHandler(
+                evt -> doBackgroundColorDarkGray() );
+        backgroundColorChoices._backgroundColorMediumGrayChoice.setEventHandler(
+                evt -> doBackgroundColorMediumGray() );
+        backgroundColorChoices._backgroundColorLightGrayChoice.setEventHandler(
+                evt -> doBackgroundColorLightGray() );
+        backgroundColorChoices._backgroundColorGainsboroChoice.setEventHandler(
+                evt -> doBackgroundColorGainsboro() );
+        backgroundColorChoices._backgroundColorDayChoice.setEventHandler( evt -> doBackgroundColorDay() );
+        backgroundColorChoices._backgroundColorWhiteSmokeChoice.setEventHandler(
+                evt -> doBackgroundColorWhiteSmoke() );
+        backgroundColorChoices._backgroundColorWhiteChoice.setEventHandler( evt -> doBackgroundColorWhite() );
 
         // Register handlers for all of the slate gray hues.
-        backgroundColorChoices._backgroundColorDarkSlateGrayChoice
-                .setEventHandler( evt -> doBackgroundColorDarkSlateGray() );
-        backgroundColorChoices._backgroundColorSlateGrayChoice
-                .setEventHandler( evt -> doBackgroundColorSlateGray() );
-        backgroundColorChoices._backgroundColorLightSlateGrayChoice
-                .setEventHandler( evt -> doBackgroundColorLightSlateGray() );
+        backgroundColorChoices._backgroundColorDarkSlateGrayChoice.setEventHandler(
+                evt -> doBackgroundColorDarkSlateGray() );
+        backgroundColorChoices._backgroundColorSlateGrayChoice.setEventHandler(
+                evt -> doBackgroundColorSlateGray() );
+        backgroundColorChoices._backgroundColorLightSlateGrayChoice.setEventHandler(
+                evt -> doBackgroundColorLightSlateGray() );
 
         // Register handlers for all of the custom blue-gray hues.
-        backgroundColorChoices._backgroundColorDarkBlueGrayChoice
-                .setEventHandler( evt -> doBackgroundColorDarkBlueGray() );
-        backgroundColorChoices._backgroundColorBlueGrayChoice
-                .setEventHandler( evt -> doBackgroundColorBlueGray() );
-        backgroundColorChoices._backgroundColorLightBlueGrayChoice
-                .setEventHandler( evt -> doBackgroundColorLightBlueGray() );
+        backgroundColorChoices._backgroundColorDarkBlueGrayChoice.setEventHandler(
+                evt -> doBackgroundColorDarkBlueGray() );
+        backgroundColorChoices._backgroundColorBlueGrayChoice.setEventHandler(
+                evt -> doBackgroundColorBlueGray() );
+        backgroundColorChoices._backgroundColorLightBlueGrayChoice.setEventHandler(
+                evt -> doBackgroundColorLightBlueGray() );
     }
 
     public final void doBackgroundColorBlack() {
@@ -1789,51 +1854,17 @@ public abstract class XStage extends Stage implements ForegroundManager,
         setForegroundFromBackground( Color.WHITESMOKE );
     }
 
-    // NOTE: The FileActionHandler interface can't return a class variable,
-    //  but is a better place to declare this method with its default 
-    //  implementation that returns null than declaring it on this abstract
-    //  base class, as not all implementors of FileActionHandler are Stages.
-    @Override
-    public Node getRasterGraphicsExportSource() {
-        return _rasterGraphicsExportSource;
-    }
-    
-    // NOTE: The FileActionHandler interface can't return a class variable,
-    //  but is a better place to declare this method with its default 
-    //  implementation that returns null than declaring it on this abstract
-    //  base class, as not all implementors of FileActionHandler are Stages.
-    @Override
-    public Node getVectorGraphicsExportSource() {
-        return _vectorGraphicsExportSource;
-    }
-    
-    // NOTE: The FileActionHandler interface can't return a class variable,
-    //  but is a better place to declare this method with its default 
-    //  implementation that returns null than declaring it on this abstract
-    //  base class, as not all implementors of FileActionHandler are Stages.
-    @Override
-    public RasterGraphicsExportOptions getRasterGraphicsExportOptions() {
-        return _rasterGraphicsExportOptions;
-    }
-    
-    // NOTE: The FileActionHandler interface can't return a class variable,
-    //  but is a better place to declare this method with its default 
-    //  implementation that returns null than declaring it on this abstract
-    //  base class, as not all implementors of FileActionHandler are Stages.
-    @Override
-    public VectorGraphicsExportOptions getVectorGraphicsExportOptions() {
-        return _vectorGraphicsExportOptions;
-    }
-
     /**
      * This method wraps behavior for canceling Rendered Graphics Export
      * actions. It should be overridden by classes that need to clean up
      * duplication of large memory resources.
      */
-    protected void cancelRenderedGraphicsExport() {}
+    protected void cancelRenderedGraphicsExport() {
+    }
 
     // NOTE: Most windows won't need to support Rendered Graphics Export.
-    protected void updateRenderedGraphicsExportSource() {}
+    protected void updateRenderedGraphicsExportSource() {
+    }
 
     // NOTE: This label is for Rendered Graphics Export.
     // NOTE: Derived classes should override this default if they expose

@@ -30,9 +30,5 @@
  */
 /**
  * This package contains the fxgui Library's demo code for basic classes.
- *
- * @version 1.0
- *
- * @author Mark Schmieder
  */
 package com.mhschmieder.fxgui.demo;

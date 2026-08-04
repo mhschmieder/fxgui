@@ -37,6 +37,8 @@ import com.mhschmieder.fxcontrols.util.LayerPropertiesManagement;
 import com.mhschmieder.fxcontrols.util.RegionUtilities;
 import com.mhschmieder.fxgui.stage.XStage;
 import com.mhschmieder.jcommons.util.ClientProperties;
+import org.apache.commons.math3.util.FastMath;
+
 import javafx.beans.InvalidationListener;
 import javafx.collections.ObservableList;
 import javafx.geometry.Insets;
@@ -45,7 +47,6 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Background;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.paint.Color;
-import org.apache.commons.math3.util.FastMath;
 
 public final class LayerManagerPane extends BorderPane {
 
@@ -73,6 +74,17 @@ public final class LayerManagerPane extends BorderPane {
         }
     }
 
+    private void initPane( final ClientProperties pClientProperties ) {
+        layerPropertiesTable = new LayerPropertiesTable( pClientProperties );
+
+        setCenter( layerPropertiesTable );
+
+        setPadding( new Insets( 12d ) );
+
+        // Add the callback listeners for Layer Selection, etc.
+        addCallbackListeners();
+    }
+
     public void addCallbackListeners() {
         // Detect changes in the table row selection, for enablement.
         addLayerSelectionListener();
@@ -80,8 +92,8 @@ public final class LayerManagerPane extends BorderPane {
         // If the user clicks outside the table, deselect all rows.
         addEventFilter( MouseEvent.MOUSE_CLICKED, evt -> {
             final Node sourceNode = evt.getPickResult().getIntersectedNode();
-            if ( !ControlUtilities.isNodeInHierarchy(
-                    sourceNode, layerPropertiesTable ) ) {
+            if ( !ControlUtilities.isNodeInHierarchy( sourceNode,
+                                                      layerPropertiesTable ) ) {
                 // NOTE: We must remove the selection listeners while clearing
                 // the selection, or we get run-time array out of bounds index
                 // exceptions due to interim states where the selection index is
@@ -98,21 +110,33 @@ public final class LayerManagerPane extends BorderPane {
         // Register an invalidation listener to update the contextual Layer
         // Management options when the selection changes.
         if ( layerSelectionChangeListener == null ) {
-            layerSelectionChangeListener = listener -> layerManager
-                    .updateContextualSettings();
+            layerSelectionChangeListener
+                    = listener -> layerManager.updateContextualSettings();
         }
-        layerPropertiesTable.getSelectionModel().selectedIndexProperty()
-                .addListener( layerSelectionChangeListener );
-    }
-
-    public boolean canDeleteTableRows() {
-        // Forward this method to the Layer Properties Table.
-        return layerPropertiesTable.canDeleteTableRows();
+        layerPropertiesTable.getSelectionModel()
+                            .selectedIndexProperty()
+                            .addListener( layerSelectionChangeListener );
     }
 
     public void clearSelection() {
         // Forward this method to the Layer Properties Table.
         layerPropertiesTable.clearSelection();
+    }
+
+    public void removeLayerSelectionListener() {
+        // Unregister the invalidation listener to avoid invalid selection index
+        // exceptions during interim states where the table is empty before a
+        // collection replacement.
+        if ( layerSelectionChangeListener != null ) {
+            layerPropertiesTable.getSelectionModel()
+                                .selectedIndexProperty()
+                                .removeListener( layerSelectionChangeListener );
+        }
+    }
+
+    public boolean canDeleteTableRows() {
+        // Forward this method to the Layer Properties Table.
+        return layerPropertiesTable.canDeleteTableRows();
     }
 
     public int createLayer() {
@@ -131,7 +155,7 @@ public final class LayerManagerPane extends BorderPane {
     //  for graphical objects, and restore the forwarding while implementing the
     //  method on the table class itself.
     // TODO: Switch from Apache Math to Apache RNG for the Random Generator.
-    @SuppressWarnings("static-method")
+    @SuppressWarnings( "static-method" )
     public String getNewLayerNameDefault() {
         // Forward this method to the Layer Properties Table.
         // return _layerPropertiesTable.getNewLayerNameDefault();
@@ -142,7 +166,7 @@ public final class LayerManagerPane extends BorderPane {
     //  for graphical objects, and restore the forwarding while implementing the
     //  method on the table class itself.
     // TODO: Switch from Apache Math to Apache RNG for the Random Generator.
-    @SuppressWarnings("static-method")
+    @SuppressWarnings( "static-method" )
     public String getUniqueLayerName( final String layerNameCandidate ) {
         // Forward this method to the Layer Properties Table.
         // return _layerPropertiesTable.getUniqueLayerName( layerNameCandidate
@@ -150,35 +174,14 @@ public final class LayerManagerPane extends BorderPane {
         return LayerPropertiesManagement.LAYER_NAME_DEFAULT + FastMath.random();
     }
 
-    private void initPane( final ClientProperties pClientProperties ) {
-        layerPropertiesTable = new LayerPropertiesTable( pClientProperties );
-
-        setCenter(layerPropertiesTable);
-
-        setPadding( new Insets( 12d ) );
-
-        // Add the callback listeners for Layer Selection, etc.
-        addCallbackListeners();
-    }
-
     // TODO: Determine the need for this method as compared to similar
     // methods for graphical objects, and restore the forwarding while
     // implementing the method on the table class itself.
-    @SuppressWarnings("static-method")
+    @SuppressWarnings( "static-method" )
     public boolean isLayerNameUnique( final String layerNameCandidate ) {
         // Forward this method to the Layer Properties Table.
         // return _layerPropertiesTable.isLayerNameUnique( layerNameCandidate );
         return true;
-    }
-
-    public void removeLayerSelectionListener() {
-        // Unregister the invalidation listener to avoid invalid selection index
-        // exceptions during interim states where the table is empty before a
-        // collection replacement.
-        if ( layerSelectionChangeListener != null ) {
-            layerPropertiesTable.getSelectionModel().selectedIndexProperty()
-                    .removeListener( layerSelectionChangeListener );
-        }
     }
 
     // Reset all fields to the default values, regardless of state.
@@ -187,21 +190,23 @@ public final class LayerManagerPane extends BorderPane {
     }
 
     // Place editing focus in the specified row and column.
-    public void setEditingFocus( final int rowIndex, final int columnIndex ) {
+    public void setEditingFocus( final int rowIndex,
+                                 final int columnIndex ) {
         // Forward this method to the Layer Properties Table.
         layerPropertiesTable.setEditingFocus( rowIndex, columnIndex );
     }
 
     public void setForegroundFromBackground( final Color backColor ) {
         // Set the new Background first, so it sets context for CSS derivations.
-        final Background background = RegionUtilities.makeRegionBackground( backColor );
+        final Background background = RegionUtilities.makeRegionBackground(
+                backColor );
         setBackground( background );
 
         // Forward this method to the Layer Properties Table.
         layerPropertiesTable.setForegroundFromBackground( backColor );
     }
 
-    public void setLayerCollection( final ObservableList<LayerProperties> layerCollection ) {
+    public void setLayerCollection( final ObservableList< LayerProperties > layerCollection ) {
         // Forward this method to the Layer Properties Table.
         layerPropertiesTable.setLayerCollection( layerCollection );
     }
@@ -215,5 +220,4 @@ public final class LayerManagerPane extends BorderPane {
         // Forward this method to the Layer Properties Table.
         layerPropertiesTable.updateLayerCollection();
     }
-
 }

@@ -33,14 +33,15 @@ package com.mhschmieder.fxgui.stage;
 import com.mhschmieder.fxcontrols.control.ControlUtilities;
 import com.mhschmieder.fxgui.layout.NoticePane;
 import com.mhschmieder.jcommons.util.SystemType;
+
+import java.net.URL;
+
 import javafx.beans.property.StringProperty;
 import javafx.scene.Node;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
 import javafx.stage.Popup;
 import javafx.stage.Window;
-
-import java.net.URL;
 
 public class NoticeBox extends Popup {
 
@@ -66,75 +67,16 @@ public class NoticeBox extends Popup {
         }
     }
 
-    public NoticeBox( final SystemType systemType,
-                      final String bannerText,
-                      final String noticeText,
-                      final int numberOfColumns,
-                      final int numberOfRows ) {
-        // Always call the superclass constructor first!
-        super();
+    protected final void initPopup( final String bannerText,
+                                    final String noticeHtml ) {
+        // Make the main content pane, which is everything but the buttons.
+        _noticePane = new NoticePane( bannerText, noticeHtml );
 
-        _systemType = systemType;
-
-        try {
-            initPopup( bannerText, noticeText, numberOfColumns, numberOfRows );
-        }
-        catch ( final Exception ex ) {
-            ex.printStackTrace();
-        }
+        // Initialize the remaining layout, which is common/shared.
+        initLayout();
     }
 
-    public NoticeBox( final SystemType systemType,
-                      final String bannerText,
-                      final StringProperty notice,
-                      final int numberOfColumns,
-                      final int numberOfRows ) {
-        // Always call the superclass constructor first!
-        super();
-
-        _systemType = systemType;
-
-        try {
-            initPopup( bannerText, notice, numberOfColumns, numberOfRows );
-        }
-        catch ( final Exception ex ) {
-            ex.printStackTrace();
-        }
-    }
-
-    public NoticeBox( final SystemType systemType,
-                      final String bannerText,
-                      final Text noticeText,
-                      final int numberOfColumns,
-                      final int numberOfRows ) {
-        // Always call the superclass constructor first!
-        super();
-
-        _systemType = systemType;
-
-        try {
-            initPopup( bannerText, noticeText, numberOfColumns, numberOfRows );
-        }
-        catch ( final Exception ex ) {
-            ex.printStackTrace();
-        }
-    }
-
-    public NoticeBox( final SystemType systemType, final String bannerText, final URL noticeUrl ) {
-        // Always call the superclass constructor first!
-        super();
-
-        _systemType = systemType;
-
-        try {
-            initPopup( bannerText, noticeUrl );
-        }
-        catch ( final Exception ex ) {
-            ex.printStackTrace();
-        }
-    }
-
-    @SuppressWarnings("nls")
+    @SuppressWarnings( "nls" )
     protected final void initLayout() {
         final VBox root = new VBox();
         root.getChildren().add( _noticePane );
@@ -187,12 +129,22 @@ public class NoticeBox extends Popup {
         } );
     }
 
-    protected final void initPopup( final String bannerText, final String noticeHtml ) {
-        // Make the main content pane, which is everything but the buttons.
-        _noticePane = new NoticePane( bannerText, noticeHtml );
+    public NoticeBox( final SystemType systemType,
+                      final String bannerText,
+                      final String noticeText,
+                      final int numberOfColumns,
+                      final int numberOfRows ) {
+        // Always call the superclass constructor first!
+        super();
 
-        // Initialize the remaining layout, which is common/shared.
-        initLayout();
+        _systemType = systemType;
+
+        try {
+            initPopup( bannerText, noticeText, numberOfColumns, numberOfRows );
+        }
+        catch ( final Exception ex ) {
+            ex.printStackTrace();
+        }
     }
 
     protected final void initPopup( final String bannerText,
@@ -200,10 +152,31 @@ public class NoticeBox extends Popup {
                                     final int numberOfColumns,
                                     final int numberOfRows ) {
         // Make the main content pane, which is everything but the buttons.
-        _noticePane = new NoticePane( bannerText, noticeText, numberOfColumns, numberOfRows );
+        _noticePane = new NoticePane( bannerText,
+                                      noticeText,
+                                      numberOfColumns,
+                                      numberOfRows );
 
         // Initialize the remaining layout, which is common/shared.
         initLayout();
+    }
+
+    public NoticeBox( final SystemType systemType,
+                      final String bannerText,
+                      final StringProperty notice,
+                      final int numberOfColumns,
+                      final int numberOfRows ) {
+        // Always call the superclass constructor first!
+        super();
+
+        _systemType = systemType;
+
+        try {
+            initPopup( bannerText, notice, numberOfColumns, numberOfRows );
+        }
+        catch ( final Exception ex ) {
+            ex.printStackTrace();
+        }
     }
 
     protected final void initPopup( final String bannerText,
@@ -211,10 +184,31 @@ public class NoticeBox extends Popup {
                                     final int numberOfColumns,
                                     final int numberOfRows ) {
         // Make the main content pane, which is everything but the buttons.
-        _noticePane = new NoticePane( bannerText, notice, numberOfColumns, numberOfRows );
+        _noticePane = new NoticePane( bannerText,
+                                      notice,
+                                      numberOfColumns,
+                                      numberOfRows );
 
         // Initialize the remaining layout, which is common/shared.
         initLayout();
+    }
+
+    public NoticeBox( final SystemType systemType,
+                      final String bannerText,
+                      final Text noticeText,
+                      final int numberOfColumns,
+                      final int numberOfRows ) {
+        // Always call the superclass constructor first!
+        super();
+
+        _systemType = systemType;
+
+        try {
+            initPopup( bannerText, noticeText, numberOfColumns, numberOfRows );
+        }
+        catch ( final Exception ex ) {
+            ex.printStackTrace();
+        }
     }
 
     protected final void initPopup( final String bannerText,
@@ -222,13 +216,33 @@ public class NoticeBox extends Popup {
                                     final int numberOfColumns,
                                     final int numberOfRows ) {
         // Make the main content pane, which is everything but the buttons.
-        _noticePane = new NoticePane( bannerText, noticeText, numberOfColumns, numberOfRows );
+        _noticePane = new NoticePane( bannerText,
+                                      noticeText,
+                                      numberOfColumns,
+                                      numberOfRows );
 
         // Initialize the remaining layout, which is common/shared.
         initLayout();
     }
 
-    protected final void initPopup( final String bannerText, final URL noticeUrl ) {
+    public NoticeBox( final SystemType systemType,
+                      final String bannerText,
+                      final URL noticeUrl ) {
+        // Always call the superclass constructor first!
+        super();
+
+        _systemType = systemType;
+
+        try {
+            initPopup( bannerText, noticeUrl );
+        }
+        catch ( final Exception ex ) {
+            ex.printStackTrace();
+        }
+    }
+
+    protected final void initPopup( final String bannerText,
+                                    final URL noticeUrl ) {
         // Make the main content pane, which is everything but the buttons.
         _noticePane = new NoticePane( bannerText, noticeUrl );
 
@@ -253,5 +267,4 @@ public class NoticeBox extends Popup {
         centerOnScreen();
         show( ownerWindow, getX(), getY() );
     }
-
 }

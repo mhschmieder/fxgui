@@ -35,6 +35,10 @@ import com.mhschmieder.fxcontrols.control.ZoomPane;
 import com.mhschmieder.fxgraphics.svg.SvgUtilities;
 import com.mhschmieder.jcommons.branding.ProductBranding;
 import com.mhschmieder.jcommons.util.ClientProperties;
+import org.jsoup.nodes.Document;
+
+import java.io.File;
+
 import javafx.geometry.Insets;
 import javafx.scene.Group;
 import javafx.scene.Node;
@@ -44,28 +48,24 @@ import javafx.scene.input.KeyCodeCombination;
 import javafx.scene.input.KeyCombination;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.StackPane;
-import org.jsoup.nodes.Document;
-
-import java.io.File;
 
 /**
  * This is a generic SVG Viewer, used for testing concepts of SVG Import.
  */
 public class SvgViewer extends XStage {
 
-    // Declare the main tool bar.
-    public SvgViewerToolBar _toolBar;
-
     // Declare a Group to host the SVG Paths that contain the content of an SVG
     // file.
-    final Group             _svgGroup;
+    final Group _svgGroup;
+    // Declare the main tool bar.
+    public SvgViewerToolBar _toolBar;
 
     public SvgViewer( final ProductBranding productBranding,
                       final ClientProperties pClientProperties ) {
         this( "SVG Viewer",
               "svgViewer",
-              "/icons/oxygenIcons/SvgMimeType16.png", 
-              productBranding, 
+              "/icons/oxygenIcons/SvgMimeType16.png",
+              productBranding,
               pClientProperties );
     }
 
@@ -75,7 +75,12 @@ public class SvgViewer extends XStage {
                       final ProductBranding productBranding,
                       final ClientProperties pClientProperties ) {
         // Always call the superclass constructor first!
-        super( title, windowKeyPrefix, true, true, productBranding, pClientProperties );
+        super( title,
+               windowKeyPrefix,
+               true,
+               true,
+               productBranding,
+               pClientProperties );
 
         _svgGroup = new Group();
 
@@ -85,6 +90,11 @@ public class SvgViewer extends XStage {
         catch ( final Exception ex ) {
             ex.printStackTrace();
         }
+    }
+
+    protected final void initStage( final String jarRelativeIconFilename ) {
+        // First have the superclass initialize its content.
+        initStage( jarRelativeIconFilename, 840d, 500d, true );
     }
 
     // Add the Tool Bar's event listeners.
@@ -98,8 +108,8 @@ public class SvgViewer extends XStage {
         _toolBar._fileActionButtons._filePrintButton.setDisable( true );
 
         // Load the event handler for the File Import Graphics Button.
-        _toolBar._fileActionButtons._fileImportVectorGraphicsButton.setOnAction( 
-            evt -> doImportVectorGraphics() );
+        _toolBar._fileActionButtons._fileImportVectorGraphicsButton.setOnAction(
+                evt -> doImportVectorGraphics() );
 
         // Load the event handler for the File Page Setup Button.
         _toolBar._fileActionButtons._filePrintButton.setOnAction( evt -> doPageSetup() );
@@ -107,37 +117,44 @@ public class SvgViewer extends XStage {
         // Load the event handler for the File Print Button.
         _toolBar._fileActionButtons._filePrintButton.setOnAction( evt -> doPrint() );
 
-        // Detect the ENTER key while the File Import Vector Graphics Button has 
+        // Detect the ENTER key while the File Import Vector Graphics Button
+        // has
         // focus, and use it to trigger its action (standard expected behavior).
-        _toolBar._fileActionButtons._fileImportVectorGraphicsButton.setOnKeyReleased( 
-            keyEvent -> {
-                final KeyCombination keyCombo = new KeyCodeCombination( KeyCode.ENTER );
-                if ( keyCombo.match( keyEvent ) ) {
-                    // Trigger the File Open action.
-                    doImportVectorGraphics();
-    
-                    // Consume the ENTER key so it doesn't get processed twice.
-                    keyEvent.consume();
-                }
-        } );
+        _toolBar._fileActionButtons._fileImportVectorGraphicsButton.setOnKeyReleased(
+                keyEvent -> {
+                    final KeyCombination keyCombo = new KeyCodeCombination(
+                            KeyCode.ENTER );
+                    if ( keyCombo.match( keyEvent ) ) {
+                        // Trigger the File Open action.
+                        doImportVectorGraphics();
+
+                        // Consume the ENTER key so it doesn't get processed
+                        // twice.
+                        keyEvent.consume();
+                    }
+                } );
 
         // Detect the ENTER key while the File Page Setup Button has focus, and
         // use it to trigger its action (standard expected behavior).
-        _toolBar._fileActionButtons._filePageSetupButton.setOnKeyReleased( keyEvent -> {
-            final KeyCombination keyCombo = new KeyCodeCombination( KeyCode.ENTER );
-            if ( keyCombo.match( keyEvent ) ) {
-                // Trigger the File Page Setup action.
-                doPageSetup();
+        _toolBar._fileActionButtons._filePageSetupButton.setOnKeyReleased(
+                keyEvent -> {
+                    final KeyCombination keyCombo = new KeyCodeCombination(
+                            KeyCode.ENTER );
+                    if ( keyCombo.match( keyEvent ) ) {
+                        // Trigger the File Page Setup action.
+                        doPageSetup();
 
-                // Consume the ENTER key so it doesn't get processed twice.
-                keyEvent.consume();
-            }
-        } );
+                        // Consume the ENTER key so it doesn't get processed
+                        // twice.
+                        keyEvent.consume();
+                    }
+                } );
 
         // Detect the ENTER key while the File Print Button has focus, and use
         // it to trigger its action (standard expected behavior).
         _toolBar._fileActionButtons._filePrintButton.setOnKeyReleased( keyEvent -> {
-            final KeyCombination keyCombo = new KeyCodeCombination( KeyCode.ENTER );
+            final KeyCombination keyCombo
+                    = new KeyCodeCombination( KeyCode.ENTER );
             if ( keyCombo.match( keyEvent ) ) {
                 // Trigger the File Print action.
                 doPrint();
@@ -148,9 +165,14 @@ public class SvgViewer extends XStage {
         } );
     }
 
-    protected final void initStage( final String jarRelativeIconFilename ) {
-        // First have the superclass initialize its content.
-        initStage( jarRelativeIconFilename, 840d, 500d, true );
+    // Add the Tool Bar for this Frame.
+    @Override
+    public final ToolBar loadToolBar() {
+        // Build the Tool Bar for this Frame.
+        _toolBar = new SvgViewerToolBar( clientProperties );
+
+        // Return the Tool Bar so the superclass can use it.
+        return _toolBar;
     }
 
     @Override
@@ -167,18 +189,8 @@ public class SvgViewer extends XStage {
         return contentPane;
     }
 
-    // Add the Tool Bar for this Frame.
     @Override
-    public final ToolBar loadToolBar() {
-        // Build the Tool Bar for this Frame.
-        _toolBar = new SvgViewerToolBar( clientProperties );
-
-        // Return the Tool Bar so the superclass can use it.
-        return _toolBar;
-    }
-
-    @Override
-    public final void processSvgDocument( final File file, 
+    public final void processSvgDocument( final File file,
                                           final Document doc ) {
         // Update the scene graph with the new SVG content.
         SvgUtilities.makeSvgPathGroup( doc, _svgGroup );

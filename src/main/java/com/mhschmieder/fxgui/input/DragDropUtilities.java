@@ -33,17 +33,19 @@ package com.mhschmieder.fxgui.input;
 import com.mhschmieder.fxgui.event.FileActionHandler;
 import com.mhschmieder.jcommons.io.FileMode;
 import com.mhschmieder.jcommons.io.FilenameUtilities;
+
+import java.io.File;
+import java.util.Iterator;
+import java.util.List;
+
+import javax.imageio.ImageIO;
+import javax.imageio.ImageReader;
+
 import javafx.event.EventHandler;
 import javafx.event.EventType;
 import javafx.scene.input.DragEvent;
 import javafx.scene.input.Dragboard;
 import javafx.scene.input.TransferMode;
-
-import javax.imageio.ImageIO;
-import javax.imageio.ImageReader;
-import java.io.File;
-import java.util.Iterator;
-import java.util.List;
 
 /**
  * {@code DragDropUtilities} is a utility class for drag and drop utilities that
@@ -52,20 +54,20 @@ import java.util.List;
 public class DragDropUtilities {
 
     /**
-     * The default constructor is disabled, as this is a static utilities class.
+     * The default constructor is disabled, as this is a static utilities
+     * class.
      */
-    private DragDropUtilities() {}
+    private DragDropUtilities() {
+    }
 
     /**
      * Placeholder for drag/drop of images; needs File Handler class written.
      *
-     * @param fileActionHandler
-     *            A Window derived object that implements File Handler protocols
-     *
+     * @param fileActionHandler A Window derived object that implements File
+     *                          Handler protocols
      * @return An Event Handler for image drag events
      */
-    public static EventHandler< DragEvent > getImageDragHandler(
-            final FileActionHandler fileActionHandler ) {
+    public static EventHandler< DragEvent > getImageDragHandler( final FileActionHandler fileActionHandler ) {
         return dragEvent -> {
             final Dragboard dragboard = dragEvent.getDragboard();
 
@@ -78,18 +80,18 @@ public class DragDropUtilities {
                 final List< File > files = dragboard.getFiles();
                 if ( files.size() == 1 ) {
                     final File file = files.get( 0 );
-                    final String fileExtension = FilenameUtilities.getExtension( file );
-                    final Iterator< ImageReader > iter = ImageIO
-                            .getImageReadersBySuffix( fileExtension );
+                    final String fileExtension = FilenameUtilities.getExtension(
+                            file );
+                    final Iterator< ImageReader > iter
+                            = ImageIO.getImageReadersBySuffix( fileExtension );
                     final boolean canReadImageExtension = iter.hasNext();
                     if ( canReadImageExtension ) {
                         if ( DragEvent.DRAG_OVER.equals( eventType ) ) {
                             dragEvent.acceptTransferModes( TransferMode.ANY );
                         }
                         else if ( DragEvent.DRAG_DROPPED.equals( eventType ) ) {
-                            dropCompleted = fileActionHandler.fileOpen( 
-                                file,
-                                FileMode.IMPORT_RASTER_GRAPHICS );
+                            dropCompleted = fileActionHandler.fileOpen( file,
+                                                                        FileMode.IMPORT_RASTER_GRAPHICS );
                         }
                     }
                 }

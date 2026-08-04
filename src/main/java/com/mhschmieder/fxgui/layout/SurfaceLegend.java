@@ -35,6 +35,7 @@ import com.mhschmieder.fxgraphics.image.ImageUtilities;
 import com.mhschmieder.fxgraphics.paint.ColorUtilities;
 import com.mhschmieder.fxgui.util.GuiUtilities;
 import com.mhschmieder.jcommons.util.ClientProperties;
+
 import javafx.application.Platform;
 import javafx.geometry.HPos;
 import javafx.geometry.Insets;
@@ -47,14 +48,14 @@ import javafx.scene.paint.Color;
 
 public class SurfaceLegend extends GridPane {
 
-    private Label     _surfaceLegendHeader;
+    private Label _surfaceLegendHeader;
 
     // Use Image Views to load the Surface Legends.
     private ImageView _surfaceLegendWhite;
     private ImageView _surfaceLegendBlack;
 
     // Use a Label to host the active Logo Image View.
-    private Label     _surfaceLegendLabel;
+    private Label _surfaceLegendLabel;
 
     public SurfaceLegend( final ClientProperties pClientProperties ) {
         // Always call the superclass constructor first!
@@ -70,18 +71,27 @@ public class SurfaceLegend extends GridPane {
 
     private final void initPane( final ClientProperties pClientProperties ) {
         // Get the column header for the Surface Legend.
-        _surfaceLegendHeader = GuiUtilities.getColumnHeader( "Legend" ); //$NON-NLS-1$
+        _surfaceLegendHeader
+                = GuiUtilities.getColumnHeader( "Legend" ); //$NON-NLS-1$
 
         // Place the Surface Legend image in an ImageView container.
         // NOTE: Specifying width is enough to scale to a desired overall size.
-        final String jarRelativeSurfaceLegendWhiteFilename =
-                                                           "/icons/mhschmieder/SurfaceLegendWhite.png"; //$NON-NLS-1$
-        final String jarRelativeSurfaceLegendBlackFilename =
-                                                           "/icons/mhschmieder/SurfaceLegendBlack.png"; //$NON-NLS-1$
-        _surfaceLegendWhite = ImageUtilities
-                .createLegend( jarRelativeSurfaceLegendWhiteFilename, true, -1d, 90d, -1d );
-        _surfaceLegendBlack = ImageUtilities
-                .createLegend( jarRelativeSurfaceLegendBlackFilename, true, -1d, 90d, -1d );
+        final String jarRelativeSurfaceLegendWhiteFilename
+                = "/icons/mhschmieder/SurfaceLegendWhite.png"; //$NON-NLS-1$
+        final String jarRelativeSurfaceLegendBlackFilename
+                = "/icons/mhschmieder/SurfaceLegendBlack.png"; //$NON-NLS-1$
+        _surfaceLegendWhite = ImageUtilities.createLegend(
+                jarRelativeSurfaceLegendWhiteFilename,
+                true,
+                -1d,
+                90d,
+                -1d );
+        _surfaceLegendBlack = ImageUtilities.createLegend(
+                jarRelativeSurfaceLegendBlackFilename,
+                true,
+                -1d,
+                90d,
+                -1d );
 
         // Make a Label to host the Surface Legend Image Icon, to control sizing
         // etc.
@@ -116,21 +126,22 @@ public class SurfaceLegend extends GridPane {
 
     public final void setForegroundFromBackground( final Color backColor ) {
         // Set the new Background first, so it sets context for CSS derivations.
-        final Background background = RegionUtilities.makeRegionBackground( backColor );
+        final Background background = RegionUtilities.makeRegionBackground(
+                backColor );
         setBackground( background );
 
         // Forward this method to the lower-level layout containers.
-        final Color foregroundColor = ColorUtilities.getForegroundFromBackground( backColor );
+        final Color foregroundColor
+                = ColorUtilities.getForegroundFromBackground( backColor );
 
         _surfaceLegendHeader.setTextFill( foregroundColor );
 
         // Replace with white Surface Legend if switching to a dark background.
         // NOTE: We also set the label's background, for consistent insets.
         final ImageView logo = ColorUtilities.isColorDark( backColor )
-            ? _surfaceLegendWhite
-            : _surfaceLegendBlack;
+                               ? _surfaceLegendWhite
+                               : _surfaceLegendBlack;
         _surfaceLegendLabel.setBackground( background );
         _surfaceLegendLabel.setGraphic( logo );
     }
-
 }

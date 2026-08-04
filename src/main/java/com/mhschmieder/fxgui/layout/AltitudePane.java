@@ -38,6 +38,7 @@ import com.mhschmieder.jcommons.util.ClientProperties;
 import com.mhschmieder.jphysics.PhysicsConstants;
 import com.mhschmieder.jphysics.measure.Altitude;
 import com.mhschmieder.jphysics.measure.DistanceUnit;
+
 import javafx.application.Platform;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -51,14 +52,12 @@ import javafx.scene.paint.Color;
 
 public final class AltitudePane extends BorderPane {
 
-    private Label      _altitudeLabel;
-
     public RadioButton _lowAltitudeRadioButton;
     public RadioButton _mediumAltitudeRadioButton;
     public RadioButton _highAltitudeRadioButton;
     public RadioButton _customAltitudeRadioButton;
-
     public ToggleGroup _altitudeToggleGroup;
+    private Label _altitudeLabel;
 
     public AltitudePane( final ClientProperties clientProperties ) {
         // Always call the superclass constructor first!
@@ -72,33 +71,25 @@ public final class AltitudePane extends BorderPane {
         }
     }
 
-    // NOTE: This method is used to clear all visible selections when a
-    // manually set pressure is in effect, as we do not currently match those
-    // values to the altitude-based ranges.
-    public void clearAltitude() {
-        _customAltitudeRadioButton.setSelected( true );
-    }
-
-    public Altitude getAltitude() {
-        return _lowAltitudeRadioButton.isSelected()
-            ? Altitude.LOW
-            : _mediumAltitudeRadioButton.isSelected()
-                ? Altitude.MEDIUM
-                : _highAltitudeRadioButton.isSelected() ? Altitude.HIGH : Altitude.defaultValue();
-    }
-
     private void initPane( final ClientProperties clientProperties ) {
         // Make a bolded label to clearly identify the functionality.
-        _altitudeLabel = GuiUtilities.getColumnHeader( "Altitude" ); //$NON-NLS-1$
+        _altitudeLabel
+                = GuiUtilities.getColumnHeader( "Altitude" ); //$NON-NLS-1$
 
         _altitudeToggleGroup = new ToggleGroup();
         final DistanceUnit defaultDistanceUnit = DistanceUnit.defaultValue();
-        _lowAltitudeRadioButton = ControlUtilities.getRadioButton( Altitude.LOW
-                .toPresentationString( defaultDistanceUnit ), _altitudeToggleGroup, true );
-        _mediumAltitudeRadioButton = ControlUtilities.getRadioButton( Altitude.MEDIUM
-                .toPresentationString( defaultDistanceUnit ), _altitudeToggleGroup, false );
-        _highAltitudeRadioButton = ControlUtilities.getRadioButton( Altitude.HIGH
-                .toPresentationString( defaultDistanceUnit ), _altitudeToggleGroup, false );
+        _lowAltitudeRadioButton
+                =
+                ControlUtilities.getRadioButton( Altitude.LOW.toPresentationString(
+                defaultDistanceUnit ), _altitudeToggleGroup, true );
+        _mediumAltitudeRadioButton
+                =
+                ControlUtilities.getRadioButton( Altitude.MEDIUM.toPresentationString(
+                defaultDistanceUnit ), _altitudeToggleGroup, false );
+        _highAltitudeRadioButton
+                =
+                ControlUtilities.getRadioButton( Altitude.HIGH.toPresentationString(
+                defaultDistanceUnit ), _altitudeToggleGroup, false );
 
         _customAltitudeRadioButton = new RadioButton();
         _customAltitudeRadioButton.setToggleGroup( _altitudeToggleGroup );
@@ -143,28 +134,47 @@ public final class AltitudePane extends BorderPane {
         setAltitude( Altitude.defaultValue() );
     }
 
+    // NOTE: This method is used to clear all visible selections when a
+    // manually set pressure is in effect, as we do not currently match those
+    // values to the altitude-based ranges.
+    public void clearAltitude() {
+        _customAltitudeRadioButton.setSelected( true );
+    }
+
+    public Altitude getAltitude() {
+        return _lowAltitudeRadioButton.isSelected()
+               ? Altitude.LOW
+               : _mediumAltitudeRadioButton.isSelected()
+                 ? Altitude.MEDIUM
+                 : _highAltitudeRadioButton.isSelected()
+                   ? Altitude.HIGH
+                   : Altitude.defaultValue();
+    }
+
     public void setAltitude( final Altitude altitude ) {
         switch ( altitude ) {
-        case LOW:
-            _lowAltitudeRadioButton.setSelected( true );
-            break;
-        case MEDIUM:
-            _mediumAltitudeRadioButton.setSelected( true );
-            break;
-        case HIGH:
-            _highAltitudeRadioButton.setSelected( true );
-            break;
-        default:
-            break;
+            case LOW:
+                _lowAltitudeRadioButton.setSelected( true );
+                break;
+            case MEDIUM:
+                _mediumAltitudeRadioButton.setSelected( true );
+                break;
+            case HIGH:
+                _highAltitudeRadioButton.setSelected( true );
+                break;
+            default:
+                break;
         }
     }
 
     public void setForegroundFromBackground( final Color backColor ) {
         // Set the new Background first, so it sets context for CSS derivations.
-        final Background background = RegionUtilities.makeRegionBackground( backColor );
+        final Background background = RegionUtilities.makeRegionBackground(
+                backColor );
         setBackground( background );
 
-        final Color foregroundColor = ColorUtilities.getForegroundFromBackground( backColor );
+        final Color foregroundColor
+                = ColorUtilities.getForegroundFromBackground( backColor );
         _altitudeLabel.setTextFill( foregroundColor );
 
         _lowAltitudeRadioButton.setTextFill( foregroundColor );
@@ -175,9 +185,11 @@ public final class AltitudePane extends BorderPane {
 
     public void updateDistanceUnit( final DistanceUnit distanceUnit ) {
         // Reset the altitude buttons to match the new units.
-        _lowAltitudeRadioButton.setText( Altitude.LOW.toPresentationString( distanceUnit ) );
-        _mediumAltitudeRadioButton.setText( Altitude.MEDIUM.toPresentationString( distanceUnit ) );
-        _highAltitudeRadioButton.setText( Altitude.HIGH.toPresentationString( distanceUnit ) );
+        _lowAltitudeRadioButton.setText( Altitude.LOW.toPresentationString(
+                distanceUnit ) );
+        _mediumAltitudeRadioButton.setText( Altitude.MEDIUM.toPresentationString(
+                distanceUnit ) );
+        _highAltitudeRadioButton.setText( Altitude.HIGH.toPresentationString(
+                distanceUnit ) );
     }
-
 }

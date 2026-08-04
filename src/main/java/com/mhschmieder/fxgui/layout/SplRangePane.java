@@ -33,6 +33,7 @@ package com.mhschmieder.fxgui.layout;
 import com.mhschmieder.fxcontrols.control.ControlFactory;
 import com.mhschmieder.fxcontrols.control.LabeledControlFactory;
 import com.mhschmieder.jcommons.util.ClientProperties;
+
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.CheckBox;
@@ -43,17 +44,18 @@ import javafx.scene.layout.VBox;
 
 public class SplRangePane extends VBox {
 
-    public static final boolean AUTO_RANGE_DEFAULT   = true;
+    public static final boolean AUTO_RANGE_DEFAULT = true;
 
     // Declare JavaFX controls for SPL Range related actions.
-    public CheckBox             _autoRangeSplCheckBox;
-    public Label                _splRangeLabel;
-    public Spinner< Integer >   _splRangeSpinner;
+    public CheckBox _autoRangeSplCheckBox;
+    public Label _splRangeLabel;
+    public Spinner< Integer > _splRangeSpinner;
 
     // Declare a cache of the current SPL Range in dB.
     protected double _splRangeDb = ControlFactory.SPL_RANGE_DB_DEFAULT;
 
-    public SplRangePane( final ClientProperties clientProperties, final boolean useExtendedRange ) {
+    public SplRangePane( final ClientProperties clientProperties,
+                         final boolean useExtendedRange ) {
         // Always call the superclass constructor first!
         super();
 
@@ -62,11 +64,14 @@ public class SplRangePane extends VBox {
 
     public final void initPane( final ClientProperties clientProperties,
                                 final boolean useExtendedRange ) {
-        _autoRangeSplCheckBox = LabeledControlFactory
-                .getAutoRangeSplCheckBox( clientProperties );
-        _splRangeLabel = LabeledControlFactory.getSplRangeLabel( clientProperties );
+        _autoRangeSplCheckBox = LabeledControlFactory.getAutoRangeSplCheckBox(
+                clientProperties );
+        _splRangeLabel = LabeledControlFactory.getSplRangeLabel(
+                clientProperties );
         _splRangeSpinner = ControlFactory.getSplRangeSpinnerInstance(
-                clientProperties, false, useExtendedRange );
+                clientProperties,
+                false,
+                useExtendedRange );
 
         // Disable the SPL Range spinner until Auto-Range SPL is turned off.
         _autoRangeSplCheckBox.setDisable( false );
@@ -87,23 +92,11 @@ public class SplRangePane extends VBox {
 
         // Load the event handler for the Auto-Range SPL Check Box.
         _autoRangeSplCheckBox.selectedProperty()
-                .addListener( ( observable, oldValue, newValue ) -> {
-                    // Update the Auto-Range SPL value.
-                    processAutoRangeSplChangedNotification( newValue );
-                } );
-    }
-
-    public final int getSplRangeDb() {
-        if ( _autoRangeSplCheckBox.isSelected() ) {
-            return ControlFactory.SPL_RANGE_DB_DEFAULT;
-        }
-
-        final Integer splRangeDb = _splRangeSpinner.getValue();
-        return splRangeDb.intValue();
-    }
-
-    public final boolean isAutoRangeSpl() {
-        return _autoRangeSplCheckBox.isSelected();
+                             .addListener( ( observable, oldValue, newValue ) -> {
+                                 // Update the Auto-Range SPL value.
+                                 processAutoRangeSplChangedNotification(
+                                         newValue );
+                             } );
     }
 
     // Selectively enable or disable the manual SPL Range spinner, and
@@ -119,19 +112,33 @@ public class SplRangePane extends VBox {
         }
     }
 
-    protected final void setAutoRangeSpl( final boolean autoRangeSpl ) {
-        _autoRangeSplCheckBox.setSelected( autoRangeSpl );
+    protected final void setSplRangeEnabled( final boolean splRangeEnabled ) {
+        _splRangeSpinner.setDisable( !splRangeEnabled );
+    }
+
+    public final int getSplRangeDb() {
+        if ( _autoRangeSplCheckBox.isSelected() ) {
+            return ControlFactory.SPL_RANGE_DB_DEFAULT;
+        }
+
+        final Integer splRangeDb = _splRangeSpinner.getValue();
+        return splRangeDb.intValue();
     }
 
     protected final void setSplRangeDb( final int splRangeDb ) {
         _splRangeSpinner.getValueFactory().setValue( splRangeDb );
     }
 
-    protected final void setSplRangeEnabled( final boolean splRangeEnabled ) {
-        _splRangeSpinner.setDisable( !splRangeEnabled );
+    public final boolean isAutoRangeSpl() {
+        return _autoRangeSplCheckBox.isSelected();
     }
 
-    public final void updateSplRange( final boolean autoRangeSpl, final int splRangeDb ) {
+    protected final void setAutoRangeSpl( final boolean autoRangeSpl ) {
+        _autoRangeSplCheckBox.setSelected( autoRangeSpl );
+    }
+
+    public final void updateSplRange( final boolean autoRangeSpl,
+                                      final int splRangeDb ) {
         // Set to the cached Auto-Range Mode.
         setAutoRangeSpl( autoRangeSpl );
 
@@ -145,5 +152,4 @@ public class SplRangePane extends VBox {
             setSplRangeDb( splRangeDb );
         }
     }
-
 }

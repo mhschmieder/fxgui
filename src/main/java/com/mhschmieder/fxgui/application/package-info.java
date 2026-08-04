@@ -30,9 +30,5 @@
  */
 /**
  * This package contains fxgui Library helpers for the Application class.
- *
- * @version 1.0
- *
- * @author Mark Schmieder
  */
 package com.mhschmieder.fxgui.application;

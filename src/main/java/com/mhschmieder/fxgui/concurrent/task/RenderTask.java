@@ -32,12 +32,6 @@ package com.mhschmieder.fxgui.concurrent.task;
 
 import com.mhschmieder.jgraphics.render.RenderingProgress;
 import com.mhschmieder.jgraphics.render.RenderingState;
-import javafx.concurrent.Task;
-import javafx.geometry.Point2D;
-import javafx.scene.image.Image;
-import javafx.scene.image.PixelWriter;
-import javafx.scene.image.WritableImage;
-import javafx.scene.paint.Color;
 import org.apache.commons.math3.util.FastMath;
 
 import java.time.Month;
@@ -48,6 +42,13 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.concurrent.atomic.AtomicLong;
+
+import javafx.concurrent.Task;
+import javafx.geometry.Point2D;
+import javafx.scene.image.Image;
+import javafx.scene.image.PixelWriter;
+import javafx.scene.image.WritableImage;
+import javafx.scene.paint.Color;
 
 public abstract class RenderTask extends Task< Image > {
 
@@ -69,14 +70,15 @@ public abstract class RenderTask extends Task< Image > {
                        final Month pMonth,
                        final String pRunDirectory,
                        final WritableImage pImage ) {
-        runDirectory =  pRunDirectory;
+        runDirectory = pRunDirectory;
         renderingProgress = pRenderingProgress;
         month = pMonth;
 
         if ( pImage == null ) {
             image = new WritableImage( 1, 1 );
             cancel();
-        } else {
+        }
+        else {
             image = pImage;
         }
 
@@ -102,13 +104,13 @@ public abstract class RenderTask extends Task< Image > {
     }
 
     /**
-     * Iterates through every pixel location within the {@link WritableImage}
-     * to call {@link #fillImage(int, int)} for every {@link Point2D}.
+     * Iterates through every pixel location within the {@link WritableImage} to
+     * call {@link #fillImage(int, int)} for every {@link Point2D}.
      */
     protected void loopThroughImagePixels() {
         final int renderThreadCount = isAsyncFillImageEnabled()
-                ? getRenderThreadCount()
-                : 1;
+                                      ? getRenderThreadCount()
+                                      : 1;
         if ( renderThreadCount <= 1 ) {
             loopThroughImagePixelsSequentially();
             return;
@@ -127,7 +129,7 @@ public abstract class RenderTask extends Task< Image > {
      */
     private int getRenderThreadCount() {
         final int numberOfAvailableProcessors = Runtime.getRuntime()
-                .availableProcessors();
+                                                       .availableProcessors();
         return Math.clamp( width, 1, numberOfAvailableProcessors );
     }
 
@@ -139,7 +141,7 @@ public abstract class RenderTask extends Task< Image > {
      * calls. The base implementation enables async rendering.
      *
      * @return {@code true} if {@link #fillImage(int, int)} may be called from
-     * multiple worker threads, otherwise {@code false}.
+     *         multiple worker threads, otherwise {@code false}.
      */
     protected boolean isAsyncFillImageEnabled() {
         return true;
@@ -152,9 +154,9 @@ public abstract class RenderTask extends Task< Image > {
      * subclasses that opt out of asynchronous rendering.
      */
     private void loopThroughImagePixelsSequentially() {
-        final AtomicLong currentStep = new AtomicLong(
-                renderingProgress.currentStep );
-        for ( int x = 0; x < width; x ++ ) {
+        final AtomicLong currentStep
+                = new AtomicLong( renderingProgress.currentStep );
+        for ( int x = 0; x < width; x++ ) {
             if ( isCancelled() ) {
                 return;
             }
@@ -175,10 +177,10 @@ public abstract class RenderTask extends Task< Image > {
      * @param renderThreadCount the number of worker tasks to submit.
      */
     private void loopThroughImagePixelsAsync( final int renderThreadCount ) {
-        final AtomicLong currentStep = new AtomicLong(
-                renderingProgress.currentStep );
-        final ExecutorService executorService
-                = Executors.newFixedThreadPool( renderThreadCount );
+        final AtomicLong currentStep
+                = new AtomicLong( renderingProgress.currentStep );
+        final ExecutorService executorService = Executors.newFixedThreadPool(
+                renderThreadCount );
         final CompletionService< Void > completionService
                 = new ExecutorCompletionService<>( executorService );
 
@@ -187,16 +189,15 @@ public abstract class RenderTask extends Task< Image > {
               workerIndex++ ) {
             final int firstColumnIndex = workerIndex;
             completionService.submit( () -> {
-                fillImageColumns(
-                        firstColumnIndex,
-                        renderThreadCount,
-                        currentStep );
+                fillImageColumns( firstColumnIndex,
+                                  renderThreadCount,
+                                  currentStep );
                 return null;
             } );
         }
 
         try {
-            for( int idx = 0; idx < renderThreadCount; idx++){
+            for ( int idx = 0; idx < renderThreadCount; idx++ ) {
                 if ( isCancelled() ) {
                     return;
                 }
@@ -233,7 +234,7 @@ public abstract class RenderTask extends Task< Image > {
      */
     private void fillImageColumn( final int x,
                                   final AtomicLong currentStep ) {
-        for ( int y = 0; y < height; y ++ ) {
+        for ( int y = 0; y < height; y++ ) {
             if ( isCancelled() ) {
                 return;
             }
@@ -269,9 +270,7 @@ public abstract class RenderTask extends Task< Image > {
     private void fillImageColumns( final int firstColumnIndex,
                                    final int columnStride,
                                    final AtomicLong currentStep ) {
-        for ( int x = firstColumnIndex;
-              x < width;
-              x += columnStride ) {
+        for ( int x = firstColumnIndex; x < width; x += columnStride ) {
             if ( isCancelled() ) {
                 return;
             }
@@ -294,8 +293,8 @@ public abstract class RenderTask extends Task< Image > {
     protected final void setPixelColor( final int x,
                                         final int y,
                                         final Color color ) {
-        synchronized ( pixelWriter ){
-            pixelWriter.setColor(x, y, color);
+        synchronized ( pixelWriter ) {
+            pixelWriter.setColor( x, y, color );
         }
     }
 
@@ -306,7 +305,6 @@ public abstract class RenderTask extends Task< Image > {
      * @param x The x coordinate of the pixel.
      * @param y The y coordinate of the pixel.
      */
-    protected abstract void fillImage(
-            final int x,
-            final int y );
+    protected abstract void fillImage( final int x,
+                                       final int y );
 }

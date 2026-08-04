@@ -33,6 +33,7 @@ package com.mhschmieder.fxgui.util;
 import com.mhschmieder.fxcontrols.model.Extents2DProperties;
 import com.mhschmieder.jphysics.measure.DistanceUnit;
 import com.mhschmieder.jphysics.measure.UnitConversion;
+
 import javafx.geometry.BoundingBox;
 import javafx.geometry.Rectangle2D;
 
@@ -43,69 +44,64 @@ import javafx.geometry.Rectangle2D;
 public class BoundsUtilities {
 
     /**
-     * The default constructor is disabled, as this is a static utilities class.
+     * The default constructor is disabled, as this is a static utilities
+     * class.
      */
-    private BoundsUtilities() {}
-
-    public static BoundingBox boundsFromExtents(
-            final Extents2DProperties extents ) {
-        return new BoundingBox(
-                extents.getX(),
-                extents.getY(),
-                extents.getWidth(),
-                extents.getHeight() );
+    private BoundsUtilities() {
     }
 
-    public static Rectangle2D rectangle2DFromExtents(
-            final Extents2DProperties extents ) {
-        return new Rectangle2D(
-                extents.getX(),
-                extents.getY(),
-                extents.getWidth(),
-                extents.getHeight() );
+    public static BoundingBox boundsFromExtents( final Extents2DProperties extents ) {
+        return new BoundingBox( extents.getX(),
+                                extents.getY(),
+                                extents.getWidth(),
+                                extents.getHeight() );
+    }
+
+    public static Rectangle2D rectangle2DFromExtents( final Extents2DProperties extents ) {
+        return new Rectangle2D( extents.getX(),
+                                extents.getY(),
+                                extents.getWidth(),
+                                extents.getHeight() );
     }
 
     // Get an AWT rectangle, converted from generic Extents.
-    public static java.awt.geom.Rectangle2D rectangleAwtFromExtents(
-            final Extents2DProperties extents ) {
+    public static java.awt.geom.Rectangle2D rectangleAwtFromExtents( final Extents2DProperties extents ) {
         final double x = extents.getX();
         final double y = extents.getY();
         final double width = extents.getWidth();
         final double height = extents.getHeight();
-        return new java.awt.geom.Rectangle2D.Double(
-                x,
-                y,
-                width,
-                height );
+        return new java.awt.geom.Rectangle2D.Double( x, y, width, height );
     }
 
     /*
      * Get a BoundingBox converted from Meters to current Distance Unit.
      */
-    public static BoundingBox getBoundingBoxInDistanceUnit(
-            final Extents2DProperties extents,
-            final DistanceUnit distanceUnit ) {
-        return getBoundingBoxInDistanceUnit(
-                extents,
-                DistanceUnit.METERS,
-                distanceUnit );
+    public static BoundingBox getBoundingBoxInDistanceUnit( final Extents2DProperties extents,
+                                                            final DistanceUnit distanceUnit ) {
+        return getBoundingBoxInDistanceUnit( extents,
+                                             DistanceUnit.METERS,
+                                             distanceUnit );
     }
 
     /*
      * Get a BoundingBox converted from current to specified Distance Unit.
      */
-    public static BoundingBox getBoundingBoxInDistanceUnit(
-            final Extents2DProperties extents,
-            final DistanceUnit oldDistanceUnit,
-            final DistanceUnit newDistanceUnit ) {
-        final double x = UnitConversion.convertDistance(
-                extents.getX(), oldDistanceUnit, newDistanceUnit );
-        final double y = UnitConversion.convertDistance(
-                extents.getY(), oldDistanceUnit, newDistanceUnit );
-        final double width = UnitConversion.convertDistance(
-                extents.getWidth(), oldDistanceUnit, newDistanceUnit );
-        final double height = UnitConversion.convertDistance(
-                extents.getHeight(), oldDistanceUnit, newDistanceUnit );
+    public static BoundingBox getBoundingBoxInDistanceUnit( final Extents2DProperties extents,
+                                                            final DistanceUnit oldDistanceUnit,
+                                                            final DistanceUnit newDistanceUnit ) {
+        final double x = UnitConversion.convertDistance( extents.getX(),
+                                                         oldDistanceUnit,
+                                                         newDistanceUnit );
+        final double y = UnitConversion.convertDistance( extents.getY(),
+                                                         oldDistanceUnit,
+                                                         newDistanceUnit );
+        final double width = UnitConversion.convertDistance( extents.getWidth(),
+                                                             oldDistanceUnit,
+                                                             newDistanceUnit );
+        final double height
+                = UnitConversion.convertDistance( extents.getHeight(),
+                                                  oldDistanceUnit,
+                                                  newDistanceUnit );
 
         return new BoundingBox( x, y, width, height );
     }
@@ -113,104 +109,104 @@ public class BoundsUtilities {
     /*
      * Get a BoundingBox converted from current Distance Unit to Meters.
      */
-    public static BoundingBox getBoundingBoxInMeters(
-            final Extents2DProperties extents,
-            final DistanceUnit distanceUnit ) {
-        return getBoundingBoxInDistanceUnit(
-                extents,
-                distanceUnit,
-                DistanceUnit.METERS );
-    }
-
-    /*
-     * Get a Rectangle2D converted from current to specified Distance Unit.
-     */
-    public static Rectangle2D getRectangleInDistanceUnit(
-            final Extents2DProperties extents,
-            final DistanceUnit oldDistanceUnit,
-            final DistanceUnit newDistanceUnit ) {
-        final double x = UnitConversion.convertDistance(
-                extents.getX(), oldDistanceUnit, newDistanceUnit );
-        final double y = UnitConversion.convertDistance(
-                extents.getY(), oldDistanceUnit, newDistanceUnit );
-        final double width = UnitConversion.convertDistance(
-                extents.getWidth(), oldDistanceUnit, newDistanceUnit );
-        final double height = UnitConversion.convertDistance(
-                extents.getHeight(), oldDistanceUnit, newDistanceUnit );
-
-        return new Rectangle2D( x, y, width, height );
+    public static BoundingBox getBoundingBoxInMeters( final Extents2DProperties extents,
+                                                      final DistanceUnit distanceUnit ) {
+        return getBoundingBoxInDistanceUnit( extents,
+                                             distanceUnit,
+                                             DistanceUnit.METERS );
     }
 
     /*
      * Get a Rectangle2D converted from current Distance Unit to Meters.
      */
-    public static Rectangle2D getRectangleInMeters(
-            final Extents2DProperties extents,
-            final DistanceUnit distanceUnit ) {
-        return getRectangleInDistanceUnit(
-                extents,
-                distanceUnit,
-                DistanceUnit.METERS );
+    public static Rectangle2D getRectangleInMeters( final Extents2DProperties extents,
+                                                    final DistanceUnit distanceUnit ) {
+        return getRectangleInDistanceUnit( extents,
+                                           distanceUnit,
+                                           DistanceUnit.METERS );
+    }
+
+    /*
+     * Get a Rectangle2D converted from current to specified Distance Unit.
+     */
+    public static Rectangle2D getRectangleInDistanceUnit( final Extents2DProperties extents,
+                                                          final DistanceUnit oldDistanceUnit,
+                                                          final DistanceUnit newDistanceUnit ) {
+        final double x = UnitConversion.convertDistance( extents.getX(),
+                                                         oldDistanceUnit,
+                                                         newDistanceUnit );
+        final double y = UnitConversion.convertDistance( extents.getY(),
+                                                         oldDistanceUnit,
+                                                         newDistanceUnit );
+        final double width = UnitConversion.convertDistance( extents.getWidth(),
+                                                             oldDistanceUnit,
+                                                             newDistanceUnit );
+        final double height
+                = UnitConversion.convertDistance( extents.getHeight(),
+                                                  oldDistanceUnit,
+                                                  newDistanceUnit );
+
+        return new Rectangle2D( x, y, width, height );
     }
 
     /*
      * Get an Extents2D converted from current Distance Unit to Meters.
      */
-    public static Extents2DProperties getExtentsInMeters(
-            final Extents2DProperties extents,
-            final DistanceUnit distanceUnit ) {
-        return getExtentsInDistanceUnit(
-                extents,
-                distanceUnit,
-                DistanceUnit.METERS );
-    }
-
-    /*
-     * Get an Extents2D converted from Meters to specified Distance Unit.
-     */
-    public static Extents2DProperties getExtentsInDistanceUnit(
-            final Extents2DProperties extents,
-            final DistanceUnit distanceUnit ) {
-        return getExtentsInDistanceUnit(
-                extents,
-                DistanceUnit.METERS,
-                distanceUnit );
+    public static Extents2DProperties getExtentsInMeters( final Extents2DProperties extents,
+                                                          final DistanceUnit distanceUnit ) {
+        return getExtentsInDistanceUnit( extents,
+                                         distanceUnit,
+                                         DistanceUnit.METERS );
     }
 
     /*
      * Get an Extents2D converted from current to specified Distance Unit.
      */
-    public static Extents2DProperties getExtentsInDistanceUnit(
-            final Extents2DProperties extents,
-            final DistanceUnit oldDistanceUnit,
-            final DistanceUnit newDistanceUnit ) {
-        final double x = UnitConversion.convertDistance(
-                extents.getX(), oldDistanceUnit, newDistanceUnit );
-        final double y = UnitConversion.convertDistance(
-                extents.getY(), oldDistanceUnit, newDistanceUnit );
-        final double width = UnitConversion.convertDistance(
-                extents.getWidth(), oldDistanceUnit, newDistanceUnit );
-        final double height = UnitConversion.convertDistance(
-                extents.getHeight(), oldDistanceUnit, newDistanceUnit );
+    public static Extents2DProperties getExtentsInDistanceUnit( final Extents2DProperties extents,
+                                                                final DistanceUnit oldDistanceUnit,
+                                                                final DistanceUnit newDistanceUnit ) {
+        final double x = UnitConversion.convertDistance( extents.getX(),
+                                                         oldDistanceUnit,
+                                                         newDistanceUnit );
+        final double y = UnitConversion.convertDistance( extents.getY(),
+                                                         oldDistanceUnit,
+                                                         newDistanceUnit );
+        final double width = UnitConversion.convertDistance( extents.getWidth(),
+                                                             oldDistanceUnit,
+                                                             newDistanceUnit );
+        final double height
+                = UnitConversion.convertDistance( extents.getHeight(),
+                                                  oldDistanceUnit,
+                                                  newDistanceUnit );
 
         return new Extents2DProperties( x, y, width, height );
     }
 
-    public static java.awt.geom.Rectangle2D getRectangleMetersAwt(
-            final Extents2DProperties extents,
-            final DistanceUnit distanceUnit ) {
-        final double x = UnitConversion.convertDistance(
-                extents.getX(), distanceUnit, DistanceUnit.METERS );
-        final double y = UnitConversion.convertDistance(
-                extents.getY(), distanceUnit, DistanceUnit.METERS );
-        final double width = UnitConversion.convertDistance(
-                extents.getWidth(), distanceUnit, DistanceUnit.METERS );
-        final double height = UnitConversion.convertDistance(
-                extents.getHeight(), distanceUnit, DistanceUnit.METERS );
-        return new java.awt.geom.Rectangle2D.Double(
-                x,
-                y,
-                width,
-                height );
+    /*
+     * Get an Extents2D converted from Meters to specified Distance Unit.
+     */
+    public static Extents2DProperties getExtentsInDistanceUnit( final Extents2DProperties extents,
+                                                                final DistanceUnit distanceUnit ) {
+        return getExtentsInDistanceUnit( extents,
+                                         DistanceUnit.METERS,
+                                         distanceUnit );
+    }
+
+    public static java.awt.geom.Rectangle2D getRectangleMetersAwt( final Extents2DProperties extents,
+                                                                   final DistanceUnit distanceUnit ) {
+        final double x = UnitConversion.convertDistance( extents.getX(),
+                                                         distanceUnit,
+                                                         DistanceUnit.METERS );
+        final double y = UnitConversion.convertDistance( extents.getY(),
+                                                         distanceUnit,
+                                                         DistanceUnit.METERS );
+        final double width = UnitConversion.convertDistance( extents.getWidth(),
+                                                             distanceUnit,
+                                                             DistanceUnit.METERS );
+        final double height
+                = UnitConversion.convertDistance( extents.getHeight(),
+                                                  distanceUnit,
+                                                  DistanceUnit.METERS );
+        return new java.awt.geom.Rectangle2D.Double( x, y, width, height );
     }
 }

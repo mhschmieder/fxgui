@@ -34,6 +34,7 @@ import com.mhschmieder.fxgui.layout.OpacityPane;
 import com.mhschmieder.jcommons.branding.ProductBranding;
 import com.mhschmieder.jcommons.util.ClientProperties;
 import com.mhschmieder.jgraphics.input.ScrollingSensitivity;
+
 import javafx.beans.property.DoubleProperty;
 import javafx.scene.Node;
 
@@ -42,12 +43,11 @@ import javafx.scene.Node;
  */
 public final class OpacityStage extends XStage {
 
-    // Declare the main content pane.
-    public OpacityPane _opacityPane;
-
     // Cache the Opacity Editor Label so we can use it at layout manager
     // construction time.
     public final String _opacityEditorLabel;
+    // Declare the main content pane.
+    public OpacityPane _opacityPane;
 
     public OpacityStage( final String title,
                          final String windowKeyPrefix,
@@ -67,15 +67,15 @@ public final class OpacityStage extends XStage {
         }
     }
 
-    public double getOpacityPercent() {
-        // Forward this method to the Opacity Pane.
-        return _opacityPane.getOpacityPercent();
-    }
-
-    @SuppressWarnings("nls")
+    @SuppressWarnings( "nls" )
     private void initStage() {
         // First have the superclass initialize its content.
         initStage( "/icons/ahaSoft/TransparentColor16.png", 450d, 120d, false );
+    }
+
+    public double getOpacityPercent() {
+        // Forward this method to the Opacity Pane.
+        return _opacityPane.getOpacityPercent();
     }
 
     @Override
@@ -100,8 +100,7 @@ public final class OpacityStage extends XStage {
     /**
      * Set the new Scrolling Sensitivity for all of the sliders.
      *
-     * @param scrollingSensitivity
-     *            The sensitivity of the mouse scroll wheel
+     * @param scrollingSensitivity The sensitivity of the mouse scroll wheel
      */
     public void setScrollingSensitivity( final ScrollingSensitivity scrollingSensitivity ) {
         // Forward this method to the Opacity Pane.

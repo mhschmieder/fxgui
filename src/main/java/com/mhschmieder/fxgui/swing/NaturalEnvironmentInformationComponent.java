@@ -37,10 +37,11 @@ import com.mhschmieder.jcontrols.component.JxDataViewComponent;
 import com.mhschmieder.jphysics.measure.PressureUnit;
 import com.mhschmieder.jphysics.measure.TemperatureUnit;
 
-import javax.swing.SwingConstants;
 import java.awt.Dimension;
 import java.text.NumberFormat;
 import java.util.Locale;
+
+import javax.swing.SwingConstants;
 
 /**
  * {@code NaturalEnvironmentInformationTable} is a specialization of
@@ -54,79 +55,74 @@ import java.util.Locale;
  * with the background (as opposed to usual black text on white background) and
  * skipping the horizontal and vertical grid lines.
  *
- * @version 1.0
- *
  * @author Mark Schmieder
+ * @version 1.0
  */
 public final class NaturalEnvironmentInformationComponent
         extends JxDataViewComponent {
     // Declare strings for the static part of the settings formatting.
-    public static final String                          AIR_ATTENUATION_LABEL_LABEL     =
-                                                                                    "Air Attenuation";                      //$NON-NLS-1$
+    public static final String AIR_ATTENUATION_LABEL_LABEL = "Air Attenuation";
+    //$NON-NLS-1$
     // Declare default formatted data for each label.
-    public static final String AIR_ATTENUATION_LABEL_DEFAULT   =
-                                                                                      AIR_ATTENUATION_LABEL_LABEL
-                                                                                              + " Off";                     //$NON-NLS-1$
-    public static final String TEMPERATURE_LABEL_LABEL         =
-                                                                                "Temperature";                              //$NON-NLS-1$
-    @SuppressWarnings("nls") public static final String TEMPERATURE_LABEL_DEFAULT       =
-                                                                                  TEMPERATURE_LABEL_LABEL
-                                                                                          + " = 20"
-                                                                                          + StringConstants.DEGREES_CELSIUS;
-    public static final String PRESSURE_LABEL_LABEL            =
-                                                                             "Pressure";                                    //$NON-NLS-1$
-    @SuppressWarnings("nls") public static final String PRESSURE_LABEL_DEFAULT          =
-                                                                               PRESSURE_LABEL_LABEL
-                                                                                       + " = 101325 "
-                                                                                       + PressureUnit.PASCALS
-                                                                                               .label();
-    public static final String RELATIVE_HUMIDITY_LABEL_LABEL   =
-                                                                                      "Relative Humidity";                  //$NON-NLS-1$
-    @SuppressWarnings("nls") public static final String RELATIVE_HUMIDITY_LABEL_DEFAULT =
-                                                                                        RELATIVE_HUMIDITY_LABEL_LABEL
-                                                                                                + " = 50%";
+    public static final String AIR_ATTENUATION_LABEL_DEFAULT =
+            AIR_ATTENUATION_LABEL_LABEL + " Off";
+    //$NON-NLS-1$
+    public static final String TEMPERATURE_LABEL_LABEL = "Temperature";
+    //$NON-NLS-1$
+    @SuppressWarnings( "nls" )
+    public static final String TEMPERATURE_LABEL_DEFAULT =
+            TEMPERATURE_LABEL_LABEL + " = 20" + StringConstants.DEGREES_CELSIUS;
+    public static final String PRESSURE_LABEL_LABEL = "Pressure";
+    //$NON-NLS-1$
+    @SuppressWarnings( "nls" )
+    public static final String PRESSURE_LABEL_DEFAULT = PRESSURE_LABEL_LABEL
+                                                        + " = 101325 "
+                                                        + PressureUnit.PASCALS.label();
+    public static final String RELATIVE_HUMIDITY_LABEL_LABEL
+            = "Relative Humidity";                  //$NON-NLS-1$
+    @SuppressWarnings( "nls" )
+    public static final String RELATIVE_HUMIDITY_LABEL_DEFAULT =
+            RELATIVE_HUMIDITY_LABEL_LABEL + " = 50%";
     /**
      *
      */
-    private static final long  serialVersionUID = -5504900411550793534L;
+    private static final long serialVersionUID = -5504900411550793534L;
 
     // Declare the array of column names to be displayed in the table header.
     // NOTE: These are all empty strings, but are necessary to imply table
     //  width.
-    private final Object[]     _columnNames     = { "" };                                                         //$NON-NLS-1$
+    private final Object[] _columnNames = { "" };
+    //$NON-NLS-1$
 
     // Declare an array of row data to be displayed in the rows of the table.
     // NOTE: The second row is dynamically adjusted; the first row is static.
     // NOTE: The second row cells are not converted to the proper type for
     //  display, but instead are always represented as pre-formatted strings.
-    private final Object[][]   _rowData         =
-                                        {
-                                          {
-                                            AIR_ATTENUATION_LABEL_DEFAULT },
-                                          {
-                                            TEMPERATURE_LABEL_DEFAULT },
-                                          {
-                                            PRESSURE_LABEL_DEFAULT },
-                                          {
-                                            RELATIVE_HUMIDITY_LABEL_DEFAULT } };
-
-    // Keep a cached copy of the natural environment object, in case the units
-    // are changed between predictions.
-    private NaturalEnvironmentProperties _naturalEnvironmentProperties;
-
-    // Keep track of what units we're using to display, for later conversion.
-    private TemperatureUnit    _temperatureUnit;
-    private PressureUnit       _pressureUnit;
-
+    private final Object[][] _rowData = {
+            {
+                    AIR_ATTENUATION_LABEL_DEFAULT
+            }, {
+                    TEMPERATURE_LABEL_DEFAULT
+            }, {
+                    PRESSURE_LABEL_DEFAULT
+            }, {
+                    RELATIVE_HUMIDITY_LABEL_DEFAULT
+            }
+    };
     /**
      * Number format cache used for locale-specific number formatting.
      */
-    protected NumberFormat     numberFormat;
-
+    protected NumberFormat numberFormat;
     /**
      * Number format cache used for locale-specific percent formatting.
      */
-    protected NumberFormat     percentFormat;
+    protected NumberFormat percentFormat;
+    // Keep a cached copy of the natural environment object, in case the units
+    // are changed between predictions.
+    private NaturalEnvironmentProperties _naturalEnvironmentProperties;
+    // Keep track of what units we're using to display, for later conversion.
+    private TemperatureUnit _temperatureUnit;
+    private PressureUnit _pressureUnit;
 
     public NaturalEnvironmentInformationComponent() {
         // Always call the superclass constructor first!
@@ -169,10 +165,7 @@ public final class NaturalEnvironmentInformationComponent
      * initialization method that resets precision to what is preferred in the
      * context of that tighter scope. These defaults are fairly common ones.
      *
-     * @param locale
-     *            The locale to use for number formatting purposes
-     *
-     * @version 1.0
+     * @param locale The locale to use for number formatting purposes
      */
     private void initNumberFormatters( final Locale locale ) {
         // Cache the number formats so that we don't have to get information
@@ -191,7 +184,7 @@ public final class NaturalEnvironmentInformationComponent
         repaint();
     }
 
-    public void setNaturalEnvironment( final NaturalEnvironmentProperties naturalEnvironmentProperties) {
+    public void setNaturalEnvironment( final NaturalEnvironmentProperties naturalEnvironmentProperties ) {
         // Cache the current Natural Environment in case the Measurement
         // Units change before the next prediction is run.
         _naturalEnvironmentProperties = naturalEnvironmentProperties;
@@ -202,20 +195,29 @@ public final class NaturalEnvironmentInformationComponent
     }
 
     public void updateLabels() {
-        final String airAttenuationLabel = NaturalEnvironmentInformationPane
-                .getAirAttenuationLabel(_naturalEnvironmentProperties);
+        final String airAttenuationLabel
+                = NaturalEnvironmentInformationPane.getAirAttenuationLabel(
+                _naturalEnvironmentProperties );
         table.setValueAt( airAttenuationLabel, 0, 0 );
 
-        final String temperatureLabel = NaturalEnvironmentInformationPane
-                .getTemperatureLabel(_naturalEnvironmentProperties, _temperatureUnit, numberFormat );
+        final String temperatureLabel
+                = NaturalEnvironmentInformationPane.getTemperatureLabel(
+                _naturalEnvironmentProperties,
+                _temperatureUnit,
+                numberFormat );
         table.setValueAt( temperatureLabel, 1, 0 );
 
-        final String pressureLabel = NaturalEnvironmentInformationPane
-                .getPressureLabel(_naturalEnvironmentProperties, _pressureUnit, numberFormat );
+        final String pressureLabel
+                = NaturalEnvironmentInformationPane.getPressureLabel(
+                _naturalEnvironmentProperties,
+                _pressureUnit,
+                numberFormat );
         table.setValueAt( pressureLabel, 2, 0 );
 
-        final String relativeHumidityLabel = NaturalEnvironmentInformationPane
-                .getRelativeHumidityLabel(_naturalEnvironmentProperties, percentFormat );
+        final String relativeHumidityLabel
+                = NaturalEnvironmentInformationPane.getRelativeHumidityLabel(
+                _naturalEnvironmentProperties,
+                percentFormat );
         table.setValueAt( relativeHumidityLabel, 3, 0 );
 
         // Force a repaint event, to display/update the new table values.

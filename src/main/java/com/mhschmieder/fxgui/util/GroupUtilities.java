@@ -32,39 +32,45 @@ package com.mhschmieder.fxgui.util;
 
 import com.mhschmieder.fxcontrols.control.ControlUtilities;
 import com.mhschmieder.fxcontrols.util.IconContext;
+import org.apache.commons.math3.util.FastMath;
+
 import javafx.scene.Group;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Arc;
 import javafx.scene.shape.ArcType;
 import javafx.scene.shape.Line;
 import javafx.scene.shape.Rectangle;
-import org.apache.commons.math3.util.FastMath;
 
 /**
  * This is a utility class for dealing with common group functionality.
  *
- * @version 0.1
- *
  * @author Mark Schmieder
+ * @version 0.1
  */
 public final class GroupUtilities {
 
     /**
-     * The default constructor is disabled, as this is a static utilities class.
+     * The default constructor is disabled, as this is a static utilities
+     * class.
      */
-    private GroupUtilities() {}
+    private GroupUtilities() {
+    }
 
     public static Group getBackgroundColorIcon( final Color backgroundColor ) {
         final Group group = new Group();
 
         // First, get the icon size and insets for the menu context.
         final int inset = ControlUtilities.getIconInset( IconContext.MENU );
-        final int boxSideLength = ControlUtilities.MENU_ICON_SIZE - ( inset * 2 );
+        final int boxSideLength = ControlUtilities.MENU_ICON_SIZE - ( inset
+                                                                      * 2 );
         final int startX = inset;
         final int startY = ControlUtilities.MENU_ICON_SIZE - inset;
 
         // Fill the icon with the specified background color.
-        final Rectangle box = new Rectangle( startX, startY, boxSideLength, boxSideLength );
+        final Rectangle box = new Rectangle( startX,
+                                             startY,
+                                             boxSideLength,
+                                             boxSideLength );
         box.setFill( backgroundColor );
 
         // Add the box to the Node Group.
@@ -89,20 +95,23 @@ public final class GroupUtilities {
         diagonalLine.getStrokeDashArray().addAll( 2.0d, 3.0d );
 
         // Now, draw two yellow end point grab markers, as small rectangles.
-        final Rectangle lowerGrabMarker = new Rectangle( startX - endPointBoxSideLength,
+        final Rectangle lowerGrabMarker = new Rectangle(
+                startX - endPointBoxSideLength,
                 startY,
                 endPointBoxSideLength,
                 endPointBoxSideLength );
         lowerGrabMarker.setFill( Color.YELLOW );
 
         final Rectangle upperGrabMarker = new Rectangle( endX,
-                endY - endPointBoxSideLength,
-                endPointBoxSideLength,
-                endPointBoxSideLength );
+                                                         endY
+                                                         - endPointBoxSideLength,
+                                                         endPointBoxSideLength,
+                                                         endPointBoxSideLength );
         upperGrabMarker.setFill( Color.YELLOW );
 
         // Add the individual shapes to the Node Group.
-        group.getChildren().addAll( diagonalLine, lowerGrabMarker, upperGrabMarker );
+        group.getChildren()
+             .addAll( diagonalLine, lowerGrabMarker, upperGrabMarker );
 
         return group;
     }
@@ -119,7 +128,12 @@ public final class GroupUtilities {
         final int radius = ( int ) FastMath.floor( 0.5d * diameter );
         final int centerX = ( int ) FastMath.floor( 0.5d * iconSize );
         final int centerY = centerX + strokeWidthOffset;
-        final Arc arc = new Arc( centerX, centerY, radius, radius, 0.0d, -270d );
+        final Arc arc = new Arc( centerX,
+                                 centerY,
+                                 radius,
+                                 radius,
+                                 0.0d,
+                                 -270d );
         arc.setType( ArcType.OPEN );
         arc.setFill( null );
         arc.setStroke( Color.BLACK );
@@ -130,18 +144,20 @@ public final class GroupUtilities {
         // TODO: Improve the algorithm for computing arrow tip edge length.
         final int startX = inset + strokeWidthOffset;
         final int startY = inset + strokeWidthOffset;
-        final int arrowTipEdgeLength = ( int ) FastMath.floor( 0.5d * diameter );
+        final int arrowTipEdgeLength = ( int ) FastMath.floor(
+                0.5d * diameter );
 
         final Line leftArrowTip = new Line( startX + arrowTipEdgeLength,
-                startY + strokeWidthOffset,
-                startX,
-                startY + strokeWidthOffset );
+                                            startY + strokeWidthOffset,
+                                            startX,
+                                            startY + strokeWidthOffset );
         leftArrowTip.setStrokeWidth( 0.5d );
 
         final Line rightArrowTip = new Line( startX + arrowTipEdgeLength,
-                startY + strokeWidthOffset,
-                startX + arrowTipEdgeLength,
-                startY + strokeWidthOffset + arrowTipEdgeLength );
+                                             startY + strokeWidthOffset,
+                                             startX + arrowTipEdgeLength,
+                                             startY + strokeWidthOffset
+                                             + arrowTipEdgeLength );
         rightArrowTip.setStrokeWidth( 0.5d );
 
         // Add the individual shapes to the Node Group.
@@ -165,13 +181,19 @@ public final class GroupUtilities {
         diagonalLine.setStrokeWidth( 0.5d );
 
         // Now, draw the black arrow tips at line end.
-        final int arrowTipEdgeLength = ( int ) FastMath
-                .floor( 0.5d * FastMath.min( startX - endX, startY - endY ) );
+        final int arrowTipEdgeLength = ( int ) FastMath.floor(
+                0.5d * FastMath.min( startX - endX, startY - endY ) );
 
-        final Line leftArrowTip = new Line( endX, endY, endX, endY + arrowTipEdgeLength );
+        final Line leftArrowTip = new Line( endX,
+                                            endY,
+                                            endX,
+                                            endY + arrowTipEdgeLength );
         leftArrowTip.setStrokeWidth( 0.5d );
 
-        final Line rightArrowTip = new Line( endX, endY, endX + arrowTipEdgeLength, endY );
+        final Line rightArrowTip = new Line( endX,
+                                             endY,
+                                             endX + arrowTipEdgeLength,
+                                             endY );
         rightArrowTip.setStrokeWidth( 0.5d );
 
         // Add the individual shapes to the Node Group.

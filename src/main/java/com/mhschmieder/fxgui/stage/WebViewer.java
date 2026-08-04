@@ -32,13 +32,14 @@ package com.mhschmieder.fxgui.stage;
 
 import com.mhschmieder.jcommons.branding.ProductBranding;
 import com.mhschmieder.jcommons.util.ClientProperties;
+
+import java.net.URL;
+
 import javafx.geometry.Bounds;
 import javafx.scene.Node;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.web.WebEngine;
 import javafx.scene.web.WebView;
-
-import java.net.URL;
 
 public class WebViewer extends XStage {
 
@@ -72,9 +73,13 @@ public class WebViewer extends XStage {
                                     final double defaultWidth,
                                     final double defaultHeight ) {
         // First have the superclass initialize its content.
-        initStage( jarRelativeIconFilename, defaultWidth, defaultHeight, false );
+        initStage( jarRelativeIconFilename,
+                   defaultWidth,
+                   defaultHeight,
+                   false );
 
-        final URL htmlUrl = WebViewer.class.getResource( jarRelativeHtmlFilename );
+        final URL htmlUrl
+                = WebViewer.class.getResource( jarRelativeHtmlFilename );
 
         final WebEngine webEngine = webView.getEngine();
         webEngine.load( htmlUrl.toString() );

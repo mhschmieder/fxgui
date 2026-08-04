@@ -34,6 +34,7 @@ import com.mhschmieder.fxcontrols.model.Region2DProperties;
 import com.mhschmieder.fxcontrols.util.RegionUtilities;
 import com.mhschmieder.jcommons.util.ClientProperties;
 import com.mhschmieder.jphysics.measure.DistanceUnit;
+
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.layout.Background;
@@ -43,15 +44,12 @@ import javafx.scene.paint.Color;
 
 public final class Region2DPane extends VBox {
 
+    public SurfacesPane _surfacesPane;
     protected Extents2DPane _extents2DPane;
-
-    // Declare a Surface Legend that shows the labeling correspondence.
-    private SurfaceLegend _surfaceLegend;
-
-    public SurfacesPane   _surfacesPane;
-
     // Cache a reference to the global Region2D.
     protected Region2DProperties region2DProperties;
+    // Declare a Surface Legend that shows the labeling correspondence.
+    private SurfaceLegend _surfaceLegend;
 
     public Region2DPane( final ClientProperties pClientProperties,
                          final double extentsSizeMinimumMeters,
@@ -76,16 +74,16 @@ public final class Region2DPane extends VBox {
                            final double extentsSizeMaximumMeters,
                            final String propertiesCategory ) {
         _extents2DPane = new Extents2DPane( pClientProperties,
-                                        extentsDimensionMinimum,
-                                        extentsSizeMaximumMeters,
-                                        propertiesCategory );
+                                            extentsDimensionMinimum,
+                                            extentsSizeMaximumMeters,
+                                            propertiesCategory );
 
         _surfaceLegend = new SurfaceLegend( pClientProperties );
 
         _surfacesPane = new SurfacesPane( pClientProperties );
 
         final HBox hbox = new HBox();
-        hbox.getChildren().setAll(_extents2DPane, _surfaceLegend );
+        hbox.getChildren().setAll( _extents2DPane, _surfaceLegend );
 
         hbox.setSpacing( 16d );
         hbox.setAlignment( Pos.CENTER );
@@ -108,7 +106,8 @@ public final class Region2DPane extends VBox {
 
     public void setForegroundFromBackground( final Color backColor ) {
         // Set the new Background first, so it sets context for CSS derivations.
-        final Background background = RegionUtilities.makeRegionBackground( backColor );
+        final Background background = RegionUtilities.makeRegionBackground(
+                backColor );
         setBackground( background );
 
         // Forward this method to the lower-level layout containers.
@@ -124,7 +123,7 @@ public final class Region2DPane extends VBox {
         region2DProperties = pRegion2DProperties;
 
         // Forward this reference to the subsidiary panes.
-        _extents2DPane.setExtents( pRegion2DProperties) ;
+        _extents2DPane.setExtents( pRegion2DProperties );
         _surfacesPane.setSurfaceProperties( pRegion2DProperties.getSurfaceProperties() );
     }
 
@@ -140,5 +139,4 @@ public final class Region2DPane extends VBox {
         // Forward this method to the Surfaces Pane.
         _surfacesPane.updateView();
     }
-
 }

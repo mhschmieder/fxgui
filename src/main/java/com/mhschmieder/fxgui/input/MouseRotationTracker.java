@@ -33,28 +33,36 @@ package com.mhschmieder.fxgui.input;
 import com.mhschmieder.fxgraphics.input.RotationManager;
 import com.mhschmieder.jphysics.measure.AngleUnit;
 import com.mhschmieder.jphysics.measure.UnitConversion;
-import javafx.scene.chart.ValueAxis;
 import org.apache.commons.math3.util.MathUtils;
 
 import java.text.NumberFormat;
 
+import javafx.scene.chart.ValueAxis;
+
 /**
- * A specialized Tracker Label Group used to manage Mouse Rotation Angle display.
+ * A specialized Tracker Label Group used to manage Mouse Rotation Angle
+ * display.
  */
 public class MouseRotationTracker extends TrackerLabelGroup {
 
-    /** Cache a local copy of the Rotation Manager to check mouse context. */
+    /**
+     * Cache a local copy of the Rotation Manager to check mouse context.
+     */
     public RotationManager _rotationManager;
 
-    /** Number format cache used for locale-specific angle formatting. */
+    /**
+     * Number format cache used for locale-specific angle formatting.
+     */
     public NumberFormat _angleFormat;
 
     /**
      * Keep track of what Angle Unit we're using to display rotation.
      */
     public AngleUnit _angleUnit;
-    
-    /** Cache the most recent object angle for single object selection. */
+
+    /**
+     * Cache the most recent object angle for single object selection.
+     */
     public double _objectAngle;
 
     public MouseRotationTracker( final RotationManager rotationManager,
@@ -64,14 +72,14 @@ public class MouseRotationTracker extends TrackerLabelGroup {
                                  final ValueAxis< Number > yAxis ) {
         // Always call the superclass constructor first!
         super( xAxis, yAxis );
-        
+
         _rotationManager = rotationManager;
         _angleFormat = angleFormat;
         _angleUnit = angleUnit;
-        
+
         _objectAngle = Double.NaN;
     }
-    
+
     public void updateTrackerLabel( final double displayX,
                                     final double displayY,
                                     final double localX,
@@ -82,12 +90,23 @@ public class MouseRotationTracker extends TrackerLabelGroup {
 
         // Update the special cursor angle readouts next to the main cursor.
         // NOTE: This must be done after updating graphical object angles.
-        updateTrackerLabel( displayX, 
-                            displayY,
-                            localX,
-                            localY );
+        updateTrackerLabel( displayX, displayY, localX, localY );
     }
-    
+
+    /**
+     * Sets the object angle to use for modifying the mouse rotation angle.
+     * <p>
+     * If set to NaN, the object angle is not relevant for the next update to
+     * the tracker label, such as when multiple objects are selected.
+     * <p>
+     * It is critical that this method be called before updating the label!
+     *
+     * @param objectAngle The object angle (degrees) to modify relative angle
+     */
+    public void setObjectAngle( final double objectAngle ) {
+        _objectAngle = objectAngle;
+    }
+
     @Override
     public String getTrackerLabelText( final double localX,
                                        final double localY ) {
@@ -96,23 +115,27 @@ public class MouseRotationTracker extends TrackerLabelGroup {
 
         // Determine the Total Angle of the current mouse cursor position, and
         // normalized to the ( -180, +180 ) range.
-        final double totalAngleRadians = _rotationManager._rotateReference 
-                - _rotationManager._rotateTheta;
-        final double normalizedAngleRadians = MathUtils
-                .normalizeAngle( totalAngleRadians, 0.0d );
-        final double normalizedAngle = UnitConversion
-                .convertAngle( normalizedAngleRadians, AngleUnit.RADIANS, _angleUnit );
-        final String sTotalAngle = _angleFormat.format( normalizedAngle ) + angleUnitSymbol;
+        final double totalAngleRadians = _rotationManager._rotateReference
+                                         - _rotationManager._rotateTheta;
+        final double normalizedAngleRadians = MathUtils.normalizeAngle(
+                totalAngleRadians,
+                0.0d );
+        final double normalizedAngle = UnitConversion.convertAngle(
+                normalizedAngleRadians,
+                AngleUnit.RADIANS,
+                _angleUnit );
+        final String sTotalAngle = _angleFormat.format( normalizedAngle )
+                                   + angleUnitSymbol;
 
-        // Determine whether we have a single object or multiple objects 
+        // Determine whether we have a single object or multiple objects
         // selected, based on whether the downstream client set the object
         // angle to a valid angle before invoking this method. If we have a
         // single object selected, also list the Absolute Angle of that object
         // (modified by the Relative Angle of Rotation).
         String sObjectAngle = "";
-        if ( !Double.isNaN(  _objectAngle ) ) {
+        if ( !Double.isNaN( _objectAngle ) ) {
             sObjectAngle = " (" + _angleFormat.format( _objectAngle )
-                    + angleUnitSymbol + " absolute)";
+                           + angleUnitSymbol + " absolute)";
         }
 
         // Combine the angles into one formatted angle report.
@@ -122,19 +145,5 @@ public class MouseRotationTracker extends TrackerLabelGroup {
     public void updateAngleUnit( final AngleUnit angleUnit ) {
         // Cache the new Angle Unit to use for displaying rotation.
         _angleUnit = angleUnit;
-    }
-    
-    /**
-     * Sets the object angle to use for modifying the mouse rotation angle.
-     * <p>
-     * If set to NaN, the object angle is not relevant for the next update
-     * to the tracker label, such as when multiple objects are selected.
-     * <p>
-     * It is critical that this method be called before updating the label!
-     * 
-     * @param objectAngle The object angle (degrees) to modify relative angle
-     */
-    public void setObjectAngle( final double objectAngle ) {
-        _objectAngle = objectAngle;
     }
 }

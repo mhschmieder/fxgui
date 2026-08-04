@@ -32,6 +32,7 @@ package com.mhschmieder.fxgui.stage;
 
 import com.mhschmieder.jcommons.branding.ProductBranding;
 import com.mhschmieder.jcommons.util.ClientProperties;
+
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.collections.ObservableList;
@@ -54,33 +55,28 @@ import javafx.stage.Modality;
  */
 public abstract class ObjectPropertiesEditor extends XStage {
 
-    // Declare the main action button bar.
-    protected ButtonBar    _actionButtonBar;
-
-    // Declare the main action buttons.
-    protected Button       _helpAlternateButton;
-    protected Button       _resetButton;
-    protected Button       _revertButton;
-    protected Button       _applyButton;
-    protected Button       _doneButton;
-    protected Button       _cancelButton;
-    protected Button       _helpButton;
-
-    // For the sake of the modal version, keep track of user cancellation.
-    private boolean        _canceled;
-
-    // Also keep track of when we are disabled due to deleted objects.
-    private boolean        _disabled;
-
     // In place of hidden check boxes, maintain observable boolean flags.
     // NOTE: These fields must follow JavaFX Property Bean naming conventions.
     public BooleanProperty objectPropertiesChanged;
-    
-    // Flag for whether Reset Actions are applicable to this textField instance.
-    
-    private boolean         resetApplicable;
+    // Declare the main action button bar.
+    protected ButtonBar _actionButtonBar;
+    // Declare the main action buttons.
+    protected Button _helpAlternateButton;
+    protected Button _resetButton;
+    protected Button _revertButton;
+    protected Button _applyButton;
+    protected Button _doneButton;
+    protected Button _cancelButton;
+    protected Button _helpButton;
+    // For the sake of the modal version, keep track of user cancellation.
+    private boolean _canceled;
+    // Also keep track of when we are disabled due to deleted objects.
+    private boolean _disabled;
 
-    @SuppressWarnings("nls")
+    // Flag for whether Reset Actions are applicable to this textField instance.
+    private boolean resetApplicable;
+
+    @SuppressWarnings( "nls" )
     protected ObjectPropertiesEditor( final boolean insertMode,
                                       final String objectType,
                                       final String windowKeyPrefix,
@@ -92,17 +88,24 @@ public abstract class ObjectPropertiesEditor extends XStage {
         // Mode, and vary the frame title based on this mode as well.
         // NOTE: This textField can be made as more than one instance, so it is
         // simpler to block the application and thus avoid confusion of state or
-        // complexity of dismissing and canceling redundant copies of the textField
+        // complexity of dismissing and canceling redundant copies of the
+        // textField
         // launched from more than one owning window, with different settings.
-        super( insertMode ? Modality.APPLICATION_MODAL : Modality.NONE,
-               insertMode ? "Insert " + objectType : objectType + " Properties",
-               insertMode ? windowKeyPrefix + "InsertDialog" : windowKeyPrefix + "Editor",
+        super( insertMode
+               ? Modality.APPLICATION_MODAL
+               : Modality.NONE,
+               insertMode
+               ? "Insert " + objectType
+               : objectType + " Properties",
+               insertMode
+               ? windowKeyPrefix + "InsertDialog"
+               : windowKeyPrefix + "Editor",
                false,
                false,
                false,
                productBranding,
                pClientProperties );
-        
+
         resetApplicable = pResetApplicable;
 
         // Always default to not canceled, until user edits begin.
@@ -123,17 +126,6 @@ public abstract class ObjectPropertiesEditor extends XStage {
         if ( !isInsertMode() ) {
             setObjectPropertiesChanged( true );
         }
-    }
-
-    /**
-     * Cancel Button callback, for Insert Mode and Window Close.
-     */
-    public void cancel() {
-        // Set the "canceled" status to query in any context.
-        setCanceled( true );
-
-        // Now exit the window, whether modal or modeless.
-        setVisible( false, false );
     }
 
     /**
@@ -164,11 +156,13 @@ public abstract class ObjectPropertiesEditor extends XStage {
 
     // NOTE: Help is not required so has a default no-op implementation and
     // does not need to be overridden.
-    protected void help() {}
+    protected void help() {
+    }
 
     // NOTE: Help Alternate is not required so has a default no-op
     // implementation and does not need to be overridden.
-    protected void helpAlternate() {}
+    protected void helpAlternate() {
+    }
 
     // Hide all of the Windows associated with this Object Properties Editor.
     @Override
@@ -179,6 +173,60 @@ public abstract class ObjectPropertiesEditor extends XStage {
         // Finally, hide this window as well, via cancel action, so that new
         // objects aren't created during new project setup by mistake.
         cancel();
+    }
+
+    /**
+     * Cancel Button callback, for Insert Mode and Window Close.
+     */
+    public void cancel() {
+        // Set the "canceled" status to query in any context.
+        setCanceled( true );
+
+        // Now exit the window, whether modal or modeless.
+        setVisible( false, false );
+    }
+
+    @Override
+    protected abstract void reset();
+
+    // NOTE: We make this final because we want to discourage this old Swing
+    // based terminology once we're at the level of object-editing.
+    @Override
+    public final void updateModel() {
+        // Propagate values from the GUI to the selected object's properties.
+        updateObjectPropertiesModel();
+
+        // Update the preview of the current object reference.
+        updatePreview();
+
+        // Make sure the contextual settings are properly enabled/disabled.
+        updateContextualSettings();
+    }
+
+    // NOTE: We make this final because we want to discourage this old Swing
+    // based terminology once we're at the level of object-editing.
+    @Override
+    public final void updateView() {
+        // Propagate properties of the selected object to the GUI.
+        updateObjectPropertiesView();
+
+        // Update the preview of the current object reference.
+        updatePreview();
+
+        // Make sure the contextual settings are properly enabled/disabled.
+        updateContextualSettings();
+    }
+
+    // NOTE: All objects must have at least some editing controls that must be
+    // updated when the object reference is switched for another one or when
+    // changes happen outside this textField.
+    // TODO: Rename as "updateProperties()" or "storeProperties()"?
+    protected abstract void updateObjectPropertiesView();
+
+    // NOTE: Not all objects need a geometry preview, so there is a default
+    // no-op implementation and derived classes are not required to implement
+    // this method.
+    public void updatePreview() {
     }
 
     /*
@@ -196,7 +244,10 @@ public abstract class ObjectPropertiesEditor extends XStage {
                               final boolean useHelpButton,
                               final boolean useHelpAlternateButton ) {
         // First have the superclass initialize its content.
-        initStage( jarRelativeIconFilename, defaultWidth, defaultHeight, resizable );
+        initStage( jarRelativeIconFilename,
+                   defaultWidth,
+                   defaultHeight,
+                   resizable );
 
         // Rediscover whether we are in Insert Mode or Edit Mode.
         final boolean insertMode = isInsertMode();
@@ -205,31 +256,46 @@ public abstract class ObjectPropertiesEditor extends XStage {
         _actionButtonBar = new ButtonBar();
         _actionButtonBar.setPadding( new Insets( 12d ) );
 
-        _helpAlternateButton = com.mhschmieder.fxcontrols.control.LabeledControlFactory
-                .getHelpAlternateButton();
+        _helpAlternateButton
+                =
+                com.mhschmieder.fxcontrols.control.LabeledControlFactory.getHelpAlternateButton();
         ButtonBar.setButtonData( _helpAlternateButton, ButtonData.HELP_2 );
 
-        _resetButton = com.mhschmieder.fxcontrols.control.LabeledControlFactory
-                .getResetButton( objectType );
+        _resetButton
+                =
+                com.mhschmieder.fxcontrols.control.LabeledControlFactory.getResetButton(
+                objectType );
         ButtonBar.setButtonData( _resetButton, ButtonData.OTHER );
 
-        _revertButton = com.mhschmieder.fxcontrols.control.LabeledControlFactory
-                .getRevertButton( objectType );
+        _revertButton
+                =
+                com.mhschmieder.fxcontrols.control.LabeledControlFactory.getRevertButton(
+                objectType );
         ButtonBar.setButtonData( _revertButton, ButtonData.BACK_PREVIOUS );
 
-        _applyButton = com.mhschmieder.fxcontrols.control.LabeledControlFactory
-                .getApplyButton( objectType );
+        _applyButton
+                =
+                com.mhschmieder.fxcontrols.control.LabeledControlFactory.getApplyButton(
+                objectType );
         ButtonBar.setButtonData( _applyButton, ButtonData.APPLY );
 
-        _doneButton = com.mhschmieder.fxcontrols.control.LabeledControlFactory
-                .getDoneButton( objectType, insertMode );
+        _doneButton
+                =
+                com.mhschmieder.fxcontrols.control.LabeledControlFactory.getDoneButton(
+                objectType,
+                insertMode );
         ButtonBar.setButtonData( _doneButton, ButtonData.OK_DONE );
 
-        _cancelButton = com.mhschmieder.fxcontrols.control.LabeledControlFactory
-                .getCancelButton( objectType );
+        _cancelButton
+                =
+                com.mhschmieder.fxcontrols.control.LabeledControlFactory.getCancelButton(
+                objectType );
         ButtonBar.setButtonData( _cancelButton, ButtonData.CANCEL_CLOSE );
 
-        _helpButton = com.mhschmieder.fxcontrols.control.LabeledControlFactory.getHelpButton( false );
+        _helpButton
+                =
+                com.mhschmieder.fxcontrols.control.LabeledControlFactory.getHelpButton(
+                false );
         ButtonBar.setButtonData( _helpButton, ButtonData.HELP );
 
         // Disable the Reset, Help, and Help Alternate Buttons as these are not
@@ -248,7 +314,8 @@ public abstract class ObjectPropertiesEditor extends XStage {
         // prevents the action buttons from retaining focus for ENTER.
         // _doneButton.setDefaultButton( true );
 
-        final ObservableList< Node > actionButtons = _actionButtonBar.getButtons();
+        final ObservableList< Node > actionButtons
+                = _actionButtonBar.getButtons();
         if ( useHelpAlternateButton ) {
             actionButtons.add( _helpAlternateButton );
         }
@@ -310,7 +377,8 @@ public abstract class ObjectPropertiesEditor extends XStage {
         // NOTE: For some reason, onShowingProperty() and onShownProperty() are
         // never reached. Unsurprisingly, focusedProperty() happens too often.
         // So, it is safer to use this property which only triggers one event.
-        showingProperty().addListener( ( observableValue, oldValue, newValue ) -> {
+        showingProperty().addListener( ( observableValue, oldValue,
+                                         newValue ) -> {
             if ( newValue ) {
                 updatePreview();
             }
@@ -320,11 +388,12 @@ public abstract class ObjectPropertiesEditor extends XStage {
         // can trigger various global actions even when editing focus is on
         // another control (where the ENTER key on its own, commits edits).
         addEventFilter( KeyEvent.KEY_RELEASED, keyEvent -> {
-            final KeyCombination enterKeyCombo = new KeyCodeCombination( KeyCode.ENTER,
-                                                                         KeyCombination.ALT_DOWN );
-            final KeyCombination enterModifiedKeyCombo =
-                                                       new KeyCodeCombination( KeyCode.ENTER,
-                                                                               KeyCombination.SHORTCUT_DOWN );
+            final KeyCombination enterKeyCombo
+                    = new KeyCodeCombination( KeyCode.ENTER,
+                                              KeyCombination.ALT_DOWN );
+            final KeyCombination enterModifiedKeyCombo = new KeyCodeCombination(
+                    KeyCode.ENTER,
+                    KeyCombination.SHORTCUT_DOWN );
             if ( enterKeyCombo.match( keyEvent ) ) {
                 // if ( !hasMultiRowTableCellFocus() ) {
                 // Emulate the OK or Apply and Close Button being pressed.
@@ -346,7 +415,8 @@ public abstract class ObjectPropertiesEditor extends XStage {
         // Detect the ENTER key while the Revert Button has focus, and use it to
         // trigger its action (standard expected behavior).
         _revertButton.setOnKeyReleased( keyEvent -> {
-            final KeyCombination keyCombo = new KeyCodeCombination( KeyCode.ENTER );
+            final KeyCombination keyCombo
+                    = new KeyCodeCombination( KeyCode.ENTER );
             if ( keyCombo.match( keyEvent ) ) {
                 // Trigger the Revert action.
                 revert();
@@ -359,7 +429,8 @@ public abstract class ObjectPropertiesEditor extends XStage {
         // Detect the ENTER key while the Apply Button has focus, and use it to
         // trigger its action (standard expected behavior).
         _applyButton.setOnKeyReleased( keyEvent -> {
-            final KeyCombination keyCombo = new KeyCodeCombination( KeyCode.ENTER );
+            final KeyCombination keyCombo
+                    = new KeyCodeCombination( KeyCode.ENTER );
             if ( keyCombo.match( keyEvent ) ) {
                 // Trigger the Apply action.
                 apply();
@@ -372,7 +443,8 @@ public abstract class ObjectPropertiesEditor extends XStage {
         // Detect the ENTER key while the Done Button has focus, and use it to
         // trigger its action (standard expected behavior).
         _doneButton.setOnKeyReleased( keyEvent -> {
-            final KeyCombination keyCombo = new KeyCodeCombination( KeyCode.ENTER );
+            final KeyCombination keyCombo
+                    = new KeyCodeCombination( KeyCode.ENTER );
             if ( keyCombo.match( keyEvent ) ) {
                 // Trigger the Done action.
                 done();
@@ -385,7 +457,8 @@ public abstract class ObjectPropertiesEditor extends XStage {
         // Detect the ENTER key while the Cancel Button has focus, and use it to
         // trigger its action (standard expected behavior).
         _cancelButton.setOnKeyReleased( keyEvent -> {
-            final KeyCombination keyCombo = new KeyCodeCombination( KeyCode.ENTER );
+            final KeyCombination keyCombo
+                    = new KeyCodeCombination( KeyCode.ENTER );
             if ( keyCombo.match( keyEvent ) ) {
                 // Trigger the Cancel action.
                 cancel();
@@ -400,19 +473,23 @@ public abstract class ObjectPropertiesEditor extends XStage {
         return _applyButton.isDisable();
     }
 
+    public final void setApplyDisable( final boolean applyDisable ) {
+        _applyButton.setDisable( applyDisable );
+    }
+
     public final boolean isCanceled() {
         return _canceled;
     }
 
-    public final boolean isDisabled() {
-        // Determine whether this textField is disabled, so we don't apply changes
-        // to deselected objects and inactive editors.
-        return _disabled;
+    public final void setCanceled( final boolean canceled ) {
+        _canceled = canceled;
     }
 
-    public final boolean isEditMode() {
-        // Rediscover whether we are in Insert Mode or Edit Mode.
-        return Modality.NONE.equals( getModality() );
+    public final boolean isDisabled() {
+        // Determine whether this textField is disabled, so we don't apply
+        // changes
+        // to deselected objects and inactive editors.
+        return _disabled;
     }
 
     public final boolean isInsertMode() {
@@ -424,16 +501,21 @@ public abstract class ObjectPropertiesEditor extends XStage {
         return objectPropertiesChanged.get();
     }
 
+    public final void setObjectPropertiesChanged( final boolean pObjectPropertiesChanged ) {
+        objectPropertiesChanged.set( pObjectPropertiesChanged );
+    }
+
     public final boolean isRevertDisable() {
         return _revertButton.isDisable();
+    }
+
+    public final void setRevertDisable( final boolean revertDisable ) {
+        _revertButton.setDisable( revertDisable );
     }
 
     public final BooleanProperty objectPropertiesChangedProperty() {
         return objectPropertiesChanged;
     }
-
-    @Override
-    protected abstract void reset();
 
     // NOTE: This basic implementation may be enough for all sub-cases.
     protected void revert() {
@@ -447,21 +529,14 @@ public abstract class ObjectPropertiesEditor extends XStage {
         }
     }
 
-    public final void setApplyDisable( final boolean applyDisable ) {
-        _applyButton.setDisable( applyDisable );
-    }
-
-    public final void setCanceled( final boolean canceled ) {
-        _canceled = canceled;
-    }
-
     // NOTE: Derived classes must call this parent class method, as the
     // action button bar must be part of the contract for what is disabled.
     protected void setDisable( final boolean disable ) {
         // Cache the disabled status, so we can use it when exiting.
         _disabled = disable;
 
-        // If this textField is visible, in Edit Mode, and about to be disabled, we
+        // If this textField is visible, in Edit Mode, and about to be
+        // disabled, we
         // also want to revert any user changes, by re-syncing the view to the
         // cached model, without triggering dirty flags and extra computations.
         if ( disable && isShowing() && isEditMode() ) {
@@ -473,12 +548,9 @@ public abstract class ObjectPropertiesEditor extends XStage {
         _actionButtonBar.setDisable( disable );
     }
 
-    public final void setObjectPropertiesChanged( final boolean pObjectPropertiesChanged ) {
-        objectPropertiesChanged.set( pObjectPropertiesChanged );
-    }
-
-    public final void setRevertDisable( final boolean revertDisable ) {
-        _revertButton.setDisable( revertDisable );
+    public final boolean isEditMode() {
+        // Rediscover whether we are in Insert Mode or Edit Mode.
+        return Modality.NONE.equals( getModality() );
     }
 
     // Common open method for opening an textField in modal Insert Mode.
@@ -504,53 +576,14 @@ public abstract class ObjectPropertiesEditor extends XStage {
     // NOTE: All objects must have at least some editing controls that must be
     // updated when the object reference is switched for another one or when
     // changes happen outside this textField.
-    // TODO: Rename as "updateProperties()" or "storeProperties()"?
-    protected abstract void updateObjectPropertiesView();
-
-    // NOTE: We make this final because we want to discourage this old Swing
-    // based terminology once we're at the level of object-editing.
-    @Override
-    public final void updateModel() {
-        // Propagate values from the GUI to the selected object's properties.
-        updateObjectPropertiesModel();
-
-        // Update the preview of the current object reference.
-        updatePreview();
-
-        // Make sure the contextual settings are properly enabled/disabled.
-        updateContextualSettings();
-    }
-
-    // NOTE: All objects must have at least some editing controls that must be
-    // updated when the object reference is switched for another one or when
-    // changes happen outside this textField.
     // TODO: Rename as "loadProperties()" or "recallProperties()"?
     protected abstract void updateObjectPropertiesModel();
-
-    // NOTE: We make this final because we want to discourage this old Swing
-    // based terminology once we're at the level of object-editing.
-    @Override
-    public final void updateView() {
-        // Propagate properties of the selected object to the GUI.
-        updateObjectPropertiesView();
-
-        // Update the preview of the current object reference.
-        updatePreview();
-
-        // Make sure the contextual settings are properly enabled/disabled.
-        updateContextualSettings();
-    }
 
     // NOTE: Not all objects have labels, so there is a default no-op
     // implementation and derived classes are not required to implement this
     // method.
-    protected void uniquefyObjectLabel() {}
+    protected void uniquefyObjectLabel() {
+    }
 
     public abstract void updatePositioning();
-
-    // NOTE: Not all objects need a geometry preview, so there is a default
-    // no-op implementation and derived classes are not required to implement
-    // this method.
-    public void updatePreview() {}
-
 }// class ObjectPropertiesEditor

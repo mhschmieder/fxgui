@@ -38,7 +38,8 @@ import com.mhschmieder.jcommons.util.ClientProperties;
 /**
  * Abstract base class for service commonality between server data requests.
  */
-public abstract class DataRequestService extends ServerRequestService< DataServerResponse > {
+public abstract class DataRequestService
+        extends ServerRequestService< DataServerResponse > {
 
     /**
      * Cache the Data Request Parameters (Login Credentials, Data Type, etc.).
@@ -48,8 +49,7 @@ public abstract class DataRequestService extends ServerRequestService< DataServe
     public DataRequestService( final HttpServletRequestProperties pServerRequestProperties,
                                final ClientProperties pClientProperties ) {
         // Always call the superclass constructor first!
-        super( pServerRequestProperties,
-               pClientProperties );
+        super( pServerRequestProperties, pClientProperties );
     }
 
     public void setDataRequestParameters( final DataRequestParameters pDataRequestParameters ) {

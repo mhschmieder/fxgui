@@ -38,6 +38,7 @@ import com.mhschmieder.fxgui.util.HelpUtilities;
 import com.mhschmieder.jcommons.branding.ProductBranding;
 import com.mhschmieder.jcommons.util.ClientProperties;
 import com.mhschmieder.jphysics.measure.DistanceUnit;
+
 import javafx.collections.ObservableList;
 import javafx.geometry.Insets;
 import javafx.scene.Node;
@@ -60,25 +61,25 @@ import javafx.stage.Modality;
  */
 public final class GraphicsImportPreview extends XStage {
 
-    public static final String       GRAPHICS_IMPORT_PREVIEW_TITLE_DEFAULT =
-                                                                           "Graphics Import Preview"; //$NON-NLS-1$
+    public static final String GRAPHICS_IMPORT_PREVIEW_TITLE_DEFAULT
+            = "Graphics Import Preview"; //$NON-NLS-1$
 
     // Declare the main content pane.
     public GraphicsImportPreviewPane _graphicsImportPreviewPane;
 
     // Declare the main action button bar.
-    private ButtonBar              _actionButtonBar;
+    private ButtonBar _actionButtonBar;
 
     // Declare the main action buttons.
-    private Button                 _graphicsImportButton;
-    private Button                 _cancelImportButton;
-    private Button                 _helpButton;
+    private Button _graphicsImportButton;
+    private Button _cancelImportButton;
+    private Button _helpButton;
 
     // Declare uninitialized pop-ups.
     private NoticeBox _graphicsImportHelp;
 
     // For the sake of post-processing, keep track of user cancellation.
-    private boolean                  _canceled;
+    private boolean _canceled;
 
     public GraphicsImportPreview( final ProductBranding productBranding,
                                   final ClientProperties pClientProperties ) {
@@ -100,6 +101,96 @@ public final class GraphicsImportPreview extends XStage {
         catch ( final Exception ex ) {
             ex.printStackTrace();
         }
+    }
+
+    private void initStage() {
+        // First have the superclass initialize its content.
+        // TODO: Review this default size, as we didn't provide one before.
+        initStage( "/icons/fatCow/FileExtensionDwg16.png",
+                   940d,
+                   780d,
+                   false ); //$NON-NLS-1$
+
+        // Build the main action button bar, and register its callbacks.
+        _actionButtonBar = new ButtonBar();
+        _actionButtonBar.setPadding( new Insets( 12d ) );
+
+        _graphicsImportButton
+                =
+                com.mhschmieder.fxcontrols.control.LabeledControlFactory.getGraphicsImportButton(
+                "Import Graphics Using Specified Distance Unit and Corner "
+                + "Points" ); //$NON-NLS-1$
+        ButtonBar.setButtonData( _graphicsImportButton, ButtonData.OK_DONE );
+
+        _cancelImportButton
+                =
+                com.mhschmieder.fxcontrols.control.LabeledControlFactory.getCancelImportButton();
+        ButtonBar.setButtonData( _cancelImportButton, ButtonData.CANCEL_CLOSE );
+
+        _helpButton
+                =
+                com.mhschmieder.fxcontrols.control.LabeledControlFactory.getHelpButton(
+                false );
+        ButtonBar.setButtonData( _helpButton, ButtonData.HELP );
+
+        // Make the Graphics Import Button consume the ENTER key when possible.
+        _graphicsImportButton.setDefaultButton( true );
+
+        final ObservableList< Node > actionButtons
+                = _actionButtonBar.getButtons();
+        actionButtons.add( _graphicsImportButton );
+        actionButtons.add( _cancelImportButton );
+        actionButtons.add( _helpButton );
+
+        _root.setBottom( _actionButtonBar );
+
+        // Load the event handler for the Help Button.
+        _helpButton.setOnAction( evt -> help() );
+
+        // Load the event handler for the Import Graphics Button.
+        _graphicsImportButton.setOnAction( evt -> done() );
+
+        // Load the event handler for the Cancel Button.
+        _cancelImportButton.setOnAction( evt -> cancel() );
+
+        // Filter for the ENTER key so we can use it to trigger the OK Button.
+        // TODO: Find a better way to filter for this so that we wait for focus
+        //  lost on the editing controls, but this is probably not possible
+        //  until
+        //  the next revision of the JavaFX 8u40, at which point we probably
+        //  have
+        //  direct control of ENTER anyway by assigning the Default Button.
+        // NOTE: Actually, this is a good way to deal with special keys as they
+        //  can't be typed, so it is appropriate to test for down or pressed.
+        // NOTE: We now look for ALT + ENTER vs. ENTER for OK, as we don't
+        //  yet have a finer-grained way of allowing multi-row tables to process
+        //  ENTER key events (to commit edits and go to the cell below) without
+        //  also exiting the host window, thus disrupting workflow in the table.
+        addEventFilter( KeyEvent.KEY_RELEASED, keyEvent -> {
+            final KeyCombination enterKeyCombo
+                    = new KeyCodeCombination( KeyCode.ENTER,
+                                              KeyCombination.ALT_DOWN );
+            final KeyCombination enterModifiedKeyCombo = new KeyCodeCombination(
+                    KeyCode.ENTER,
+                    KeyCombination.SHORTCUT_DOWN );
+            if ( enterKeyCombo.match( keyEvent ) || enterModifiedKeyCombo.match(
+                    keyEvent ) ) {
+                done();
+
+                // Consume the ENTER key so it doesn't get processed twice.
+                keyEvent.consume();
+            }
+        } );
+
+        // Filter for the platform-specific window-closing icon, and treat it
+        // like a "Cancel" request.
+        setOnCloseRequest( evt -> cancel() );
+
+        // Do not allow an import action until units have been chosen.
+        _graphicsImportButton.disableProperty()
+                             .bind( _graphicsImportPreviewPane._distanceUnitSelector.valueProperty()
+                                                                                    .isEqualTo(
+                                                                                            DistanceUnit.UNITLESS ) );
     }
 
     /**
@@ -133,120 +224,18 @@ public final class GraphicsImportPreview extends XStage {
         }
     }
 
-    private void initStage() {
-        // First have the superclass initialize its content.
-        // TODO: Review this default size, as we didn't provide one before.
-        initStage( "/icons/fatCow/FileExtensionDwg16.png", 940d, 780d, false ); //$NON-NLS-1$
-
-        // Build the main action button bar, and register its callbacks.
-        _actionButtonBar = new ButtonBar();
-        _actionButtonBar.setPadding( new Insets( 12d ) );
-
-        _graphicsImportButton = com.mhschmieder.fxcontrols.control.LabeledControlFactory
-                .getGraphicsImportButton( "Import Graphics Using Specified Distance Unit and Corner Points" ); //$NON-NLS-1$
-        ButtonBar.setButtonData( _graphicsImportButton, ButtonData.OK_DONE );
-
-        _cancelImportButton = com.mhschmieder.fxcontrols.control.LabeledControlFactory
-                .getCancelImportButton();
-        ButtonBar.setButtonData( _cancelImportButton, ButtonData.CANCEL_CLOSE );
-
-        _helpButton = com.mhschmieder.fxcontrols.control.LabeledControlFactory.getHelpButton( false );
-        ButtonBar.setButtonData( _helpButton, ButtonData.HELP );
-
-        // Make the Graphics Import Button consume the ENTER key when possible.
-        _graphicsImportButton.setDefaultButton( true );
-
-        final ObservableList< Node > actionButtons = _actionButtonBar.getButtons();
-        actionButtons.add( _graphicsImportButton );
-        actionButtons.add( _cancelImportButton );
-        actionButtons.add( _helpButton );
-
-        _root.setBottom( _actionButtonBar );
-
-        // Load the event handler for the Help Button.
-        _helpButton.setOnAction( evt -> help() );
-
-        // Load the event handler for the Import Graphics Button.
-        _graphicsImportButton.setOnAction( evt -> done() );
-
-        // Load the event handler for the Cancel Button.
-        _cancelImportButton.setOnAction( evt -> cancel() );
-
-        // Filter for the ENTER key so we can use it to trigger the OK Button.
-        // TODO: Find a better way to filter for this so that we wait for focus
-        //  lost on the editing controls, but this is probably not possible until
-        //  the next revision of the JavaFX 8u40, at which point we probably have
-        //  direct control of ENTER anyway by assigning the Default Button.
-        // NOTE: Actually, this is a good way to deal with special keys as they
-        //  can't be typed, so it is appropriate to test for down or pressed.
-        // NOTE: We now look for ALT + ENTER vs. ENTER for OK, as we don't
-        //  yet have a finer-grained way of allowing multi-row tables to process
-        //  ENTER key events (to commit edits and go to the cell below) without
-        //  also exiting the host window, thus disrupting workflow in the table.
-        addEventFilter( KeyEvent.KEY_RELEASED, keyEvent -> {
-            final KeyCombination enterKeyCombo = new KeyCodeCombination( KeyCode.ENTER,
-                                                                         KeyCombination.ALT_DOWN );
-            final KeyCombination enterModifiedKeyCombo =
-                                                       new KeyCodeCombination( KeyCode.ENTER,
-                                                                               KeyCombination.SHORTCUT_DOWN );
-            if ( enterKeyCombo.match( keyEvent ) || enterModifiedKeyCombo.match( keyEvent ) ) {
-                done();
-
-                // Consume the ENTER key so it doesn't get processed twice.
-                keyEvent.consume();
-            }
-        } );
-
-        // Filter for the platform-specific window-closing icon, and treat it
-        // like a "Cancel" request.
-        setOnCloseRequest( evt -> cancel() );
-
-        // Do not allow an import action until units have been chosen.
-        _graphicsImportButton.disableProperty()
-                .bind( _graphicsImportPreviewPane._distanceUnitSelector.valueProperty()
-                        .isEqualTo( DistanceUnit.UNITLESS ) );
-    }
-
     public boolean isCanceled() {
         return _canceled;
     }
 
-    @Override
-    protected Node loadContent() {
-        // Instantiate and return the custom Content Node.
-        _graphicsImportPreviewPane = new GraphicsImportPreviewPane( _productBranding.productName,
-                                                                    clientProperties );
-        return _graphicsImportPreviewPane;
+    public void setCanceled( final boolean canceled ) {
+        _canceled = canceled;
     }
 
-    @Override
-    protected void loadPopups() {
-        super.loadPopups();
-
-        // Instantiate the Graphics Import Help.
-        _graphicsImportHelp = HelpUtilities.getGraphicsImportHelp(
-                clientProperties.systemType );
-        _windowManager.addPopup( _graphicsImportHelp );
-    }
-
-    /**
-     * Throws away the imported graphics so we can recover memory.
-     */
-    @Override
-    public void reset() {
-        // Reset the Graphics Import Preview.
-        _graphicsImportPreviewPane.resetGraphicsImportPreview();
-    }
-
-    public void setApplicationDrawingLimits(
-            final DrawingLimitsProperties applicationDrawingLimitsProperties) {
+    public void setApplicationDrawingLimits( final DrawingLimitsProperties applicationDrawingLimitsProperties ) {
         // Forward this method to the Graphics Import Preview Pane.
         _graphicsImportPreviewPane.setApplicationDrawingLimits(
                 applicationDrawingLimitsProperties );
-    }
-
-    public void setCanceled( final boolean canceled ) {
-        _canceled = canceled;
     }
 
     @Override
@@ -259,14 +248,38 @@ public final class GraphicsImportPreview extends XStage {
         _graphicsImportPreviewPane.setForegroundFromBackground( backColor );
     }
 
-    public void setGeometryContainer( final DxfShapeGroup geometryContainer ) {
-        // Forward this method to the Graphics Import Preview Pane.
-        _graphicsImportPreviewPane.setGeometryContainer( geometryContainer );
+    @Override
+    protected void loadPopups() {
+        super.loadPopups();
+
+        // Instantiate the Graphics Import Help.
+        _graphicsImportHelp = HelpUtilities.getGraphicsImportHelp(
+                clientProperties.systemType );
+        _windowManager.addPopup( _graphicsImportHelp );
+    }
+
+    @Override
+    protected Node loadContent() {
+        // Instantiate and return the custom Content Node.
+        _graphicsImportPreviewPane = new GraphicsImportPreviewPane(
+                _productBranding.productName,
+                clientProperties );
+        return _graphicsImportPreviewPane;
+    }
+
+    /**
+     * Throws away the imported graphics so we can recover memory.
+     */
+    @Override
+    public void reset() {
+        // Reset the Graphics Import Preview.
+        _graphicsImportPreviewPane.resetGraphicsImportPreview();
     }
 
     public void setGraphicsImportOptions( final GraphicsImportOptions graphicsImportOptions ) {
         // Forward this method to the Graphics Import Preview Pane.
-        _graphicsImportPreviewPane.setGraphicsImportOptions( graphicsImportOptions );
+        _graphicsImportPreviewPane.setGraphicsImportOptions(
+                graphicsImportOptions );
     }
 
     // Common open method for opening a modal textField as a fresh session.
@@ -290,15 +303,18 @@ public final class GraphicsImportPreview extends XStage {
      * Updates this preview window's Geometry Container reference.
      * <p>
      * NOTE: <i>gui</i> does not have a dependency on <i>dxfparser</i>,
-     *  otherwise a {@code DxfNode} could be passed in instead of a
-     *  {@link DxfShapeGroup} with separate {@code minimum} and {@code maximum}.
+     * otherwise a {@code DxfNode} could be passed in instead of a
+     * {@link DxfShapeGroup} with separate {@code minimum} and {@code maximum}.
      *
-     * @param geometryContainer
-     *            The container for the imported geometry
+     * @param geometryContainer The container for the imported geometry
      */
-    public void updateGraphicsImportPreview(
-            final DxfShapeGroup geometryContainer ) {
+    public void updateGraphicsImportPreview( final DxfShapeGroup geometryContainer ) {
         // Update the Graphics Import Context, to trigger a preview update.
         setGeometryContainer( geometryContainer );
+    }
+
+    public void setGeometryContainer( final DxfShapeGroup geometryContainer ) {
+        // Forward this method to the Graphics Import Preview Pane.
+        _graphicsImportPreviewPane.setGeometryContainer( geometryContainer );
     }
 }

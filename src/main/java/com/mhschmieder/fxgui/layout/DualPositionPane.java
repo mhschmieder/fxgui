@@ -33,6 +33,7 @@ package com.mhschmieder.fxgui.layout;
 import com.mhschmieder.fxcontrols.control.ControlUtilities;
 import com.mhschmieder.jcommons.util.ClientProperties;
 import com.mhschmieder.jphysics.measure.DistanceUnit;
+
 import javafx.geometry.Insets;
 import javafx.geometry.Point2D;
 import javafx.geometry.Pos;
@@ -42,9 +43,9 @@ import javafx.scene.layout.GridPane;
 
 public class DualPositionPane extends GridPane {
 
-    public RadioButton           _mainPositionRadioButton;
+    public RadioButton _mainPositionRadioButton;
     public CartesianPositionPane _mainPositionPane;
-    public RadioButton           _alternatePositionRadioButton;
+    public RadioButton _alternatePositionRadioButton;
     public CartesianPositionPane _alternatePositionPane;
 
     public DualPositionPane( final ClientProperties clientProperties,
@@ -54,31 +55,27 @@ public class DualPositionPane extends GridPane {
         super();
 
         try {
-            initPane( clientProperties, mainPositionLabel, alternatePositionLabel );
+            initPane( clientProperties,
+                      mainPositionLabel,
+                      alternatePositionLabel );
         }
         catch ( final Exception ex ) {
             ex.printStackTrace();
         }
     }
 
-    public final Point2D getAlternatePosition2D() {
-        // Forward this method to the appropriate components.
-        return _alternatePositionPane.getCartesianPosition2D();
-    }
-
-    public final Point2D getMainPosition2D() {
-        // Forward this method to the appropriate components.
-        return _mainPositionPane.getCartesianPosition2D();
-    }
-
     private final void initPane( final ClientProperties clientProperties,
                                  final String mainPositionLabel,
                                  final String alternatePositionLabel ) {
         final ToggleGroup dualPositionToggleGroup = new ToggleGroup();
-        _mainPositionRadioButton = ControlUtilities
-                .getRadioButton( mainPositionLabel, dualPositionToggleGroup, false );
-        _alternatePositionRadioButton = ControlUtilities
-                .getRadioButton( alternatePositionLabel, dualPositionToggleGroup, true );
+        _mainPositionRadioButton = ControlUtilities.getRadioButton(
+                mainPositionLabel,
+                dualPositionToggleGroup,
+                false );
+        _alternatePositionRadioButton = ControlUtilities.getRadioButton(
+                alternatePositionLabel,
+                dualPositionToggleGroup,
+                true );
 
         _mainPositionPane = new CartesianPositionPane( clientProperties );
 
@@ -98,9 +95,31 @@ public class DualPositionPane extends GridPane {
 
         // Bind Position Pane enablement to the associated radio buttons.
         _mainPositionPane.disableProperty()
-                .bind( _mainPositionRadioButton.selectedProperty().not() );
+                         .bind( _mainPositionRadioButton.selectedProperty()
+                                                        .not() );
         _alternatePositionPane.disableProperty()
-                .bind( _alternatePositionRadioButton.selectedProperty().not() );
+                              .bind( _alternatePositionRadioButton.selectedProperty()
+                                                                  .not() );
+    }
+
+    public final Point2D getAlternatePosition2D() {
+        // Forward this method to the appropriate components.
+        return _alternatePositionPane.getCartesianPosition2D();
+    }
+
+    public final void setAlternatePosition2D( final Point2D cartesianPosition ) {
+        // Forward this method to the appropriate components.
+        _alternatePositionPane.setCartesianPosition2D( cartesianPosition );
+    }
+
+    public final Point2D getMainPosition2D() {
+        // Forward this method to the appropriate components.
+        return _mainPositionPane.getCartesianPosition2D();
+    }
+
+    public final void setMainPosition2D( final Point2D cartesianPosition2D ) {
+        // Forward this method to the appropriate components.
+        _mainPositionPane.setCartesianPosition2D( cartesianPosition2D );
     }
 
     public final boolean isAlternatePositionActive() {
@@ -122,23 +141,15 @@ public class DualPositionPane extends GridPane {
     public final void setAlternatePosition2D( final double cartesianPositionX,
                                               final double cartesianPositionY ) {
         // Forward this method to the appropriate components.
-        _alternatePositionPane.setCartesianPosition2D( cartesianPositionX, cartesianPositionY );
-    }
-
-    public final void setAlternatePosition2D( final Point2D cartesianPosition ) {
-        // Forward this method to the appropriate components.
-        _alternatePositionPane.setCartesianPosition2D( cartesianPosition );
+        _alternatePositionPane.setCartesianPosition2D( cartesianPositionX,
+                                                       cartesianPositionY );
     }
 
     public final void setMainPosition2D( final double cartesianPositionX,
                                          final double cartesianPositionY ) {
         // Forward this method to the appropriate components.
-        _mainPositionPane.setCartesianPosition2D( cartesianPositionX, cartesianPositionY );
-    }
-
-    public final void setMainPosition2D( final Point2D cartesianPosition2D ) {
-        // Forward this method to the appropriate components.
-        _mainPositionPane.setCartesianPosition2D( cartesianPosition2D );
+        _mainPositionPane.setCartesianPosition2D( cartesianPositionX,
+                                                  cartesianPositionY );
     }
 
     public final void updateDistanceUnit( final DistanceUnit distanceUnit ) {
@@ -146,5 +157,4 @@ public class DualPositionPane extends GridPane {
         _mainPositionPane.updateDistanceUnit( distanceUnit );
         _alternatePositionPane.updateDistanceUnit( distanceUnit );
     }
-
 }

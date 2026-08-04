@@ -35,6 +35,7 @@ import com.mhschmieder.fxgraphics.image.ImageSize;
 import com.mhschmieder.fxgraphics.io.RasterGraphicsExportOptions;
 import com.mhschmieder.fxgui.layout.ImageSizePane;
 import com.mhschmieder.jcommons.util.ClientProperties;
+
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.geometry.Insets;
@@ -47,7 +48,8 @@ import javafx.scene.layout.VBox;
  * everything is exported, and this also covers under-specified cases. All
  * options are mutually exclusive as otherwise an empty export could result.
  */
-public final class RasterGraphicsExportOptionsDialog extends ExportOptionsDialog {
+public final class RasterGraphicsExportOptionsDialog
+        extends ExportOptionsDialog {
 
     protected RasterGraphicsExportOptions _imageGraphicsExportOptionsCandidate;
 
@@ -63,7 +65,8 @@ public final class RasterGraphicsExportOptionsDialog extends ExportOptionsDialog
         // Always call the superclass constructor first!
         super( title, masthead, clientProperties );
 
-        _imageGraphicsExportOptionsCandidate = imageGraphicsExportOptionsCandidate;
+        _imageGraphicsExportOptionsCandidate
+                = imageGraphicsExportOptionsCandidate;
 
         try {
             initDialog( clientProperties,
@@ -85,16 +88,18 @@ public final class RasterGraphicsExportOptionsDialog extends ExportOptionsDialog
                              final String graphicsExportChartLabel,
                              final String graphicsExportAuxiliaryLabel ) {
         // Export Options are mutually exclusive so need a Toggle Group.
-        final GraphicsExportOptionsToggleGroup exportOptionsToggleGroup =
-                                                                        new GraphicsExportOptionsToggleGroup( _imageGraphicsExportOptionsCandidate,
-                                                                                                              graphicsExportAllLabel,
-                                                                                                              graphicsExportChartLabel,
-                                                                                                              graphicsExportAuxiliaryLabel );
+        final GraphicsExportOptionsToggleGroup exportOptionsToggleGroup
+                = new GraphicsExportOptionsToggleGroup(
+                _imageGraphicsExportOptionsCandidate,
+                graphicsExportAllLabel,
+                graphicsExportChartLabel,
+                graphicsExportAuxiliaryLabel );
 
         // NOTE: We only show Export Options where there is at least one choice
         // for refined scope. Otherwise the user has nothing to choose as we
         // will be exporting all data automatically in such cases.
-        final ObservableList< Node > nodes = FXCollections.observableArrayList();
+        final ObservableList< Node > nodes
+                = FXCollections.observableArrayList();
         if ( hasChart || hasAuxiliary ) {
             nodes.add( exportOptionsToggleGroup._exportAllRadioButton );
         }
@@ -105,7 +110,8 @@ public final class RasterGraphicsExportOptionsDialog extends ExportOptionsDialog
             nodes.add( exportOptionsToggleGroup._exportAuxiliaryRadioButton );
         }
 
-        final ImageSize imageSizeCandidate = _imageGraphicsExportOptionsCandidate.getImageSize();
+        final ImageSize imageSizeCandidate
+                = _imageGraphicsExportOptionsCandidate.getImageSize();
         final ImageSizePane imageSizePane = new ImageSizePane( clientProperties,
                                                                imageSizeCandidate.isAutoSize() );
         imageSizePane.setImageSize( imageSizeCandidate );
@@ -120,5 +126,4 @@ public final class RasterGraphicsExportOptionsDialog extends ExportOptionsDialog
         final DialogPane dialogPane = getDialogPane();
         dialogPane.setContent( content );
     }
-
 }

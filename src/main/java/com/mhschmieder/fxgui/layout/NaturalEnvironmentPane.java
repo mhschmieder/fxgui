@@ -39,23 +39,23 @@ import com.mhschmieder.jphysics.measure.Altitude;
 import com.mhschmieder.jphysics.measure.DistanceUnit;
 import com.mhschmieder.jphysics.measure.PressureUnit;
 import com.mhschmieder.jphysics.measure.TemperatureUnit;
+import org.apache.commons.math3.util.FastMath;
+
 import javafx.application.Platform;
 import javafx.geometry.Insets;
 import javafx.scene.layout.Background;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.paint.Color;
-import org.apache.commons.math3.util.FastMath;
 
 public final class NaturalEnvironmentPane extends HBox {
 
-    public TemperaturePane    _temperaturePane;
-    public HumidityPane       _humidityPane;
-    protected PressurePane    _pressurePane;
-    protected AltitudePane    _altitudePane;
-
+    public TemperaturePane _temperaturePane;
+    public HumidityPane _humidityPane;
     // Cache a reference to the global Natural Environment.
     public NaturalEnvironmentProperties naturalEnvironmentProperties;
+    protected PressurePane _pressurePane;
+    protected AltitudePane _altitudePane;
 
     public NaturalEnvironmentPane( final ClientProperties clientProperties ) {
         // Always call the superclass constructor first!
@@ -75,7 +75,10 @@ public final class NaturalEnvironmentPane extends HBox {
         _pressurePane = new PressurePane( clientProperties );
         _altitudePane = new AltitudePane( clientProperties );
 
-        getChildren().addAll( _temperaturePane, _humidityPane, _pressurePane, _altitudePane );
+        getChildren().addAll( _temperaturePane,
+                              _humidityPane,
+                              _pressurePane,
+                              _altitudePane );
 
         setSpacing( 12d );
         setPadding( new Insets( 10.0d ) );
@@ -86,21 +89,28 @@ public final class NaturalEnvironmentPane extends HBox {
 
         // Register the Altitude Pane radio buttons listener.
         _altitudePane._altitudeToggleGroup.selectedToggleProperty()
-                .addListener( ( observable, oldToggle, newToggle ) -> {
-                    // If no toggle button selected, re-select the previous
-                    // button, but wrap this in a JavaFX runLater thread to
-                    // ensure all FX event code precedes the custom selection.
-                    if ( ( newToggle == null ) ) {
-                        Platform.runLater( () -> _altitudePane._altitudeToggleGroup
-                                .selectToggle( oldToggle ) );
-                        return;
-                    }
+                                          .addListener( ( observable,
+                                                          oldToggle,
+                                                          newToggle ) -> {
+                                              // If no toggle button
+                                              // selected, re-select the
+                                              // previous
+                                              // button, but wrap this in a
+                                              // JavaFX runLater thread to
+                                              // ensure all FX event code
+                                              // precedes the custom selection.
+                                              if ( ( newToggle == null ) ) {
+                                                  Platform.runLater( () -> _altitudePane._altitudeToggleGroup.selectToggle(
+                                                          oldToggle ) );
+                                                  return;
+                                              }
 
-                    final Object userData = newToggle.getUserData();
-                    if ( userData != null ) {
-                        _pressurePane.setPressurePa( ( Double ) userData );
-                    }
-                } );
+                                              final Object userData
+                                                      = newToggle.getUserData();
+                                              if ( userData != null ) {
+                                                  _pressurePane.setPressurePa( ( Double ) userData );
+                                              }
+                                          } );
 
         // NOTE: Sliders might switch presentation units, whereas JavaFX Bean
         // Properties are specified with a single unchanging unit, so we have to
@@ -109,42 +119,62 @@ public final class NaturalEnvironmentPane extends HBox {
         // Only update the Altitude selection if there is an actual magnitude
         // change in the Pressure as well, and not just a Pressure Unit change.
         _pressurePane._pressureSlider.valueProperty()
-                .addListener( ( observableValue, oldValue, newValue ) -> {
-                    final double storedValue = _pressurePane.getPressurePa();
-                    final double sliderValue = _pressurePane._pressureSlider.getPressurePa();
-                    double eps = 1e-7;
+                                     .addListener( ( observableValue,
+                                                     oldValue, newValue ) -> {
+                                         final double storedValue
+                                                 =
+                                                 _pressurePane.getPressurePa();
+                                         final double sliderValue
+                                                 =
+                                                 _pressurePane._pressureSlider.getPressurePa();
+                                         double eps = 1e-7;
 
-                    // Make sure we don't set dirty flag because of round-off
-                    // errors in slider value when changing units, but wrap this
-                    // in a JavaFX runLater thread to ensure all FX event code
-                    // precedes the custom selection.
-                    if ( ( FastMath.abs( storedValue - sliderValue ) >= eps ) ) {
-                        Platform.runLater( () -> _pressurePane.setPressurePa( sliderValue ) );
-                    }
+                                         // Make sure we don't set dirty flag
+                                         // because of round-off
+                                         // errors in slider value when
+                                         // changing units, but wrap this
+                                         // in a JavaFX runLater thread to
+                                         // ensure all FX event code
+                                         // precedes the custom selection.
+                                         if ( ( FastMath.abs(
+                                                 storedValue - sliderValue )
+                                                >= eps ) ) {
+                                             Platform.runLater( () -> _pressurePane.setPressurePa(
+                                                     sliderValue ) );
+                                         }
 
-                    // Set the appropriate altitude toggle button if the new
-                    // Pressure value corresponds to one of their ranges.
-                    // TODO: Review this logic and possibly invert the order,
-                    // as this doesn't seem to ever set the altitude choice
-                    // since it appears to only look at specific cutoff values
-                    // vs. entire ranges of values between the altitude choices.
-                    eps = 1e-2;
-                    if ( FastMath.abs( sliderValue
-                            - PhysicsConstants.PRESSURE_LOW_ALTITUDE_PA ) <= eps ) {
-                        _altitudePane.setAltitude( Altitude.LOW );
-                    }
-                    else if ( FastMath.abs( sliderValue
-                            - PhysicsConstants.PRESSURE_MEDIUM_ALTITUDE_PA ) <= eps ) {
-                        _altitudePane.setAltitude( Altitude.MEDIUM );
-                    }
-                    else if ( FastMath.abs( sliderValue
-                            - PhysicsConstants.PRESSURE_HIGH_ALTITUDE_PA ) <= eps ) {
-                        _altitudePane.setAltitude( Altitude.HIGH );
-                    }
-                    else {
-                        _altitudePane.clearAltitude();
-                    }
-                } );
+                                         // Set the appropriate altitude
+                                         // toggle button if the new
+                                         // Pressure value corresponds to one
+                                         // of their ranges.
+                                         // TODO: Review this logic and
+                                         //  possibly invert the order,
+                                         // as this doesn't seem to ever set
+                                         // the altitude choice
+                                         // since it appears to only look at
+                                         // specific cutoff values
+                                         // vs. entire ranges of values
+                                         // between the altitude choices.
+                                         eps = 1e-2;
+                                         if ( FastMath.abs( sliderValue
+                                                            - PhysicsConstants.PRESSURE_LOW_ALTITUDE_PA )
+                                              <= eps ) {
+                                             _altitudePane.setAltitude( Altitude.LOW );
+                                         }
+                                         else if ( FastMath.abs( sliderValue
+                                                                 - PhysicsConstants.PRESSURE_MEDIUM_ALTITUDE_PA )
+                                                   <= eps ) {
+                                             _altitudePane.setAltitude( Altitude.MEDIUM );
+                                         }
+                                         else if ( FastMath.abs( sliderValue
+                                                                 - PhysicsConstants.PRESSURE_HIGH_ALTITUDE_PA )
+                                                   <= eps ) {
+                                             _altitudePane.setAltitude( Altitude.HIGH );
+                                         }
+                                         else {
+                                             _altitudePane.clearAltitude();
+                                         }
+                                     } );
     }
 
     // Reset all fields to the default values, regardless of state.
@@ -161,7 +191,8 @@ public final class NaturalEnvironmentPane extends HBox {
 
     public void setForegroundFromBackground( final Color backColor ) {
         // Set the new Background first, so it sets context for CSS derivations.
-        final Background background = RegionUtilities.makeRegionBackground( backColor );
+        final Background background = RegionUtilities.makeRegionBackground(
+                backColor );
         setBackground( background );
 
         // Forward this method to the lower-level layout containers.
@@ -180,7 +211,7 @@ public final class NaturalEnvironmentPane extends HBox {
 
     // Set and bind the Natural Environment reference.
     // NOTE: This should be done only once, to avoid breaking bindings.
-    public void setNaturalEnvironment( final NaturalEnvironmentProperties pNaturalEnvironmentProperties) {
+    public void setNaturalEnvironment( final NaturalEnvironmentProperties pNaturalEnvironmentProperties ) {
         // Cache the Natural Environment reference.
         naturalEnvironmentProperties = pNaturalEnvironmentProperties;
 
@@ -193,8 +224,7 @@ public final class NaturalEnvironmentPane extends HBox {
     /**
      * Set the new Scrolling Sensitivity for all of the sliders.
      *
-     * @param scrollingSensitivity
-     *            The sensitivity of the mouse scroll wheel
+     * @param scrollingSensitivity The sensitivity of the mouse scroll wheel
      */
     public void setScrollingSensitivity( final ScrollingSensitivity scrollingSensitivity ) {
         // Forward this method to the lower-level layout containers.
@@ -213,8 +243,7 @@ public final class NaturalEnvironmentPane extends HBox {
     /**
      * Propagate the new Distance Unit to the relevant subcomponents.
      *
-     * @param distanceUnit
-     *            The Distance Unit to use for Altitude
+     * @param distanceUnit The Distance Unit to use for Altitude
      */
     public void updateDistanceUnit( final DistanceUnit distanceUnit ) {
         // Forward this method to the Altitude Pane.
@@ -224,8 +253,7 @@ public final class NaturalEnvironmentPane extends HBox {
     /**
      * Propagate the new Pressure Unit to the relevant subcomponents.
      *
-     * @param pressureUnit
-     *            The Pressure Unit to use for the Environment
+     * @param pressureUnit The Pressure Unit to use for the Environment
      */
     public void updatePressureUnit( final PressureUnit pressureUnit ) {
         // Forward this method to the Pressure Pane.
@@ -235,12 +263,10 @@ public final class NaturalEnvironmentPane extends HBox {
     /**
      * Propagate the new Temperature Unit to the relevant subcomponents.
      *
-     * @param temperatureUnit
-     *            The Temperature Unit to use for the Environment
+     * @param temperatureUnit The Temperature Unit to use for the Environment
      */
     public void updateTemperatureUnit( final TemperatureUnit temperatureUnit ) {
         // Forward this method to the Temperature Pane.
         _temperaturePane.updateTemperatureUnit( temperatureUnit );
     }
-
 }

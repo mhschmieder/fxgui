@@ -30,9 +30,5 @@
  */
 /**
  * This package contains the fxgui Library's enhancements for JavaFX Layouts.
- *
- * @version 1.0
- *
- * @author Mark Schmieder
  */
 package com.mhschmieder.fxgui.layout;

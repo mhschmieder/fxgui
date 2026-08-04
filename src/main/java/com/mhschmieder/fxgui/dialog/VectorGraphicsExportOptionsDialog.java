@@ -35,6 +35,7 @@ import com.mhschmieder.fxcontrols.control.TextEditor;
 import com.mhschmieder.fxgraphics.io.VectorGraphicsExportOptions;
 import com.mhschmieder.fxgui.util.GuiUtilities;
 import com.mhschmieder.jcommons.util.ClientProperties;
+
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.geometry.Insets;
@@ -65,7 +66,8 @@ public class VectorGraphicsExportOptionsDialog extends ExportOptionsDialog {
         // Always call the superclass constructor first!
         super( title, masthead, clientProperties );
 
-        _vectorGraphicsExportOptionsCandidate = vectorGraphicsExportOptionsCandidate;
+        _vectorGraphicsExportOptionsCandidate
+                = vectorGraphicsExportOptionsCandidate;
 
         try {
             initDialog( clientProperties,
@@ -89,21 +91,27 @@ public class VectorGraphicsExportOptionsDialog extends ExportOptionsDialog {
                                    final String graphicsExportChartLabel,
                                    final String graphicsExportAuxiliaryLabel ) {
         final String title = _vectorGraphicsExportOptionsCandidate.getTitle();
-        final TextEditor titleEditor = new TextEditor( title, true, true, clientProperties );
-        final HBox titleBox = GuiUtilities.getLabeledTextFieldPane( "Document Title", //$NON-NLS-1$
-                                                                    titleEditor );
+        final TextEditor titleEditor = new TextEditor( title,
+                                                       true,
+                                                       true,
+                                                       clientProperties );
+        final HBox titleBox = GuiUtilities.getLabeledTextFieldPane(
+                "Document Title", //$NON-NLS-1$
+                titleEditor );
 
         // Export Options are mutually exclusive so need a Toggle Group.
-        final GraphicsExportOptionsToggleGroup exportOptionsToggleGroup =
-                                                                        new GraphicsExportOptionsToggleGroup( _vectorGraphicsExportOptionsCandidate,
-                                                                                                              graphicsExportAllLabel,
-                                                                                                              graphicsExportChartLabel,
-                                                                                                              graphicsExportAuxiliaryLabel );
+        final GraphicsExportOptionsToggleGroup exportOptionsToggleGroup
+                = new GraphicsExportOptionsToggleGroup(
+                _vectorGraphicsExportOptionsCandidate,
+                graphicsExportAllLabel,
+                graphicsExportChartLabel,
+                graphicsExportAuxiliaryLabel );
 
         // NOTE: We only show Export Options where there is at least one choice
         // for refined scope. Otherwise the user has nothing to choose as we
         // will be exporting all data automatically in such cases.
-        final ObservableList< Node > nodes = FXCollections.observableArrayList();
+        final ObservableList< Node > nodes
+                = FXCollections.observableArrayList();
         if ( hasTitle ) {
             nodes.add( titleBox );
         }
@@ -129,7 +137,6 @@ public class VectorGraphicsExportOptionsDialog extends ExportOptionsDialog {
 
         // Bind the Title Editor to its associated property.
         titleEditor.textProperty()
-                .bindBidirectional( _vectorGraphicsExportOptionsCandidate.titleProperty() );
+                   .bindBidirectional( _vectorGraphicsExportOptionsCandidate.titleProperty() );
     }
-
 }

@@ -39,19 +39,46 @@ import javafx.scene.paint.Color;
 /**
  * A {@link StackPane} that displays a value on hover, but is otherwise empty.
  *
- * @version 1.0
- *
  * @author Mark Schmieder
+ * @version 1.0
  */
 public class HoveredThresholdPane extends StackPane {
 
     /**
-     * @param colorTag
-     *            The CSS color tag lookup name associated with the data series.
-     * @param d
-     *            The previous data value, used for comparisons with current.
-     * @param y
-     *            The current data value, used for comparisons with previous.
+     * Default constructor.
+     *
+     * @param colorTag The CSS color tag lookup name associated with the data
+     *                 series.
+     * @param d        The previous data value, used for comparisons with
+     *                 current.
+     * @param y        The current data value, used for comparisons with
+     *                 previous.
+     */
+    public HoveredThresholdPane( final String colorTag,
+                                 final double d,
+                                 final double y ) {
+        setPrefSize( 15, 15 );
+
+        final Label label = createDataThresholdLabel( colorTag, d, y );
+
+        setOnMouseEntered( mouseEvent -> {
+            getChildren().setAll( label );
+            setCursor( Cursor.TEXT );
+            toFront();
+        } );
+        setOnMouseExited( mouseEvent -> {
+            getChildren().clear();
+            setCursor( Cursor.CROSSHAIR );
+        } );
+    }
+
+    /**
+     * @param colorTag The CSS color tag lookup name associated with the data
+     *                 series.
+     * @param d        The previous data value, used for comparisons with
+     *                 current.
+     * @param y        The current data value, used for comparisons with
+     *                 previous.
      * @return The formatted data label, colored according to comparisons.
      */
     private static Label createDataThresholdLabel( final String colorTag,
@@ -66,7 +93,8 @@ public class HoveredThresholdPane extends StackPane {
         //  painting over everything in sight, obscures neighboring data points.
         label.getStyleClass().addAll( colorTag, // "chart-line-symbol" );
                                       "chart-series-line" ); //$NON-NLS-1$
-        label.setStyle( "-fx-font-family: 'sans-serif'; -fx-font-size: 12; -fx-font-weight: bold;" ); //$NON-NLS-1$
+        label.setStyle( "-fx-font-family: 'sans-serif'; -fx-font-size: 12; "
+                        + "-fx-font-weight: bold;" ); //$NON-NLS-1$
 
         if ( d == 0 ) {
             label.setTextFill( Color.DARKGRAY );
@@ -82,28 +110,4 @@ public class HoveredThresholdPane extends StackPane {
 
         return label;
     }
-
-    /**
-     * Default constructor.
-     *
-     * @param colorTag
-     *            The CSS color tag lookup name associated with the data series.
-     * @param d
-     *            The previous data value, used for comparisons with current.
-     * @param y
-     *            The current data value, used for comparisons with previous.
-     */
-    public HoveredThresholdPane(final String colorTag, final double d, final double y ) {
-        setPrefSize( 15, 15 );
-
-        final Label label = createDataThresholdLabel( colorTag, d, y );
-
-        setOnMouseEntered( mouseEvent -> {
-            getChildren().setAll( label );
-            setCursor( Cursor.TEXT );
-            toFront();
-        } );
-        setOnMouseExited( mouseEvent -> { getChildren().clear(); setCursor( Cursor.CROSSHAIR ); } );
-    }
-
 }

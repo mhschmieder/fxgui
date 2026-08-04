@@ -35,6 +35,7 @@ import com.mhschmieder.jcommons.util.ClientProperties;
 import com.mhschmieder.jgraphics.input.ScrollingSensitivity;
 import com.mhschmieder.jphysics.measure.AngleUnit;
 import com.mhschmieder.jphysics.measure.DistanceUnit;
+
 import javafx.geometry.Insets;
 import javafx.geometry.Point2D;
 import javafx.geometry.Pos;
@@ -44,10 +45,10 @@ import javafx.scene.layout.GridPane;
 
 public class PositioningPane extends GridPane {
 
-    public RadioButton           _cartesianPositionRadioButton;
+    public RadioButton _cartesianPositionRadioButton;
     public CartesianPositionPane _cartesianPositionPane;
-    public RadioButton           _polarPositionRadioButton;
-    public PolarPositionPane     _polarPositionPane;
+    public RadioButton _polarPositionRadioButton;
+    public PolarPositionPane _polarPositionPane;
 
     public PositioningPane( final ClientProperties clientProperties ) {
         // Always call the superclass constructor first!
@@ -61,29 +62,16 @@ public class PositioningPane extends GridPane {
         }
     }
 
-    public final Point2D getCartesianPosition2D() {
-        // Forward this method to the appropriate components.
-        return _cartesianPositionPane.getCartesianPosition2D();
-    }
-
-    public final double getDistance() {
-        // Forward this method to the appropriate components.
-        return _polarPositionPane.getDistance();
-    }
-
-    public final double getRotationAngle() {
-        // Forward this method to the appropriate components.
-        return _polarPositionPane.getRotationAngle();
-    }
-
     private final void initPane( final ClientProperties clientProperties ) {
         final ToggleGroup dualPositionToggleGroup = new ToggleGroup();
-        _cartesianPositionRadioButton = ControlUtilities.getRadioButton( "Cartesian Coordinates", //$NON-NLS-1$
-                                                                     dualPositionToggleGroup,
-                                                                     true );
-        _polarPositionRadioButton = ControlUtilities.getRadioButton( "Polar Coordinates", //$NON-NLS-1$
-                                                                 dualPositionToggleGroup,
-                                                                 false );
+        _cartesianPositionRadioButton = ControlUtilities.getRadioButton(
+                "Cartesian Coordinates", //$NON-NLS-1$
+                dualPositionToggleGroup,
+                true );
+        _polarPositionRadioButton = ControlUtilities.getRadioButton(
+                "Polar Coordinates", //$NON-NLS-1$
+                dualPositionToggleGroup,
+                false );
 
         _cartesianPositionPane = new CartesianPositionPane( clientProperties );
 
@@ -103,9 +91,31 @@ public class PositioningPane extends GridPane {
 
         // Bind position pane enablement to the associated radio buttons.
         _cartesianPositionPane.disableProperty()
-                .bind( _cartesianPositionRadioButton.selectedProperty().not() );
+                              .bind( _cartesianPositionRadioButton.selectedProperty()
+                                                                  .not() );
         _polarPositionPane.disableProperty()
-                .bind( _polarPositionRadioButton.selectedProperty().not() );
+                          .bind( _polarPositionRadioButton.selectedProperty()
+                                                          .not() );
+    }
+
+    public final Point2D getCartesianPosition2D() {
+        // Forward this method to the appropriate components.
+        return _cartesianPositionPane.getCartesianPosition2D();
+    }
+
+    public final void setCartesianPosition2D( final Point2D cartesianPosition ) {
+        // Forward this method to the appropriate components.
+        _cartesianPositionPane.setCartesianPosition2D( cartesianPosition );
+    }
+
+    public final double getDistance() {
+        // Forward this method to the appropriate components.
+        return _polarPositionPane.getDistance();
+    }
+
+    public final double getRotationAngle() {
+        // Forward this method to the appropriate components.
+        return _polarPositionPane.getRotationAngle();
     }
 
     public final boolean isCartesianPositionActive() {
@@ -127,12 +137,8 @@ public class PositioningPane extends GridPane {
     public final void setCartesianPosition2D( final double cartesianPositionX,
                                               final double cartesianPositionY ) {
         // Forward this method to the appropriate components.
-        _cartesianPositionPane.setCartesianPosition2D( cartesianPositionX, cartesianPositionY );
-    }
-
-    public final void setCartesianPosition2D( final Point2D cartesianPosition ) {
-        // Forward this method to the appropriate components.
-        _cartesianPositionPane.setCartesianPosition2D( cartesianPosition );
+        _cartesianPositionPane.setCartesianPosition2D( cartesianPositionX,
+                                                       cartesianPositionY );
     }
 
     public final void setGesturesEnabled( final boolean gesturesEnabled ) {
@@ -140,7 +146,8 @@ public class PositioningPane extends GridPane {
         _polarPositionPane.setGesturesEnabled( gesturesEnabled );
     }
 
-    public final void setPolarPosition( final double rotationAngle, final double distance ) {
+    public final void setPolarPosition( final double rotationAngle,
+                                        final double distance ) {
         // Forward this method to the appropriate components.
         _polarPositionPane.setPolarPosition( rotationAngle, distance );
     }
@@ -148,8 +155,7 @@ public class PositioningPane extends GridPane {
     /**
      * Set the new Scrolling Sensitivity for all of the sliders.
      *
-     * @param scrollingSensitivity
-     *            The sensitivity of the mouse scroll wheel
+     * @param scrollingSensitivity The sensitivity of the mouse scroll wheel
      */
     public final void setScrollingSensitivity( final ScrollingSensitivity scrollingSensitivity ) {
         // Forward this method to the Polar Position Pane.
@@ -171,5 +177,4 @@ public class PositioningPane extends GridPane {
         _cartesianPositionPane.updateDistanceUnit( distanceUnit );
         _polarPositionPane.updateDistanceUnit( distanceUnit );
     }
-
 }

@@ -45,19 +45,17 @@ import javafx.scene.text.TextFlow;
 public class TextFlowAlert extends Alert {
 
     /**
-     * Local Grid Pane needed to augment default Dialog Pane layout.
-     */
-    private GridPane         grid;
-
-    /**
-     * Store a copy of the base class text content converted to a label.
-     */
-    private Label            label;
-
-    /**
      * Store a reference to the Text Flow control, to defer layout details.
      */
     protected final TextFlow textFlow;
+    /**
+     * Local Grid Pane needed to augment default Dialog Pane layout.
+     */
+    private GridPane grid;
+    /**
+     * Store a copy of the base class text content converted to a label.
+     */
+    private Label label;
 
     //////////////////////////// Constructors ////////////////////////////////
 
@@ -66,14 +64,10 @@ public class TextFlowAlert extends Alert {
      * <p>
      * Creates a new {@code TextFlowAlert} instance.
      *
-     * @param alertType
-     *            The basic Alert Type
-     * @param contentText
-     *            The text to use for the content pane
-     * @param textFlowCandidate
-     *            The {@link TextFlow} instance to use for formatting the text
-     *            content
-     *
+     * @param alertType         The basic Alert Type
+     * @param contentText       The text to use for the content pane
+     * @param textFlowCandidate The {@link TextFlow} instance to use for
+     *                          formatting the text content
      * @since 1.0
      */
     public TextFlowAlert( final AlertType alertType,
@@ -104,7 +98,7 @@ public class TextFlowAlert extends Alert {
      *
      * @since 1.0
      */
-    @SuppressWarnings("nls")
+    @SuppressWarnings( "nls" )
     private final void initDialog() {
         final DialogPane dialogPane = getDialogPane();
 
@@ -125,7 +119,8 @@ public class TextFlowAlert extends Alert {
         grid.setMaxHeight( Double.MAX_VALUE );
         grid.setAlignment( Pos.CENTER_LEFT );
 
-        dialogPane.contentTextProperty().addListener( listener -> updateGrid() );
+        dialogPane.contentTextProperty()
+                  .addListener( listener -> updateGrid() );
 
         updateGrid();
     }
@@ -145,5 +140,4 @@ public class TextFlowAlert extends Alert {
 
         getDialogPane().setContent( grid );
     }
-
 }

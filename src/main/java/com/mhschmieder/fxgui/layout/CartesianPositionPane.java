@@ -36,6 +36,7 @@ import com.mhschmieder.fxcontrols.util.RegionUtilities;
 import com.mhschmieder.fxgraphics.paint.ColorUtilities;
 import com.mhschmieder.jcommons.util.ClientProperties;
 import com.mhschmieder.jphysics.measure.DistanceUnit;
+
 import javafx.geometry.Insets;
 import javafx.geometry.Point2D;
 import javafx.geometry.Pos;
@@ -47,13 +48,12 @@ import javafx.scene.paint.Color;
 
 public class CartesianPositionPane extends BorderPane {
 
-    private Label         _xPositionLabel;
     public DistanceEditor _xPositionEditor;
-
-    private Label         _yPositionLabel;
     public DistanceEditor _yPositionEditor;
+    private Label _xPositionLabel;
+    private Label _yPositionLabel;
 
-    @SuppressWarnings("nls")
+    @SuppressWarnings( "nls" )
     public CartesianPositionPane( final ClientProperties clientProperties ) {
         this( clientProperties, "X", "Y" );
     }
@@ -65,18 +65,60 @@ public class CartesianPositionPane extends BorderPane {
         super();
 
         try {
-            initPane( clientProperties, xPositionLabelText, yPositionLabelText );
+            initPane( clientProperties,
+                      xPositionLabelText,
+                      yPositionLabelText );
         }
         catch ( final Exception ex ) {
             ex.printStackTrace();
         }
     }
 
+    @SuppressWarnings( "nls" )
+    private final void initPane( final ClientProperties clientProperties,
+                                 final String xPositionLabelText,
+                                 final String yPositionLabelText ) {
+        _xPositionEditor = new DistanceEditor( clientProperties, "0", null );
+        _yPositionEditor = new DistanceEditor( clientProperties, "0", null );
+
+        final GridPane gridPane = new GridPane();
+        gridPane.setHgap( 10.0d );
+        gridPane.setVgap( 10.0d );
+
+        _xPositionLabel
+                = ControlUtilities.getControlLabel( xPositionLabelText );
+        gridPane.add( _xPositionLabel, 0, 0 );
+        gridPane.add( _xPositionEditor, 1, 0 );
+
+        _yPositionLabel
+                = ControlUtilities.getControlLabel( yPositionLabelText );
+        gridPane.add( _yPositionLabel, 0, 1 );
+        gridPane.add( _yPositionEditor, 1, 1 );
+
+        gridPane.setAlignment( Pos.CENTER );
+        gridPane.setPadding( new Insets( 10.0d ) );
+
+        setLeft( gridPane );
+    }
+
     public final Point2D getCartesianPosition2D() {
-        final Point2D cartesianPosition = new Point2D( _xPositionEditor.getDistanceMeters(),
-                                                       _yPositionEditor.getDistanceMeters() );
+        final Point2D cartesianPosition
+                = new Point2D( _xPositionEditor.getDistanceMeters(),
+                               _yPositionEditor.getDistanceMeters() );
 
         return cartesianPosition;
+    }
+
+    public final void setCartesianPosition2D( final Point2D cartesianPosition2D ) {
+        setCartesianPosition2D( cartesianPosition2D.getX(),
+                                cartesianPosition2D.getY() );
+    }
+
+    public final void setCartesianPosition2D( final double cartesianPositionX,
+                                              final double cartesianPositionY ) {
+        // Forward this method to the subsidiary components.
+        _xPositionEditor.setDistanceMeters( cartesianPositionX );
+        _yPositionEditor.setDistanceMeters( cartesianPositionY );
     }
 
     public final double getCartesianPositionX() {
@@ -89,54 +131,20 @@ public class CartesianPositionPane extends BorderPane {
         return cartesianPositionY;
     }
 
-    @SuppressWarnings("nls")
-    private final void initPane( final ClientProperties clientProperties,
-                                 final String xPositionLabelText,
-                                 final String yPositionLabelText ) {
-        _xPositionEditor = new DistanceEditor( clientProperties, "0", null );
-        _yPositionEditor = new DistanceEditor( clientProperties, "0", null );
-
-        final GridPane gridPane = new GridPane();
-        gridPane.setHgap( 10.0d );
-        gridPane.setVgap( 10.0d );
-
-        _xPositionLabel = ControlUtilities.getControlLabel( xPositionLabelText );
-        gridPane.add( _xPositionLabel, 0, 0 );
-        gridPane.add( _xPositionEditor, 1, 0 );
-
-        _yPositionLabel = ControlUtilities.getControlLabel( yPositionLabelText );
-        gridPane.add( _yPositionLabel, 0, 1 );
-        gridPane.add( _yPositionEditor, 1, 1 );
-
-        gridPane.setAlignment( Pos.CENTER );
-        gridPane.setPadding( new Insets( 10.0d ) );
-
-        setLeft( gridPane );
-    }
-
     public final void saveEdits() {
         _xPositionEditor.saveEdits();
         _yPositionEditor.saveEdits();
     }
 
-    public final void setCartesianPosition2D( final double cartesianPositionX,
-                                              final double cartesianPositionY ) {
-        // Forward this method to the subsidiary components.
-        _xPositionEditor.setDistanceMeters( cartesianPositionX );
-        _yPositionEditor.setDistanceMeters( cartesianPositionY );
-    }
-
-    public final void setCartesianPosition2D( final Point2D cartesianPosition2D ) {
-        setCartesianPosition2D( cartesianPosition2D.getX(), cartesianPosition2D.getY() );
-    }
-
     public final void setForegroundFromBackground( final Color backColor ) {
         // Set the new Background first, so it sets context for CSS derivations.
-        final Background background = RegionUtilities.makeRegionBackground( backColor );
+        final Background background = RegionUtilities.makeRegionBackground(
+                backColor );
         setBackground( background );
 
         // Forward this method to the lower-level layout containers.
-        final Color foregroundColor = ColorUtilities.getForegroundFromBackground( backColor );
+        final Color foregroundColor
+                = ColorUtilities.getForegroundFromBackground( backColor );
 
         _xPositionLabel.setTextFill( foregroundColor );
         _yPositionLabel.setTextFill( foregroundColor );
@@ -159,5 +167,4 @@ public class CartesianPositionPane extends BorderPane {
         _xPositionEditor.updateDistanceUnit( distanceUnit );
         _yPositionEditor.updateDistanceUnit( distanceUnit );
     }
-
 }

@@ -33,20 +33,22 @@ package com.mhschmieder.fxgui.event;
 import com.mhschmieder.fxcontrols.util.MessageFactory;
 import com.mhschmieder.fxgui.dialog.DialogUtilities;
 import com.mhschmieder.jcommons.io.FileAction;
-import javafx.scene.control.ButtonBar;
-import javafx.scene.control.ButtonType;
 
 import java.io.File;
 import java.util.Optional;
 
+import javafx.scene.control.ButtonBar;
+import javafx.scene.control.ButtonType;
+
 /**
- * {@code FileCloseHandler} is an interface that contracts Window-derived classes
- * to supply file close handling details, such as checking whether file changes
- * would be lost if not saved first. To minimize the amount of coupling, it 
- * attempts to standardize as much as possible in default implementations herein.
+ * {@code FileCloseHandler} is an interface that contracts Window-derived
+ * classes to supply file close handling details, such as checking whether file
+ * changes would be lost if not saved first. To minimize the amount of coupling,
+ * it attempts to standardize as much as possible in default implementations
+ * herein.
  */
 public interface FileCloseHandler {
-     
+
     /**
      * Returns the user confirmation response ("save" vs. "cancel") to changes.
      * <p>
@@ -65,15 +67,20 @@ public interface FileCloseHandler {
      * its name).
      * <p>
      * This method and its invoked helpers, is designed to work in every context
-     * where file changes may need to be saved first. Examples include starting a
-     * new file, opening a file from disc, and closing a window that edits a file.
-     * 
-     * @param title The title to use for the confirmation dialog
-     * @param file The file to check for unsaved changes
-     * @param fileCategory The descriptive category of the file (not file suffix)
-     * @param fileAction The file action type that triggered the "Save Changes"
-     * @param isChanged {@code true} if the file has changed; {@code false} if not
-     * @return {@code false} if the user clicked "cancel"; {@code true} if "save"
+     * where file changes may need to be saved first. Examples include starting
+     * a new file, opening a file from disc, and closing a window that edits a
+     * file.
+     *
+     * @param title        The title to use for the confirmation dialog
+     * @param file         The file to check for unsaved changes
+     * @param fileCategory The descriptive category of the file (not file
+     *                     suffix)
+     * @param fileAction   The file action type that triggered the "Save
+     *                     Changes"
+     * @param isChanged    {@code true} if the file has changed; {@code false}
+     *                     if not
+     * @return {@code false} if the user clicked "cancel"; {@code true} if
+     *         "save"
      */
     default boolean checkFileClose( final String title,
                                     final File file,
@@ -81,16 +88,18 @@ public interface FileCloseHandler {
                                     final FileAction fileAction,
                                     final boolean isChanged ) {
         boolean closeFile = true;
-        
+
         // Check if the user could lose changes to the file before closing.
         if ( isChanged ) {
-            closeFile = confirmFileClose( title, file, fileCategory, fileAction );
+            closeFile = confirmFileClose( title,
+                                          file,
+                                          fileCategory,
+                                          fileAction );
         }
-        
+
         return closeFile;
-        
     }
-       
+
     /**
      * Returns the status of the user action ("save" vs. "cancel").
      * <p>
@@ -107,12 +116,15 @@ public interface FileCloseHandler {
      * to disc on the user's local file system, if it hasn't been saved and/or
      * renamed before, or do a silent save otherwise (this means the user knows
      * its name).
-     * 
-     * @param title The title to use for the confirmation dialog
-     * @param file The file to check for unsaved changes
-     * @param fileCategory The descriptive category of the file (not file suffix)
-     * @param fileAction The file action type that triggered the "Save Changes"
-     * @return {@code true} if the user clicked "cancel"; {@code false} if "save"
+     *
+     * @param title        The title to use for the confirmation dialog
+     * @param file         The file to check for unsaved changes
+     * @param fileCategory The descriptive category of the file (not file
+     *                     suffix)
+     * @param fileAction   The file action type that triggered the "Save
+     *                     Changes"
+     * @return {@code true} if the user clicked "cancel"; {@code false} if
+     *         "save"
      */
     default boolean confirmFileClose( final String title,
                                       final File file,
@@ -123,28 +135,33 @@ public interface FileCloseHandler {
 
         // Conditionally give the user the opportunity to save the current file,
         // if anything changed since the file was last opened.
-        final String message = getSaveFileChangesMessage( file, fileCategory, fileAction );
+        final String message = getSaveFileChangesMessage( file,
+                                                          fileCategory,
+                                                          fileAction );
         String masthead = null;
         switch ( fileAction ) {
-        case NEW:
-        case OPEN:
-        case RUN_BATCH:
-            masthead = MessageFactory.getSaveFileChangesMasthead();
-            break;
-        case CLOSE:
-            masthead = MessageFactory.getFileCloseMasthead();
-            break;
-        case EXIT:
-            masthead = MessageFactory.getFileExitMasthead();
-            break;
-        // $CASES-OMITTED$
-        default:
-            break;
+            case NEW:
+            case OPEN:
+            case RUN_BATCH:
+                masthead = MessageFactory.getSaveFileChangesMasthead();
+                break;
+            case CLOSE:
+                masthead = MessageFactory.getFileCloseMasthead();
+                break;
+            case EXIT:
+                masthead = MessageFactory.getFileExitMasthead();
+                break;
+            // $CASES-OMITTED$
+            default:
+                break;
         }
-        
+
         // If the action clause is pertinent, we now have a valid masthead.
         if ( masthead != null ) {
-            response = DialogUtilities.showConfirmationAlert( message, masthead, title, true );
+            response = DialogUtilities.showConfirmationAlert( message,
+                                                              masthead,
+                                                              title,
+                                                              true );
         }
 
         // Avoid NoSuchElementException from Optional<ButtonType>
@@ -163,17 +180,19 @@ public interface FileCloseHandler {
         // Handle the full enumeration of potential confirmation responses.
         return handleFileClose( buttonType.getButtonData() );
     }
-    
+
     /**
      * Returns the message to use in the Confirm File Changes alert box.
      * <p>
      * The default implementation returns the basic prepared message from this
      * library's Message Factory. Implementing classes may need to override this
      * method to provide a more detailed message relating to domain specifics.
-     * 
-     * @param file The file to check for unsaved changes
-     * @param fileCategory The descriptive category of the file (not file suffix)
-     * @param fileAction The file action type that triggered the "Save Changes"
+     *
+     * @param file         The file to check for unsaved changes
+     * @param fileCategory The descriptive category of the file (not file
+     *                     suffix)
+     * @param fileAction   The file action type that triggered the "Save
+     *                     Changes"
      * @return the message to use in the Confirm File Changes alert box
      */
     default String getSaveFileChangesMessage( final File file,
@@ -183,59 +202,64 @@ public interface FileCloseHandler {
     }
 
     /**
-     * Returns {@code true} if the file should close; {@code false} if canceled.
-     *  
+     * Returns {@code true} if the file should close; {@code false} if
+     * canceled.
+     *
      * @param buttonData The button data for the user confirmation response
      * @return {@code true} if the file should close; {@code false} if canceled
      */
     default boolean handleFileClose( final ButtonBar.ButtonData buttonData ) {
         // Handle the full enumeration of potential confirmation responses.
         boolean closeFile = false;
-        
+
         switch ( buttonData ) {
-        case HELP:
-        case HELP_2:
-        case BACK_PREVIOUS:
-        case CANCEL_CLOSE:
-            // These confirmation options equate to cancellation of File Close.
-            break;
-        case NO:
-            // This confirmation option equates to rejecting changes. That is,
-            // it results in the file being closed without saving the changes.
-            closeFile = true;
-            break;
-        case APPLY:
-        case FINISH:
-        case NEXT_FORWARD:
-        case OK_DONE:
-        case YES:
-            // These confirmation options equate to saving changes to disc.
-            fileSave();
-            closeFile = true;
-            break;
-        case BIG_GAP:
-        case SMALL_GAP:
-        case LEFT:
-        case RIGHT:
-        case OTHER:
-            // It is unlikely that these cases will ever be called, but it
-            // is safest to treat them like a cancellation request.
-            break;
-        default:
-            break;
+            case HELP:
+            case HELP_2:
+            case BACK_PREVIOUS:
+            case CANCEL_CLOSE:
+                // These confirmation options equate to cancellation of File
+                // Close.
+                break;
+            case NO:
+                // This confirmation option equates to rejecting changes.
+                // That is,
+                // it results in the file being closed without saving the
+                // changes.
+                closeFile = true;
+                break;
+            case APPLY:
+            case FINISH:
+            case NEXT_FORWARD:
+            case OK_DONE:
+            case YES:
+                // These confirmation options equate to saving changes to disc.
+                fileSave();
+                closeFile = true;
+                break;
+            case BIG_GAP:
+            case SMALL_GAP:
+            case LEFT:
+            case RIGHT:
+            case OTHER:
+                // It is unlikely that these cases will ever be called, but it
+                // is safest to treat them like a cancellation request.
+                break;
+            default:
+                break;
         }
-        
+
         return closeFile;
     }
-    
-   /**
-    * Saves the file. 
-    * <p>
-    * This by default does nothing; it is a contract for the implementor of
-    * this interface to provide the details of a file save in the context of
-    * a user selecting a file action that results in saving the file before 
-    * executing that action, such as closing a window that includes unsaved
-    * changes. Usually, implementors will invoke FileActionHandler methods.
-    */
-    default void fileSave() {}
+
+    /**
+     * Saves the file.
+     * <p>
+     * This by default does nothing; it is a contract for the implementor of
+     * this interface to provide the details of a file save in the context of a
+     * user selecting a file action that results in saving the file before
+     * executing that action, such as closing a window that includes unsaved
+     * changes. Usually, implementors will invoke FileActionHandler methods.
+     */
+    default void fileSave() {
+    }
 }

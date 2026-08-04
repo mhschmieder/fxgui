@@ -35,22 +35,24 @@ import com.mhschmieder.fxgui.concurrent.task.DataRequestTask;
 import com.mhschmieder.jcommons.branding.ProductBranding;
 import com.mhschmieder.jcommons.util.ClientProperties;
 import com.mhschmieder.jcommons.util.SystemType;
+import org.controlsfx.control.TaskProgressView;
+
 import javafx.application.Platform;
 import javafx.collections.ObservableList;
 import javafx.scene.Node;
 import javafx.scene.image.ImageView;
 import javafx.stage.Modality;
 import javafx.util.Callback;
-import org.controlsfx.control.TaskProgressView;
 
 /**
  * This is a window-level wrapper for a Task Progress View, which can show
- * multiple tasks, but for our purposes will probably only ever show one at
- * a time (specifically a data update request).
+ * multiple tasks, but for our purposes will probably only ever show one at a
+ * time (specifically a data update request).
  */
 public final class DataRequestStatusViewer extends XStage {
 
-    public static final String DATA_REQUEST_STATUS_VIEWER_TITLE_DEFAULT = "Data Request Status";
+    public static final String DATA_REQUEST_STATUS_VIEWER_TITLE_DEFAULT
+            = "Data Request Status";
 
     // Declare the main content pane for the primary task status layout.
     // NOTE: This is not a good progress tracker for tasks that take more
@@ -58,34 +60,35 @@ public final class DataRequestStatusViewer extends XStage {
     //  For such applications, it is better to use progress bars with a
     //  count of steps completed and percentage of total steps.
     protected TaskProgressView< DataRequestTask > taskProgressView;
-
-    // Declare a callback that will be used to determine the task icon.
-    private Callback<DataRequestTask, Node > taskIconFactory;
-
     // Pre-cache the task icons for each category of task, for efficiency.
     protected ImageView fullUpdateTaskIcon;
     protected ImageView dynamicUpdateTaskIcon;
-    
     /**
      * Placeholder text to use in place of the default in TaskProgressView.
      * <p>
      * NOTE: This depends on a not-yet-published enhancement to ControlsFX.
      */
     protected String placeholderText;
-    
+    // Declare a callback that will be used to determine the task icon.
+    private Callback< DataRequestTask, Node > taskIconFactory;
+
     /**
      * Makes a DataRequestStatusViewer instance with all parameters specified.
-     * 
-     * @param modality The modality of this window, par JavaFX Stage
-     * @param pProductBranding Product Branding to pass to frame titles etc.
-     * @param pClientProperties Client Properties for platform-specific GUI
-     * @param pPlaceholderText Placeholder text to use when no tasks running
-     * @param fullUpdateIconJarRelativePath JAR-relative path for icon to use
-     *                                      for full update tasks
-     * @param dynamicUpdateIconJarRelativePath JAR-relative path for icon to
-     *                                         use for dynamic update tasks
+     *
+     * @param modality                         The modality of this window, par
+     *                                         JavaFX Stage
+     * @param pProductBranding                 Product Branding to pass to frame
+     *                                         titles etc.
+     * @param pClientProperties                Client Properties for
+     *                                         platform-specific GUI
+     * @param pPlaceholderText                 Placeholder text to use when no
+     *                                         tasks running
+     * @param fullUpdateIconJarRelativePath    JAR-relative path for icon to use
+     *                                         for full update tasks
+     * @param dynamicUpdateIconJarRelativePath JAR-relative path for icon to use
+     *                                         for dynamic update tasks
      */
-    @SuppressWarnings("nls")
+    @SuppressWarnings( "nls" )
     public DataRequestStatusViewer( final Modality modality,
                                     final ProductBranding pProductBranding,
                                     final ClientProperties pClientProperties,
@@ -100,7 +103,7 @@ public final class DataRequestStatusViewer extends XStage {
                false,
                pProductBranding,
                pClientProperties );
-        
+
         placeholderText = pPlaceholderText;
 
         // Due to threading conflicts with OS-level handling of Full Screen Mode
@@ -117,22 +120,13 @@ public final class DataRequestStatusViewer extends XStage {
         }
     }
 
-    public void addTask( final DataRequestTask dataRequestTask ) {
-        // Add this task to the Task Progress View, whether any previous tasks
-        // are still running or not. Clear any still-running tasks first.
-        // TODO: Modify this if we decide to support multiple tasks later on.
-        final ObservableList< DataRequestTask > dataRequestTasks = taskProgressView
-                .getTasks();
-        dataRequestTasks.clear();
-        dataRequestTasks.add( dataRequestTask );
-    }
-
-    @SuppressWarnings("nls")
+    @SuppressWarnings( "nls" )
     protected void initStage( final String fullUpdateIconJarRelativePath,
                               final String dynamicUpdateIconJarRelativePath ) {
-        final double preferredHeight = SystemType.MACOS.equals( clientProperties.systemType )
-            ? 90
-            : 110;
+        final double preferredHeight
+                = SystemType.MACOS.equals( clientProperties.systemType )
+                  ? 90
+                  : 110;
 
         initStage( "/icons/glyphish/Calculator16.png",
                    460d,
@@ -147,10 +141,20 @@ public final class DataRequestStatusViewer extends XStage {
         } );
 
         // Pre-cache the task icons for each category of task, for efficiency.
-        fullUpdateTaskIcon = ImageUtilities
-                .createIcon( fullUpdateIconJarRelativePath );
-        dynamicUpdateTaskIcon = ImageUtilities
-                .createIcon( dynamicUpdateIconJarRelativePath );
+        fullUpdateTaskIcon = ImageUtilities.createIcon(
+                fullUpdateIconJarRelativePath );
+        dynamicUpdateTaskIcon = ImageUtilities.createIcon(
+                dynamicUpdateIconJarRelativePath );
+    }
+
+    public void addTask( final DataRequestTask dataRequestTask ) {
+        // Add this task to the Task Progress View, whether any previous tasks
+        // are still running or not. Clear any still-running tasks first.
+        // TODO: Modify this if we decide to support multiple tasks later on.
+        final ObservableList< DataRequestTask > dataRequestTasks
+                = taskProgressView.getTasks();
+        dataRequestTasks.clear();
+        dataRequestTasks.add( dataRequestTask );
     }
 
     @Override
@@ -163,18 +167,18 @@ public final class DataRequestStatusViewer extends XStage {
 
         taskIconFactory = task -> {
             Node content = null;
-            
+
             switch ( task.getDataUpdateType() ) {
-            case DYNAMIC_UPDATE:
-                content = dynamicUpdateTaskIcon;
-                break;
-            case FULL_UPDATE:
-                content = fullUpdateTaskIcon;
-                break;
-            default:
-                break;
+                case DYNAMIC_UPDATE:
+                    content = dynamicUpdateTaskIcon;
+                    break;
+                case FULL_UPDATE:
+                    content = fullUpdateTaskIcon;
+                    break;
+                default:
+                    break;
             }
-            
+
             return content;
         };
 

@@ -32,6 +32,14 @@ package com.mhschmieder.fxgui.dialog;
 
 import com.mhschmieder.fxcontrols.util.RegionUtilities;
 import com.mhschmieder.fxgraphics.paint.ColorConstants;
+import org.controlsfx.control.textfield.CustomPasswordField;
+import org.controlsfx.control.textfield.CustomTextField;
+import org.controlsfx.control.textfield.TextFields;
+import org.controlsfx.validation.ValidationSupport;
+import org.controlsfx.validation.Validator;
+
+import java.util.Locale;
+
 import javafx.application.Platform;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
@@ -48,13 +56,6 @@ import javafx.scene.layout.VBox;
 import javafx.stage.Modality;
 import javafx.util.Callback;
 import javafx.util.Pair;
-import org.controlsfx.control.textfield.CustomPasswordField;
-import org.controlsfx.control.textfield.CustomTextField;
-import org.controlsfx.control.textfield.TextFields;
-import org.controlsfx.validation.ValidationSupport;
-import org.controlsfx.validation.Validator;
-
-import java.util.Locale;
 
 /**
  * This is a heavily customized Login Dialog that is loosely based upon the
@@ -62,85 +63,10 @@ import java.util.Locale;
  */
 public final class XLoginDialog extends Dialog< Pair< String, String > > {
 
-    protected final class XLoginDialogPane extends DialogPane {
-
-        /** Cache the locale, to use for button text lookup */
-        protected final Locale locale;
-
-        /**
-         * The sole purpose of this constructor is to cache an accessible copy
-         * of the dialog owner, for method overrides.
-         *
-         * @param pLocale
-         *            The Locale to use for text localization
-         */
-        public XLoginDialogPane( final Locale pLocale ) {
-            // Always call the superclass constructor first!
-            super();
-
-            locale = pLocale;
-        }
-
-        /**
-         * This method can be overridden by subclasses to create a custom button
-         * that will subsequently be inserted into the DialogPane button area
-         * (created via the {@link #createButtonBar()} method, but mostly
-         * commonly it is an instance of {@link ButtonBar}.
-         *
-         * @param buttonType
-         *            The {@link ButtonType} to create a button from.
-         * @return A JavaFX {@link Node} that represents the given
-         *         {@link ButtonType},
-         *         most commonly an instance of {@link Button}.
-         */
-        @SuppressWarnings("nls")
-        @Override
-        protected Node createButton( final ButtonType buttonType ) {
-            // NOTE: We override this strictly to avoid the default button from
-            // closing the dialog, as the server authorization runs on a
-            // separate thread and thus needs to control the dialog dismissal.
-            final ButtonData buttonData = buttonType.getButtonData();
-            if ( !ButtonData.OK_DONE.equals( buttonData ) ) {
-                return super.createButton( buttonType );
-            }
-
-            // Set the Login Button Type, replacing the default English text
-            // from ControlsFX as it is grammatically incorrect ("Log In" is two
-            // words).
-            // NOTE: The Localization class is not visible after ControlsFX v8.
-            /*
-            final String loginButtonText = Locale.ENGLISH.getLanguage().equals(
-                    locale.getLanguage() )
-                    ? "Log In"
-                    : Localization.getString( "login.dlg.login.button" );
-            */
-            final String loginButtonText = "Log In";
-
-            // If there is no authenticator set, we need to let ControlsFX take
-            // care of the button handling or else the dialog never gets
-            // dismissed, but we still need to replace the default button text.
-            if ( authenticator == null ) {
-                final Button loginButton = ( Button ) super.createButton( buttonType );
-                loginButton.setText( loginButtonText );
-                return loginButton;
-            }
-
-            final Button button = new Button( loginButtonText );
-            ButtonBar.setButtonData( button, buttonData );
-            button.setDefaultButton( buttonData.isDefaultButton() );
-            button.setCancelButton( buttonData.isCancelButton() );
-
-            return button;
-        }
-
-    }
-
-    protected final String                             REQUIRED_FORMAT = "'%s' is required"; //$NON-NLS-1$
-
-    protected Label                                    errorMessage;
-    protected CustomTextField                          userNameField;
-    protected CustomPasswordField                      passwordField;
-
+    protected final String REQUIRED_FORMAT = "'%s' is required"; //$NON-NLS-1$
+    protected Label errorMessage;
+    protected CustomTextField userNameField;
+    protected CustomPasswordField passwordField;
     // The Authenticator is needed for determining correct handling of the
     // OK/Login Button, and whether to invoke a Callback or auto-exit.
     protected Callback< Pair< String, String >, Void > authenticator;
@@ -167,34 +93,7 @@ public final class XLoginDialog extends Dialog< Pair< String, String > > {
         }
     }
 
-    /**
-     * This method commits the user's edits, by setting the result and hiding
-     * the dialog. This compensates for overriding the OK Button's callback
-     * behavior, so that we can invoke the equivalent sequence here, from the
-     * authorization service, once it has a valid server response.
-     */
-    public void commit() {
-        final Pair< String, String > loginInformation = getLoginInformation();
-        setResult( loginInformation );
-        hide();
-    }
-
-    public Pair< String, String > getLoginInformation() {
-        final String userName = getUserName();
-        final String password = getPassword();
-        final Pair< String, String > loginInformation = new Pair<>( userName, password );
-        return loginInformation;
-    }
-
-    public String getPassword() {
-        return passwordField.getText();
-    }
-
-    public String getUserName() {
-        return userNameField.getText();
-    }
-
-    @SuppressWarnings("nls")
+    @SuppressWarnings( "nls" )
     private void initDialog( final String title,
                              final String headerText,
                              final Locale locale,
@@ -206,25 +105,32 @@ public final class XLoginDialog extends Dialog< Pair< String, String > > {
 
         // TODO: Pull in this missing image resource after deciding where it
         // goes in the file system such that it works in IntelliJ and Eclipse.
-        final Background background = RegionUtilities.makeRegionBackground( ColorConstants.GRAY86 );
-        final ImageView loginIcon = new ImageView( XLoginDialog.class
-                .getResource( "/icons/everaldo/Password48.png" ).toExternalForm() );
+        final Background background = RegionUtilities.makeRegionBackground(
+                ColorConstants.GRAY86 );
+        final ImageView loginIcon
+                = new ImageView( XLoginDialog.class.getResource(
+                "/icons/everaldo/Password48.png" ).toExternalForm() );
 
         dialogPane.setHeaderText( headerText );
         dialogPane.setBackground( background );
         dialogPane.setGraphic( loginIcon );
 
         // Make the main Login content pane elements.
-        final ImageView userIcon = new ImageView( XLoginDialog.class
-                .getResource( "/org/controlsfx/dialog/user.png" ).toExternalForm() );
-        userNameField = ( CustomTextField ) TextFields.createClearableTextField();
+        final ImageView userIcon
+                = new ImageView( XLoginDialog.class.getResource(
+                "/org/controlsfx/dialog/user.png" ).toExternalForm() );
+        userNameField
+                = ( CustomTextField ) TextFields.createClearableTextField();
         userNameField.setEditable( true );
         userNameField.setLeft( userIcon );
         userNameField.setPrefWidth( 300d );
 
-        final ImageView lockIcon = new ImageView( XLoginDialog.class
-                .getResource( "/org/controlsfx/dialog/lock.png" ).toExternalForm() );
-        passwordField = ( CustomPasswordField ) TextFields.createClearablePasswordField();
+        final ImageView lockIcon
+                = new ImageView( XLoginDialog.class.getResource(
+                "/org/controlsfx/dialog/lock.png" ).toExternalForm() );
+        passwordField
+                =
+                ( CustomPasswordField ) TextFields.createClearablePasswordField();
         passwordField.setEditable( true );
         passwordField.setLeft( lockIcon );
         passwordField.setPrefWidth( 300d );
@@ -237,7 +143,8 @@ public final class XLoginDialog extends Dialog< Pair< String, String > > {
         errorMessage.setManaged( false );
 
         final VBox content = new VBox( 10.0d );
-        content.getChildren().addAll( errorMessage, userNameField, passwordField );
+        content.getChildren()
+               .addAll( errorMessage, userNameField, passwordField );
         dialogPane.setContent( content );
 
         // Set the Login Button Types, depending on our override of the Dialog
@@ -246,13 +153,15 @@ public final class XLoginDialog extends Dialog< Pair< String, String > > {
 
         // Enable/Disable Login Button depending on whether a non-empty User
         // Name and/or Password was entered.
-        final Button loginButton = ( Button ) dialogPane.lookupButton( ButtonType.OK );
+        final Button loginButton = ( Button ) dialogPane.lookupButton(
+                ButtonType.OK );
         loginButton.setDisable( true );
 
         loginButton.setOnAction( actionEvent -> {
             try {
                 if ( authenticator != null ) {
-                    final Pair< String, String > loginInformation = getLoginInformation();
+                    final Pair< String, String > loginInformation
+                            = getLoginInformation();
                     authenticator.call( loginInformation );
                 }
 
@@ -274,10 +183,12 @@ public final class XLoginDialog extends Dialog< Pair< String, String > > {
 
         // NOTE: The Localization class is not visible after ControlsFX v8.
         /*
-        final String userNameCaption = Localization.getString( "login.dlg.user.caption" );
+        final String userNameCaption = Localization.getString( "login.dlg
+        .user.caption" );
         userNameField.setPromptText( userNameCaption );
 
-        final String passwordCaption = Localization.getString( "login.dlg.pswd.caption" );
+        final String passwordCaption = Localization.getString( "login.dlg
+        .pswd.caption" );
         passwordField.setPromptText( passwordCaption );
         */
         final String userNameCaption = "User Name";
@@ -287,61 +198,175 @@ public final class XLoginDialog extends Dialog< Pair< String, String > > {
 
         final ValidationSupport validationSupport = new ValidationSupport();
         Platform.runLater( () -> {
-            validationSupport
-                    .registerValidator( userNameField,
-                                        Validator.createEmptyValidator( String
-                                                .format( REQUIRED_FORMAT, userNameCaption ) ) );
-            validationSupport
-                    .registerValidator( passwordField,
-                                        Validator.createEmptyValidator( String
-                                                .format( REQUIRED_FORMAT, passwordCaption ) ) );
+            validationSupport.registerValidator( userNameField,
+                                                 Validator.createEmptyValidator(
+                                                         String.format(
+                                                                 REQUIRED_FORMAT,
+                                                                 userNameCaption ) ) );
+            validationSupport.registerValidator( passwordField,
+                                                 Validator.createEmptyValidator(
+                                                         String.format(
+                                                                 REQUIRED_FORMAT,
+                                                                 passwordCaption ) ) );
 
             // NOTE: The API changed so now we have to do manual binding.
-            // loginButton.disabledProperty().bind(validationSupport.invalidProperty());
+            // loginButton.disabledProperty().bind(validationSupport
+            // .invalidProperty());
 
             // Request immediate focus on the User Name field by default.
             userNameField.requestFocus();
         } );
 
         // Do some User Name validation to ensure a non-empty value.
-        userNameField.textProperty().addListener( ( observable, oldValue, newValue ) -> {
-            final boolean loginValid =
-                                     !newValue.trim().isEmpty() && !getPassword().trim().isEmpty();
-            loginButton.setDisable( !loginValid );
-        } );
+        userNameField.textProperty()
+                     .addListener( ( observable, oldValue, newValue ) -> {
+                         final boolean loginValid = !newValue.trim().isEmpty()
+                                                    && !getPassword().trim()
+                                                                     .isEmpty();
+                         loginButton.setDisable( !loginValid );
+                     } );
 
         // Do some Password validation to ensure a non-empty value.
-        passwordField.textProperty().addListener( ( observable, oldValue, newValue ) -> {
-            final boolean loginValid =
-                                     !newValue.trim().isEmpty() && !getUserName().trim().isEmpty();
-            loginButton.setDisable( !loginValid );
-        } );
+        passwordField.textProperty()
+                     .addListener( ( observable, oldValue, newValue ) -> {
+                         final boolean loginValid = !newValue.trim().isEmpty()
+                                                    && !getUserName().trim()
+                                                                     .isEmpty();
+                         loginButton.setDisable( !loginValid );
+                     } );
 
         // Convert the result to a User Name and Password Pair when the OK
         // Button is clicked. We make this agnostic towards the displayed text
         // on the button, as well as fail-safe against nulls.
         setResultConverter( dialogButton -> {
-            final ButtonData buttonData =
-                                        dialogButton == null ? null : dialogButton.getButtonData();
-            return ButtonData.OK_DONE.equals( buttonData ) ? getLoginInformation() : null;
+            final ButtonData buttonData = dialogButton == null
+                                          ? null
+                                          : dialogButton.getButtonData();
+            return ButtonData.OK_DONE.equals( buttonData )
+                   ? getLoginInformation()
+                   : null;
         } );
     }
 
-    @SuppressWarnings("nls")
-    public void setLoginInformation( final Pair< String, String > loginInformation ) {
-        final String userName = loginInformation == null ? "" : loginInformation.getKey();
-        setUserName( userName );
+    public Pair< String, String > getLoginInformation() {
+        final String userName = getUserName();
+        final String password = getPassword();
+        final Pair< String, String > loginInformation = new Pair<>( userName,
+                                                                    password );
+        return loginInformation;
+    }
 
-        final String password = loginInformation == null ? "" : loginInformation.getValue();
-        setPassword( password );
+    public String getPassword() {
+        return passwordField.getText();
     }
 
     public void setPassword( final String password ) {
         passwordField.setText( password );
     }
 
+    public String getUserName() {
+        return userNameField.getText();
+    }
+
     public void setUserName( final String userName ) {
         userNameField.setText( userName );
     }
 
+    @SuppressWarnings( "nls" )
+    public void setLoginInformation( final Pair< String, String > loginInformation ) {
+        final String userName = loginInformation == null
+                                ? ""
+                                : loginInformation.getKey();
+        setUserName( userName );
+
+        final String password = loginInformation == null
+                                ? ""
+                                : loginInformation.getValue();
+        setPassword( password );
+    }
+
+    /**
+     * This method commits the user's edits, by setting the result and hiding
+     * the dialog. This compensates for overriding the OK Button's callback
+     * behavior, so that we can invoke the equivalent sequence here, from the
+     * authorization service, once it has a valid server response.
+     */
+    public void commit() {
+        final Pair< String, String > loginInformation = getLoginInformation();
+        setResult( loginInformation );
+        hide();
+    }
+
+    protected final class XLoginDialogPane extends DialogPane {
+
+        /**
+         * Cache the locale, to use for button text lookup
+         */
+        protected final Locale locale;
+
+        /**
+         * The sole purpose of this constructor is to cache an accessible copy
+         * of the dialog owner, for method overrides.
+         *
+         * @param pLocale The Locale to use for text localization
+         */
+        public XLoginDialogPane( final Locale pLocale ) {
+            // Always call the superclass constructor first!
+            super();
+
+            locale = pLocale;
+        }
+
+        /**
+         * This method can be overridden by subclasses to create a custom button
+         * that will subsequently be inserted into the DialogPane button area
+         * (created via the {@link #createButtonBar()} method, but mostly
+         * commonly it is an instance of {@link ButtonBar}.
+         *
+         * @param buttonType The {@link ButtonType} to create a button from.
+         * @return A JavaFX {@link Node} that represents the given
+         *         {@link ButtonType}, most commonly an instance of
+         *         {@link Button}.
+         */
+        @SuppressWarnings( "nls" )
+        @Override
+        protected Node createButton( final ButtonType buttonType ) {
+            // NOTE: We override this strictly to avoid the default button from
+            // closing the dialog, as the server authorization runs on a
+            // separate thread and thus needs to control the dialog dismissal.
+            final ButtonData buttonData = buttonType.getButtonData();
+            if ( !ButtonData.OK_DONE.equals( buttonData ) ) {
+                return super.createButton( buttonType );
+            }
+
+            // Set the Login Button Type, replacing the default English text
+            // from ControlsFX as it is grammatically incorrect ("Log In" is two
+            // words).
+            // NOTE: The Localization class is not visible after ControlsFX v8.
+            /*
+            final String loginButtonText = Locale.ENGLISH.getLanguage().equals(
+                    locale.getLanguage() )
+                    ? "Log In"
+                    : Localization.getString( "login.dlg.login.button" );
+            */
+            final String loginButtonText = "Log In";
+
+            // If there is no authenticator set, we need to let ControlsFX take
+            // care of the button handling or else the dialog never gets
+            // dismissed, but we still need to replace the default button text.
+            if ( authenticator == null ) {
+                final Button loginButton = ( Button ) super.createButton(
+                        buttonType );
+                loginButton.setText( loginButtonText );
+                return loginButton;
+            }
+
+            final Button button = new Button( loginButtonText );
+            ButtonBar.setButtonData( button, buttonData );
+            button.setDefaultButton( buttonData.isDefaultButton() );
+            button.setCancelButton( buttonData.isCancelButton() );
+
+            return button;
+        }
+    }
 }

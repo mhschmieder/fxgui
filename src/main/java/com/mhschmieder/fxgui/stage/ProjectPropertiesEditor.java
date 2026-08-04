@@ -36,6 +36,9 @@ import com.mhschmieder.fxcontrols.model.ProjectProperties;
 import com.mhschmieder.fxgui.layout.ProjectPropertiesPane;
 import com.mhschmieder.jcommons.branding.ProductBranding;
 import com.mhschmieder.jcommons.util.ClientProperties;
+
+import java.util.Locale;
+
 import javafx.scene.Node;
 import javafx.scene.control.ToolBar;
 import javafx.scene.input.KeyCode;
@@ -43,25 +46,21 @@ import javafx.scene.input.KeyCodeCombination;
 import javafx.scene.input.KeyCombination;
 import javafx.scene.paint.Color;
 
-import java.util.Locale;
-
 public final class ProjectPropertiesEditor extends XStage {
 
     // Default window locations and dimensions.
-    private static final double PROJECT_PROPERTIES_EDITOR_WIDTH_DEFAULT = 590.0d;
-    private static final double  PROJECT_PROPERTIES_EDITOR_HEIGHT_DEFAULT = 400.0d;
-
-    // Cache the Project Category for reference during label creation.
-    protected String projectCategory;
-
+    private static final double PROJECT_PROPERTIES_EDITOR_WIDTH_DEFAULT
+            = 590.0d;
+    private static final double PROJECT_PROPERTIES_EDITOR_HEIGHT_DEFAULT
+            = 400.0d;
     // Declare the actions.
     public ProjectPropertiesActions actions;
-
     // Declare the main tool bar.
     public ProjectPropertiesToolBar toolBar;
-
     // Declare the main content pane.
     public ProjectPropertiesPane projectPropertiesPane;
+    // Cache the Project Category for reference during label creation.
+    protected String projectCategory;
 
     public ProjectPropertiesEditor( final ProductBranding pProductBranding,
                                     final String pProjectCategory,
@@ -93,6 +92,16 @@ public final class ProjectPropertiesEditor extends XStage {
                    resizable );
     }
 
+    @Override
+    public void setForegroundFromBackground( final Color backColor ) {
+        // Take care of general styling first, as that also loads shared
+        // variables.
+        super.setForegroundFromBackground( backColor );
+
+        // Forward this method to the Project Properties Pane.
+        projectPropertiesPane.setForegroundFromBackground( backColor );
+    }
+
     // Add all of the relevant action handlers.
     @Override
     protected void addActionHandlers() {
@@ -109,7 +118,8 @@ public final class ProjectPropertiesEditor extends XStage {
         // Detect the ENTER key while the Reset Button has focus, and use it to
         // trigger its action (standard expected behavior).
         toolBar.resetButton.setOnKeyReleased( keyEvent -> {
-            final KeyCombination keyCombo = new KeyCodeCombination( KeyCode.ENTER );
+            final KeyCombination keyCombo
+                    = new KeyCodeCombination( KeyCode.ENTER );
             if ( keyCombo.match( keyEvent ) ) {
                 // Trigger the Reset action.
                 doReset();
@@ -118,15 +128,6 @@ public final class ProjectPropertiesEditor extends XStage {
                 keyEvent.consume();
             }
         } );
-    }
-
-    // Load the relevant actions for this Stage.
-    @Override
-    protected void loadActions() {
-        // Make all of the actions.
-        actions = new ProjectPropertiesActions( 
-                projectCategory, 
-                clientProperties );
     }
 
     // Add the Tool Bar for this Stage.
@@ -139,23 +140,37 @@ public final class ProjectPropertiesEditor extends XStage {
         return toolBar;
     }
 
+    // Load the relevant actions for this Stage.
     @Override
-    protected Node loadContent() {
-        // Instantiate and return the custom Content Node.
-        projectPropertiesPane = new ProjectPropertiesPane(
-                projectCategory,
-                clientProperties );
-        return projectPropertiesPane;
+    protected void loadActions() {
+        // Make all of the actions.
+        actions = new ProjectPropertiesActions( projectCategory,
+                                                clientProperties );
     }
 
     @Override
-    public void setForegroundFromBackground( final Color backColor ) {
-        // Take care of general styling first, as that also loads shared
-        // variables.
-        super.setForegroundFromBackground( backColor );
+    protected Node loadContent() {
+        // Instantiate and return the custom Content Node.
+        projectPropertiesPane = new ProjectPropertiesPane( projectCategory,
+                                                           clientProperties );
+        return projectPropertiesPane;
+    }
 
+    // Reset all fields to the default values, regardless of state.
+    @Override
+    protected void reset() {
         // Forward this method to the Project Properties Pane.
-        projectPropertiesPane.setForegroundFromBackground( backColor );
+        projectPropertiesPane.reset();
+    }
+
+    @Override
+    public void updateView() {
+        // Forward this reference to the Project Properties Pane.
+        projectPropertiesPane.updateView();
+    }
+
+    protected void doReset() {
+        reset();
     }
 
     /**
@@ -165,8 +180,7 @@ public final class ProjectPropertiesEditor extends XStage {
      *
      * @param pProjectTypeLabel the custom text to use for Project Type
      */
-    public final void setProjectTypeLabel(
-            final String pProjectTypeLabel ) {
+    public final void setProjectTypeLabel( final String pProjectTypeLabel ) {
         // Forward this method to the Project Properties Pane.
         projectPropertiesPane.setProjectTypeLabel( pProjectTypeLabel );
     }
@@ -178,8 +192,7 @@ public final class ProjectPropertiesEditor extends XStage {
      *
      * @param pProjectLocationLabel the custom text to use for Project Location
      */
-    public final void setProjectLocationLabel(
-            final String pProjectLocationLabel ) {
+    public final void setProjectLocationLabel( final String pProjectLocationLabel ) {
         // Forward this method to the Project Properties Pane.
         projectPropertiesPane.setProjectLocationLabel( pProjectLocationLabel );
     }
@@ -191,8 +204,7 @@ public final class ProjectPropertiesEditor extends XStage {
      *
      * @param pProjectAuthorLabel the custom text to use for Project Author
      */
-    public final void setProjectAuthorLabel(
-            final String pProjectAuthorLabel ) {
+    public final void setProjectAuthorLabel( final String pProjectAuthorLabel ) {
         // Forward this method to the Project Properties Pane.
         projectPropertiesPane.setProjectAuthorLabel( pProjectAuthorLabel );
     }
@@ -202,27 +214,10 @@ public final class ProjectPropertiesEditor extends XStage {
         return projectPropertiesPane.getProjectProperties();
     }
 
-    protected void doReset() {
-        reset();
-    }
-
-    // Reset all fields to the default values, regardless of state.
-    @Override
-    protected void reset() {
-        // Forward this method to the Project Properties Pane.
-        projectPropertiesPane.reset();
-    }
-
     // Set and propagate the Project Properties reference.
     // NOTE: This should be done only once, to avoid breaking bindings.
     public void setProjectProperties( final ProjectProperties pProjectProperties ) {
         // Forward this reference to the Project Properties Pane.
         projectPropertiesPane.setProjectProperties( pProjectProperties );
-    }
-
-    @Override
-    public void updateView() {
-        // Forward this reference to the Project Properties Pane.
-        projectPropertiesPane.updateView();
     }
 }

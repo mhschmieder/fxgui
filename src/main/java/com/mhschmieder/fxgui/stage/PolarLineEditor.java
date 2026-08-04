@@ -39,9 +39,10 @@ import com.mhschmieder.jcommons.util.ClientProperties;
 import com.mhschmieder.jgraphics.input.ScrollingSensitivity;
 import com.mhschmieder.jphysics.measure.AngleUnit;
 import com.mhschmieder.jphysics.measure.DistanceUnit;
-import javafx.scene.Node;
 
 import java.util.List;
+
+import javafx.scene.Node;
 
 public final class PolarLineEditor extends ObjectPropertiesEditor {
 
@@ -49,24 +50,27 @@ public final class PolarLineEditor extends ObjectPropertiesEditor {
     protected PolarLinePane _polarLinePane;
 
     // Maintain a reference to the current Polar Line object.
-    protected PolarLine                              _polarLineReference;
+    protected PolarLine _polarLineReference;
 
     // Maintain a reference to the Polar Line collection.
     protected GraphicalObjectCollection< PolarLine > _polarLineCollection;
-    
-    // Allow for customization of Polar Line Type (name identifier, not behavior).
+
+    // Allow for customization of Polar Line Type (name identifier, not
+    // behavior).
     protected String _polarLineType;
 
-    // Allow for customization of Projector Type (name identifier, not behavior).
+    // Allow for customization of Projector Type (name identifier, not
+    // behavior).
     protected String _projectorType;
 
-    // Allow for customization of Projection Zones Type (name identifier, not behavior).
+    // Allow for customization of Projection Zones Type (name identifier, not
+    // behavior).
     protected String _projectionZonesType;
-    
+
     // Projection Zones usage context, for constructing tooltips.
     protected String _projectionZonesUsageContext;
 
-    @SuppressWarnings("nls")
+    @SuppressWarnings( "nls" )
     public PolarLineEditor( final boolean insertMode,
                             final GraphicalObjectCollection< PolarLine > polarLineCollection,
                             final ProductBranding productBranding,
@@ -77,15 +81,15 @@ public final class PolarLineEditor extends ObjectPropertiesEditor {
                             final String projectionZonesType,
                             final String projectionZonesUsageContext ) {
         // Always call the superclass constructor first!
-        super( insertMode, 
-               polarLineType, 
-               "polarLine", 
-               productBranding, 
+        super( insertMode,
+               polarLineType,
+               "polarLine",
+               productBranding,
                pClientProperties,
                pResetApplicable );
-        
+
         _polarLineCollection = polarLineCollection;
-        
+
         _polarLineType = polarLineType;
         _projectorType = projectorType;
         _projectionZonesType = projectionZonesType;
@@ -100,6 +104,12 @@ public final class PolarLineEditor extends ObjectPropertiesEditor {
         catch ( final Exception ex ) {
             ex.printStackTrace();
         }
+    }
+
+    private void initStage() {
+        // First have the superclass initialize its content.
+        initStage( "/icons/fatCow/Measure16.png", //$NON-NLS-1$
+                   _polarLineType, 1200, 420, false, false, false );
     }
 
     // Open the textField initialized to a mouse-selected Polar Line.
@@ -126,24 +136,22 @@ public final class PolarLineEditor extends ObjectPropertiesEditor {
         updateView();
     }
 
+    public void updateLayerNames( final Layer currentLayer ) {
+        // Forward this method to the Polar Line Pane.
+        _polarLinePane.updateLayerNames( currentLayer );
+    }
+
     public PolarLine getPolarLineReference() {
         return _polarLineReference;
+    }
+
+    public void setPolarLineReference( final PolarLine polarLine ) {
+        _polarLineReference = polarLine;
     }
 
     public String getNewPolarLineLabelDefault() {
         // Forward this method to the Polar Line Pane.
         return _polarLinePane.getNewPolarLineLabelDefault();
-    }
-
-    private void initStage() {
-        // First have the superclass initialize its content.
-        initStage( "/icons/fatCow/Measure16.png", //$NON-NLS-1$
-                   _polarLineType,
-                   1200,
-                   420,
-                   false,
-                   false,
-                   false );
     }
 
     @Override
@@ -167,8 +175,7 @@ public final class PolarLineEditor extends ObjectPropertiesEditor {
         final String polarLineLabel = _polarLineReference.getLabel();
 
         // Make a default Polar Line to effectively reset all the fields.
-        final PolarLine polarLineDefault = PolarLine
-                .getDefaultPolarLine();
+        final PolarLine polarLineDefault = PolarLine.getDefaultPolarLine();
         _polarLineReference.setPolarLine( polarLineDefault );
 
         // Restore the fields we want to preserve.
@@ -177,6 +184,18 @@ public final class PolarLineEditor extends ObjectPropertiesEditor {
 
         // Update the view to match the new model, but don't apply it yet.
         updateView();
+    }
+
+    @Override
+    protected void updateObjectPropertiesView() {
+        // Forward this method to the Polar Line Pane.
+        _polarLinePane.updatePolarLineView( _polarLineReference );
+    }
+
+    @Override
+    public void updatePreview() {
+        // Forward this method to the Polar Line Pane.
+        _polarLinePane.updatePreview( _polarLineReference );
     }
 
     @Override
@@ -189,6 +208,19 @@ public final class PolarLineEditor extends ObjectPropertiesEditor {
         _polarLinePane.setDisable( disable );
     }
 
+    @Override
+    protected void updateObjectPropertiesModel() {
+        // Forward this method to the Polar Line Pane.
+        _polarLinePane.updatePolarLineModel( _polarLineReference );
+    }
+
+    // TODO: Verify whether we need to synchronize both positions.
+    @Override
+    public void updatePositioning() {
+        // Forward this method to the Polar Line Pane.
+        _polarLinePane.updatePositioning( _polarLineReference );
+    }
+
     public void setGesturesEnabled( final boolean gesturesEnabled ) {
         // Forward this method to the Polar Line Pane.
         _polarLinePane.setGesturesEnabled( gesturesEnabled );
@@ -199,31 +231,14 @@ public final class PolarLineEditor extends ObjectPropertiesEditor {
         _polarLinePane.setLayerCollection( layerCollection );
     }
 
-    public void setPolarLineReference( final PolarLine polarLine ) {
-        _polarLineReference = polarLine;
-    }
-
     /**
      * Set the new Scrolling Sensitivity for all of the sliders.
      *
-     * @param scrollingSensitivity
-     *            The sensitivity of the mouse scroll wheel
+     * @param scrollingSensitivity The sensitivity of the mouse scroll wheel
      */
     public void setScrollingSensitivity( final ScrollingSensitivity scrollingSensitivity ) {
         // Forward this method to the Polar Line Pane.
         _polarLinePane.setScrollingSensitivity( scrollingSensitivity );
-    }
-
-    @Override
-    protected void updateObjectPropertiesView() {
-        // Forward this method to the Polar Line Pane.
-        _polarLinePane.updatePolarLineView( _polarLineReference );
-    }
-
-    @Override
-    protected void updateObjectPropertiesModel() {
-        // Forward this method to the Polar Line Pane.
-        _polarLinePane.updatePolarLineModel( _polarLineReference );
     }
 
     public void updateLayerNameSelection() {
@@ -266,25 +281,6 @@ public final class PolarLineEditor extends ObjectPropertiesEditor {
                                   final boolean preserveSelectedLayerByName ) {
         // Forward this method to the Polar Line Pane.
         _polarLinePane.updateLayerNames( preserveSelectedLayerByIndex,
-                                                   preserveSelectedLayerByName );
+                                         preserveSelectedLayerByName );
     }
-
-    public void updateLayerNames( final Layer currentLayer ) {
-        // Forward this method to the Polar Line Pane.
-        _polarLinePane.updateLayerNames( currentLayer );
-    }
-
-    // TODO: Verify whether we need to synchronize both positions.
-    @Override
-    public void updatePositioning() {
-        // Forward this method to the Polar Line Pane.
-        _polarLinePane.updatePositioning( _polarLineReference );
-    }
-
-    @Override
-    public void updatePreview() {
-        // Forward this method to the Polar Line Pane.
-        _polarLinePane.updatePreview( _polarLineReference );
-    }
-
 }

@@ -61,28 +61,35 @@ public enum ResizeTarget {
         final boolean isBottomSideResize = yMax <= resizeMarginBottom;
         final boolean isRightSideResize = xMax <= resizeMarginRight;
 
-        final boolean isTopLeftCornerResize = isTopSideResize && isLeftSideResize;
-        final boolean isBottomLeftCornerResize = isBottomSideResize && isLeftSideResize;
-        final boolean isBottomRightCornerResize = isBottomSideResize && isRightSideResize;
-        final boolean isTopRightCornerResize = isTopSideResize && isRightSideResize;
+        final boolean isTopLeftCornerResize = isTopSideResize
+                                              && isLeftSideResize;
+        final boolean isBottomLeftCornerResize = isBottomSideResize
+                                                 && isLeftSideResize;
+        final boolean isBottomRightCornerResize = isBottomSideResize
+                                                  && isRightSideResize;
+        final boolean isTopRightCornerResize = isTopSideResize
+                                               && isRightSideResize;
 
         // Prioritize the four corner cases so we can then drop down
         // confidently to the simpler single-side cases.
         final ResizeTarget resizeTarget = isTopLeftCornerResize
-            ? TOP_LEFT
-            : isBottomLeftCornerResize
-                ? BOTTOM_LEFT
-                : isBottomRightCornerResize
-                    ? BOTTOM_RIGHT
-                    : isTopRightCornerResize
-                        ? TOP_RIGHT
-                        : isTopSideResize
-                            ? TOP
-                            : isLeftSideResize
-                                ? LEFT
-                                : isBottomSideResize ? BOTTOM : isRightSideResize ? RIGHT : NONE;
+                                          ? TOP_LEFT
+                                          : isBottomLeftCornerResize
+                                            ? BOTTOM_LEFT
+                                            : isBottomRightCornerResize
+                                              ? BOTTOM_RIGHT
+                                              : isTopRightCornerResize
+                                                ? TOP_RIGHT
+                                                : isTopSideResize
+                                                  ? TOP
+                                                  : isLeftSideResize
+                                                    ? LEFT
+                                                    : isBottomSideResize
+                                                      ? BOTTOM
+                                                      : isRightSideResize
+                                                        ? RIGHT
+                                                        : NONE;
 
         return resizeTarget;
     }
-
 }

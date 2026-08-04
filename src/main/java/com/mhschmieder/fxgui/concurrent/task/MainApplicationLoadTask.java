@@ -31,9 +31,10 @@
 package com.mhschmieder.fxgui.concurrent.task;
 
 import com.mhschmieder.fxgui.application.MainApplicationWindowHandler;
+import org.apache.commons.math3.util.FastMath;
+
 import javafx.application.Platform;
 import javafx.concurrent.Task;
-import org.apache.commons.math3.util.FastMath;
 
 /**
  * This is the task wrapper for waiting on the main application class to load.
@@ -42,15 +43,16 @@ public final class MainApplicationLoadTask extends Task< Void > {
 
     // 15 seconds (30 x 500ms) ought to be enough for even the slowest computer
     // to initialize the main application.
-    private static final int THREAD_SLEEP_INTERVAL_MS        = 500;
-    private static final int MAXIMUM_THREAD_SLEEP_TIME_MS    = 15000;
-    private static final int MAXIMUM_THREAD_SLEEP_INCREMENTS = FastMath
-            .round( MAXIMUM_THREAD_SLEEP_TIME_MS / THREAD_SLEEP_INTERVAL_MS );
+    private static final int THREAD_SLEEP_INTERVAL_MS = 500;
+    private static final int MAXIMUM_THREAD_SLEEP_TIME_MS = 15000;
+    private static final int MAXIMUM_THREAD_SLEEP_INCREMENTS = FastMath.round(
+            MAXIMUM_THREAD_SLEEP_TIME_MS / THREAD_SLEEP_INTERVAL_MS );
 
     // Cache the progress text so we can initialize it via the constructor.
-    private String           progressText;
+    private String progressText;
 
-    // Cache a reference to the main application window handler (likely a stage).
+    // Cache a reference to the main application window handler (likely a
+    // stage).
     private MainApplicationWindowHandler mainApplicationWindowHandler;
 
     public MainApplicationLoadTask( final String pProgressText ) {
@@ -75,11 +77,12 @@ public final class MainApplicationLoadTask extends Task< Void > {
 
             updateProgress( i + 1, MAXIMUM_THREAD_SLEEP_INCREMENTS );
 
-            // If the main application window handler has finished initializing, 
+            // If the main application window handler has finished
+            // initializing,
             // exit the Splash Screen timer loop.
             // TODO: Make this an observable, if bindings help.
-            if ( ( mainApplicationWindowHandler != null ) 
-                    && mainApplicationWindowHandler.isInitialized() ) {
+            if ( ( mainApplicationWindowHandler != null )
+                 && mainApplicationWindowHandler.isInitialized() ) {
                 break;
             }
         }
@@ -90,11 +93,10 @@ public final class MainApplicationLoadTask extends Task< Void > {
     /**
      * Set the main application window handler.
      *
-     * @param pMainApplicationWindowHandler
-     *            The main application stage window handler
+     * @param pMainApplicationWindowHandler The main application stage window
+     *                                      handler
      */
-    public void setMainApplicationWindowHandler( 
-            final MainApplicationWindowHandler pMainApplicationWindowHandler ) {
+    public void setMainApplicationWindowHandler( final MainApplicationWindowHandler pMainApplicationWindowHandler ) {
         mainApplicationWindowHandler = pMainApplicationWindowHandler;
     }
 

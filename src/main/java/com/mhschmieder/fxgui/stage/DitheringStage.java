@@ -35,6 +35,7 @@ import com.mhschmieder.fxcontrols.control.PredictToolBar;
 import com.mhschmieder.fxgui.layout.DitheringPane;
 import com.mhschmieder.jcommons.branding.ProductBranding;
 import com.mhschmieder.jcommons.util.ClientProperties;
+
 import javafx.scene.Node;
 import javafx.scene.control.ToolBar;
 
@@ -42,31 +43,35 @@ public final class DitheringStage extends XStage {
 
     public static final String DITHERING_FRAME_TITLE_DEFAULT
             = "Dithering Amount";
-
-    // Declare the actions.
-    public SimulationActions simulationActions;
-
-    // Declare the main tool bar.
-    public PredictToolBar toolBar;
-
-    // Declare the main content pane.
-    public DitheringPane ditheringPane;
-    
     // Initial value for dithering disablement (can't be passed to layout pane).
     protected final boolean initialDisableDithering;
+    // Declare the actions.
+    public SimulationActions simulationActions;
+    // Declare the main tool bar.
+    public PredictToolBar toolBar;
+    // Declare the main content pane.
+    public DitheringPane ditheringPane;
 
     public DitheringStage( final ProductBranding pProductBranding,
                            final ClientProperties pClientProperties,
                            final boolean pInitialDisableDithering ) {
         // Always call the superclass constructor first!
-        super( DITHERING_FRAME_TITLE_DEFAULT, 
-               "dithering", 
-               pProductBranding, 
+        super( DITHERING_FRAME_TITLE_DEFAULT,
+               "dithering",
+               pProductBranding,
                pClientProperties );
-        
+
         initialDisableDithering = pInitialDisableDithering;
 
         initStage();
+    }
+
+    private void initStage() {
+        // First have the superclass initialize its content.
+        initStage( "/icons/yusukeKamiyamane/fugue/ImageBlur16.png",
+                   240.0d,
+                   120.0d,
+                   false );
     }
 
     public double getDitheringAmount() {
@@ -74,31 +79,9 @@ public final class DitheringStage extends XStage {
         return ditheringPane.getDitheringAmount();
     }
 
-    private void initStage() {
-        // First have the superclass initialize its content.
-        initStage( "/icons/yusukeKamiyamane/fugue/ImageBlur16.png", 
-                   240.0d, 
-                   120.0d, 
-                   false );
-    }
-
     public boolean isUseDithering() {
         // Forward this method to the Dithering Pane.
         return ditheringPane.isUseDithering();
-    }
-
-    // Load the relevant actions for this Stage.
-    @Override
-    protected void loadActions() {
-        // Make all of the actions.
-        simulationActions = new SimulationActions( clientProperties );
-    }
-
-    @Override
-    protected Node loadContent() {
-        // Instantiate and return the custom Content Node.
-        ditheringPane = new DitheringPane( clientProperties, initialDisableDithering );
-        return ditheringPane;
     }
 
     // Add the Tool Bar for this Stage.
@@ -111,8 +94,23 @@ public final class DitheringStage extends XStage {
         return toolBar;
     }
 
+    // Load the relevant actions for this Stage.
+    @Override
+    protected void loadActions() {
+        // Make all of the actions.
+        simulationActions = new SimulationActions( clientProperties );
+    }
+
+    @Override
+    protected Node loadContent() {
+        // Instantiate and return the custom Content Node.
+        ditheringPane = new DitheringPane( clientProperties,
+                                           initialDisableDithering );
+        return ditheringPane;
+    }
+
     // NOTE: This is the method to use when updating from Preferences.
-    public void updateDithering( final boolean useDithering, 
+    public void updateDithering( final boolean useDithering,
                                  final double ditheringAmount ) {
         // Forward this method to the Dithering Pane.
         ditheringPane.updateDithering( useDithering, ditheringAmount );

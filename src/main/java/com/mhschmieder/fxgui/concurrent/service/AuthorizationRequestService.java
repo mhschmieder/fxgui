@@ -36,6 +36,7 @@ import com.mhschmieder.jcommons.net.AuthorizationServerResponse;
 import com.mhschmieder.jcommons.net.HttpServletRequestProperties;
 import com.mhschmieder.jcommons.security.LoginCredentials;
 import com.mhschmieder.jcommons.util.ClientProperties;
+
 import javafx.scene.control.Dialog;
 import javafx.util.Callback;
 import javafx.util.Pair;
@@ -43,38 +44,93 @@ import javafx.util.Pair;
 /**
  * Implementation class for specifics of authorization server requests.
  */
-public class AuthorizationRequestService extends ServerRequestService< AuthorizationServerResponse > {
+public class AuthorizationRequestService
+        extends ServerRequestService< AuthorizationServerResponse > {
 
-    /** Cache the Login Credentials to use for authorizing the request. */
-    protected LoginCredentials                 loginCredentials;
+    /**
+     * Cache the Login Credentials to use for authorizing the request.
+     */
+    protected LoginCredentials loginCredentials;
 
-    /** Reference to a Login Dialog that instigates the authorization. */
+    /**
+     * Reference to a Login Dialog that instigates the authorization.
+     */
     protected Dialog< Pair< String, String > > loginDialog;
 
     public AuthorizationRequestService( final HttpServletRequestProperties pServerRequestProperties,
                                         final ClientProperties pClientProperties ) {
         // Always call the superclass constructor first!
-        super( pServerRequestProperties,
-               pClientProperties );
+        super( pServerRequestProperties, pClientProperties );
 
         loginCredentials = new LoginCredentials();
 
         // Not all authorization requests are launched from Login Dialogs.
         loginDialog = null;
-        
+
         // Add callbacks for the Service API status tracking.
         addCallbacks();
+    }
+
+    /**
+     * Add callbacks for the Service API status tracking, to handle the most
+     * useful status values such as: scheduled, cancelled, failed, succeeded.
+     * <p>
+     * NOTE: This is meant to cover boilerplate behavior to avoid copy/paste in
+     * downstream clients, especially regarding the Server Login Dialog.
+     */
+    protected void addCallbacks() {
+        // TODO: Tie this into the Login Dialog as a text field validator?
+        setOnFailed( t -> {
+            // Forward any service exceptions to the established logger.
+            final Throwable exception = getException();
+            exception.printStackTrace();
+
+            // Alert the user that there were problems with the service.
+            final String statusMessage = exception.toString();
+            LoginDialogUtilities.showLoginWarningDialog( statusMessage );
+        } );
     }
 
     @Override
     protected AuthorizationRequestTask createTask() {
         // Create a new Authorization Request Task.
-        final AuthorizationRequestTask authorizationrequestTask =
-                                                                new AuthorizationRequestTask( loginCredentials,
-                                                                                              httpServletRequestProperties,
-                                                                                              clientProperties );
+        final AuthorizationRequestTask authorizationrequestTask
+                = new AuthorizationRequestTask( loginCredentials,
+                                                httpServletRequestProperties,
+                                                clientProperties );
 
         return authorizationrequestTask;
+    }
+
+    public LoginCredentials getLoginCredentials() {
+        return loginCredentials;
+    }
+
+    public void setLoginCredentials( final LoginCredentials pLoginCredentials ) {
+        loginCredentials = pLoginCredentials;
+    }
+
+    public Dialog< Pair< String, String > > getLoginDialog() {
+        return loginDialog;
+    }
+
+    public void setLoginDialog( final Dialog< Pair< String, String > > pLoginDialog ) {
+        loginDialog = pLoginDialog;
+    }
+
+    public Callback< Pair< String, String >, Void > makeAuthenticator() {
+        final Callback< Pair< String, String >, Void > authenticator
+                = userInfo -> {
+            // Contact the server's authorization service, if available, to
+            // authorize the user.
+            final LoginCredentials loginCredentialsCandidate
+                    = new LoginCredentials( userInfo.getKey(),
+                                            userInfo.getValue() );
+            requestUserAuthorization( loginCredentialsCandidate );
+            return null;
+        };
+
+        return authenticator;
     }
 
     public void requestUserAuthorization( final LoginCredentials pLoginCredentials ) {
@@ -88,54 +144,5 @@ public class AuthorizationRequestService extends ServerRequestService< Authoriza
 
         // Restart the Service as this also cancels old tasks and then resets.
         restart();
-    }
-
-    public LoginCredentials getLoginCredentials() {
-        return loginCredentials;
-    }
-    
-    public void setLoginCredentials( final LoginCredentials pLoginCredentials ) {
-        loginCredentials = pLoginCredentials;
-    }
-
-    public Dialog< Pair< String, String > > getLoginDialog() {
-        return loginDialog;
-    }
-
-    public void setLoginDialog( final Dialog< Pair< String, String > > pLoginDialog ) {
-        loginDialog = pLoginDialog;
-    }
-    
-    public Callback< Pair< String, String >, Void > makeAuthenticator() {
-        final Callback< Pair< String, String >, Void > authenticator = userInfo -> {
-            // Contact the server's authorization service, if available, to
-            // authorize the user.
-            final LoginCredentials loginCredentialsCandidate = new LoginCredentials( userInfo.getKey(),
-                                                                                     userInfo.getValue() );
-            requestUserAuthorization( loginCredentialsCandidate );
-            return null;
-        };
-        
-        return authenticator;
-    }
-    
-    /**
-     * Add callbacks for the Service API status tracking, to handle the most
-     * useful status values such as: scheduled, cancelled, failed, succeeded.
-     * <p>
-     * NOTE: This is meant to cover boilerplate behavior to avoid copy/paste
-     *  in downstream clients, especially regarding the Server Login Dialog.
-     */
-    protected void addCallbacks() {
-        // TODO: Tie this into the Login Dialog as a text field validator?
-        setOnFailed( t -> {
-            // Forward any service exceptions to the established logger.
-            final Throwable exception = getException();
-            exception.printStackTrace();
-
-            // Alert the user that there were problems with the service.
-            final String statusMessage = exception.toString();
-            LoginDialogUtilities.showLoginWarningDialog( statusMessage );
-        } );
     }
 }

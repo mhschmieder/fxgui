@@ -33,6 +33,11 @@ package com.mhschmieder.fxgui.dialog;
 import com.mhschmieder.fxcontrols.control.TextEditor;
 import com.mhschmieder.fxgui.util.GuiUtilities;
 import com.mhschmieder.jcommons.util.GlobalUtilities;
+
+import java.lang.System.Logger;
+import java.lang.System.Logger.Level;
+import java.util.Collections;
+
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 import javafx.geometry.Insets;
@@ -41,14 +46,10 @@ import javafx.scene.control.DialogPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 
-import java.lang.System.Logger;
-import java.lang.System.Logger.Level;
-import java.util.Collections;
-
 public class NameChangeDialog extends XDialog {
 
-    private static final Logger LOGGER = System.getLogger(
-            NameChangeDialog.class.getName() );
+    private static final Logger LOGGER
+            = System.getLogger( NameChangeDialog.class.getName() );
 
     public StringProperty name;
 
@@ -57,11 +58,9 @@ public class NameChangeDialog extends XDialog {
      * <p>
      * Creates a new {@code XDialog} instance.
      *
-     * @param title
-     * 		The title bar text to use for the Dialog
-     * @param headerText
-     * 		The Header Text to use as a simplified description
-     * @param objectType The object type of the object whose name will change
+     * @param title        The title bar text to use for the Dialog
+     * @param headerText   The Header Text to use as a simplified description
+     * @param objectType   The object type of the object whose name will change
      * @param originalName The original name of the object to be renamed
      * @since 1.0
      */
@@ -71,10 +70,11 @@ public class NameChangeDialog extends XDialog {
                              final String originalName ) {
         super( title, headerText );
 
-        try{
+        try {
             initDialog( objectType, originalName );
-        }catch( final Exception e ){
-            LOGGER.log( Level.ERROR, e.getMessage(), e);
+        }
+        catch ( final Exception e ) {
+            LOGGER.log( Level.ERROR, e.getMessage(), e );
         }
     }
 
@@ -83,14 +83,13 @@ public class NameChangeDialog extends XDialog {
         name = new SimpleStringProperty( originalName );
         final DialogPane dialogPane = getDialogPane();
         dialogPane.getButtonTypes().add( ButtonType.OK );
-        final TextEditor textEditor = new TextEditor(
-                true, GlobalUtilities.makeClientProperties(
-                Collections.emptyMap() ) );
+        final TextEditor textEditor = new TextEditor( true,
+                                                      GlobalUtilities.makeClientProperties(
+                                                              Collections.emptyMap() ) );
         final HBox nameBox = GuiUtilities.getLabeledTextFieldPane(
                 objectType + " " + "Name", textEditor );
-        final VBox content = new VBox(nameBox);
-        content.setPadding( new Insets(
-                10.0d, 10.0d, 10.0d, 10.0d ) );
+        final VBox content = new VBox( nameBox );
+        content.setPadding( new Insets( 10.0d, 10.0d, 10.0d, 10.0d ) );
         content.setSpacing( 10.0d );
         dialogPane.setContent( content );
         textEditor.textProperty().bindBidirectional( name );

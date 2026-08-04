@@ -23,7 +23,8 @@
  *
  * This file is part of the fxgui Library
  *
- * You should have received a copy of the MIT License along with the FxfxguiPhysics
+ * You should have received a copy of the MIT License along with the
+ * FxfxguiPhysics
  * Library. If not, see <https://opensource.org/licenses/MIT>.
  *
  * Project: https://github.com/mhschmieder/fxgui
@@ -34,6 +35,7 @@ import com.mhschmieder.fxgui.layout.CartesianPositionPane;
 import com.mhschmieder.fxgui.util.GuiUtilities;
 import com.mhschmieder.jcommons.util.ClientProperties;
 import com.mhschmieder.jphysics.measure.DistanceUnit;
+
 import javafx.geometry.Insets;
 import javafx.geometry.Point2D;
 import javafx.scene.Node;
@@ -48,13 +50,11 @@ import javafx.scene.layout.BorderPane;
 public class ConfirmCoordinatesDialog extends XDialog {
 
     public CartesianPositionPane _positionPane;
-
-    protected Point2D            _coordinatesCandidate;
-
     /**
      * Cache the Client Properties (System Type, Locale, etc.).
      */
-    public ClientProperties      clientProperties;
+    public ClientProperties clientProperties;
+    protected Point2D _coordinatesCandidate;
 
     public ConfirmCoordinatesDialog( final String title,
                                      final String masthead,
@@ -74,15 +74,12 @@ public class ConfirmCoordinatesDialog extends XDialog {
         }
     }
 
-    public final Point2D getCoordinatesCandidate() {
-        return _coordinatesCandidate;
-    }
-
     private final void initDialog() {
         _positionPane = new CartesianPositionPane( clientProperties );
 
-        final Node positionBorderNode = GuiUtilities
-                .getTitledBorderWrappedNode( _positionPane, "Reference Point Position" ); //$NON-NLS-1$
+        final Node positionBorderNode = GuiUtilities.getTitledBorderWrappedNode(
+                _positionPane,
+                "Reference Point Position" ); //$NON-NLS-1$
 
         final BorderPane borderPane = new BorderPane();
         borderPane.setCenter( positionBorderNode );
@@ -99,7 +96,8 @@ public class ConfirmCoordinatesDialog extends XDialog {
         // the next revision of the Dialog API, at which point we probably have
         // direct control of ENTER anyway by assigning the Default Button.
         borderPane.addEventFilter( KeyEvent.KEY_RELEASED, keyEvent -> {
-            final KeyCombination keyCombo = new KeyCodeCombination( KeyCode.ENTER );
+            final KeyCombination keyCombo
+                    = new KeyCodeCombination( KeyCode.ENTER );
             if ( keyCombo.match( keyEvent ) ) {
                 // Emulate the OK Button being pressed.
                 setResult( ButtonType.OK );
@@ -110,13 +108,12 @@ public class ConfirmCoordinatesDialog extends XDialog {
         } );
     }
 
-    public final void setDistanceUnit( final DistanceUnit distanceUnit ) {
-        _positionPane.updateDistanceUnit( distanceUnit );
+    public final Point2D getCoordinatesCandidate() {
+        return _coordinatesCandidate;
     }
 
-    @Override
-    public void updateModel() {
-        _coordinatesCandidate = _positionPane.getCartesianPosition2D();
+    public final void setDistanceUnit( final DistanceUnit distanceUnit ) {
+        _positionPane.updateDistanceUnit( distanceUnit );
     }
 
     @Override
@@ -124,4 +121,8 @@ public class ConfirmCoordinatesDialog extends XDialog {
         _positionPane.setCartesianPosition2D( _coordinatesCandidate );
     }
 
+    @Override
+    public void updateModel() {
+        _coordinatesCandidate = _positionPane.getCartesianPosition2D();
+    }
 }// class ConfirmCoordinatesDialog

@@ -35,6 +35,7 @@ import com.mhschmieder.fxcontrols.model.MasterLevelSettings;
 import com.mhschmieder.fxcontrols.util.LabelFactory;
 import com.mhschmieder.fxgui.util.GuiUtilities;
 import com.mhschmieder.jcommons.util.ClientProperties;
+
 import javafx.geometry.HPos;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -47,26 +48,23 @@ public final class MasterLevelSettingsPane extends BorderPane {
 
     // Declare static constant to use for symbolically referencing grid column
     // indices, to ensure no errors, and ease of extensibility.
-    public static final int               COLUMN_FIRST             = 0;
-    public static final int               COLUMN_POLARITY          = COLUMN_FIRST;
-    public static final int               COLUMN_GAIN              = COLUMN_POLARITY + 1;
-    public static final int               COLUMN_MUTE              = COLUMN_GAIN + 1;
-    public static final int               COLUMN_LAST              = COLUMN_MUTE;
-    public static final int               NUMBER_OF_COLUMNS        =
-                                                            ( COLUMN_LAST - COLUMN_FIRST ) + 1;
-
+    public static final int COLUMN_FIRST = 0;
+    public static final int COLUMN_POLARITY = COLUMN_FIRST;
+    public static final int COLUMN_GAIN = COLUMN_POLARITY + 1;
+    public static final int COLUMN_MUTE = COLUMN_GAIN + 1;
+    public static final int COLUMN_LAST = COLUMN_MUTE;
+    public static final int NUMBER_OF_COLUMNS = ( COLUMN_LAST - COLUMN_FIRST )
+                                                + 1;
+    // Keep track of how many unique Column Headers there are (due to spanning).
+    public static final int NUMBER_OF_COLUMN_HEADERS = NUMBER_OF_COLUMNS;
     // Declare static constant to use for symbolically referencing grid row
     // indices, to ensure no errors, and ease of extensibility.
-    public static final int               ROW_HEADER               = 0;
-    public static final int               ROW_SETTINGS_FIRST       = ROW_HEADER + 1;
-    public static final int               ROW_SETTINGS_LAST        = ROW_SETTINGS_FIRST;
-    public static final int               ROW_LAST                 = ROW_SETTINGS_LAST;
-
-    // Keep track of how many unique Column Headers there are (due to spanning).
-    public static final int               NUMBER_OF_COLUMN_HEADERS = NUMBER_OF_COLUMNS;
-
+    public static final int ROW_HEADER = 0;
+    public static final int ROW_SETTINGS_FIRST = ROW_HEADER + 1;
+    public static final int ROW_SETTINGS_LAST = ROW_SETTINGS_FIRST;
+    public static final int ROW_LAST = ROW_SETTINGS_LAST;
     // Declare the main GUI nodes that are needed beyond initialization time.
-    protected GridPane                    _masterLevelSettingsGrid;
+    protected GridPane _masterLevelSettingsGrid;
 
     // Give global scope to the Master Level Settings Group so we can access the
     // controls directly without casting from Node via getChildren().
@@ -76,9 +74,10 @@ public final class MasterLevelSettingsPane extends BorderPane {
     protected MasterLevelSettings _masterLevelSettings;
 
     // Cache the Client Properties (System Type, Locale, etc.).
-    protected ClientProperties          _clientProperties;
+    protected ClientProperties _clientProperties;
 
-    // //////////////////////////////////////////////////////////////////////////
+    //
+    // ////////////////////////////////////////////////////////////////////////
     // Constructors and Initialization
     public MasterLevelSettingsPane( final ClientProperties pClientProperties,
                                     final boolean defaultToNegativeGain ) {
@@ -95,21 +94,18 @@ public final class MasterLevelSettingsPane extends BorderPane {
         }
     }
 
-    public MasterLevelSettings getMasterLevelSettings() {
-        return _masterLevelSettings;
-    }
-
     private void initPane( final boolean defaultToNegativeGain ) {
         // Make the grid of individual Master Level Settings controls.
         _masterLevelSettingsGrid = new GridPane();
 
         // We center the column header labels to follow standard conventions.
-        final Label polarityLabel = GuiUtilities.getColumnHeader(
-                LabelFactory.getPolarityLabel() );
-        final Label gainLabel = GuiUtilities.getColumnHeader( 
-                LabelFactory.getGainLabel() );
-        final Label muteLabel = GuiUtilities.getColumnHeader( 
-                LabelFactory.getMuteLabel() );
+        final Label polarityLabel
+                =
+                GuiUtilities.getColumnHeader( LabelFactory.getPolarityLabel() );
+        final Label gainLabel
+                = GuiUtilities.getColumnHeader( LabelFactory.getGainLabel() );
+        final Label muteLabel
+                = GuiUtilities.getColumnHeader( LabelFactory.getMuteLabel() );
 
         // Force all the labels to center within the grid.
         GridPane.setHalignment( polarityLabel, HPos.CENTER );
@@ -121,54 +117,49 @@ public final class MasterLevelSettingsPane extends BorderPane {
         _masterLevelSettingsGrid.setVgap( 2.0d );
         _masterLevelSettingsGrid.setAlignment( Pos.TOP_CENTER );
 
-        _masterLevelSettingsGrid.add( polarityLabel, COLUMN_POLARITY, ROW_HEADER );
+        _masterLevelSettingsGrid.add( polarityLabel,
+                                      COLUMN_POLARITY,
+                                      ROW_HEADER );
         _masterLevelSettingsGrid.add( gainLabel, COLUMN_GAIN, ROW_HEADER );
         _masterLevelSettingsGrid.add( muteLabel, COLUMN_MUTE, ROW_HEADER );
 
-        _masterLevelSettingsControls = new MasterLevelSettingsControls( _clientProperties,
-                                                                        defaultToNegativeGain,
-                                                                        true );
+        _masterLevelSettingsControls = new MasterLevelSettingsControls(
+                _clientProperties,
+                defaultToNegativeGain,
+                true );
 
         _masterLevelSettingsGrid.add( _masterLevelSettingsControls._polarityToggleButton,
                                       COLUMN_POLARITY,
                                       ROW_SETTINGS_FIRST );
 
         _masterLevelSettingsControls._polarityToggleButton.selectedProperty()
-                .addListener( ( observableValue,
-                                oldValue,
-                                newValue ) -> setPolarityReversed( newValue ) );
+                                                          .addListener( ( observableValue, oldValue, newValue ) -> setPolarityReversed(
+                                                                  newValue ) );
 
-        _masterLevelSettingsGrid
-                .add( _masterLevelSettingsControls._gainEditor, COLUMN_GAIN, ROW_SETTINGS_FIRST );
+        _masterLevelSettingsGrid.add( _masterLevelSettingsControls._gainEditor,
+                                      COLUMN_GAIN,
+                                      ROW_SETTINGS_FIRST );
 
         _masterLevelSettingsControls._gainEditor.focusedProperty()
-                .addListener( ( observableValue, oldValue, newValue ) -> {
-                    if ( !newValue ) {
-                        updateGainModel();
-                    }
-                } );
+                                                .addListener( ( observableValue, oldValue, newValue ) -> {
+                                                    if ( !newValue ) {
+                                                        updateGainModel();
+                                                    }
+                                                } );
 
         _masterLevelSettingsGrid.add( _masterLevelSettingsControls._muteToggleButton,
                                       COLUMN_MUTE,
                                       ROW_SETTINGS_FIRST );
 
         _masterLevelSettingsControls._muteToggleButton.selectedProperty()
-                .addListener( ( observableValue,
-                                oldValue,
-                                newValue ) -> setMuted( newValue ) );
+                                                      .addListener( ( observableValue, oldValue, newValue ) -> setMuted(
+                                                              newValue ) );
 
         // Center the grid for the most balanced layout.
         setCenter( _masterLevelSettingsGrid );
 
         setAlignment( _masterLevelSettingsGrid, Pos.CENTER );
         setPadding( new Insets( 6.0d ) );
-    }
-
-    public void setMasterLevelSettings( final MasterLevelSettings masterLevelSettings ) {
-        _masterLevelSettings = masterLevelSettings;
-
-        // Update the view to show the new Master Level Settings.
-        updateMasterLevelSettingsView();
     }
 
     private void setMuted( final boolean muted ) {
@@ -181,7 +172,8 @@ public final class MasterLevelSettingsPane extends BorderPane {
     }
 
     private void setPolarityReversed( final boolean polarityReversed ) {
-        final boolean oldPolarityReversed = _masterLevelSettings.isPolarityReversed();
+        final boolean oldPolarityReversed
+                = _masterLevelSettings.isPolarityReversed();
         final boolean polarityChanged = oldPolarityReversed != polarityReversed;
 
         if ( polarityChanged ) {
@@ -190,19 +182,33 @@ public final class MasterLevelSettingsPane extends BorderPane {
     }
 
     public void updateGainModel() {
-        final double newProcessorGain = _masterLevelSettingsControls._gainEditor.getValue();
+        final double newProcessorGain
+                = _masterLevelSettingsControls._gainEditor.getValue();
         final double oldProcessorGain = _masterLevelSettings.getGain();
-        final boolean processorGainChanged =
-                                           ( float ) newProcessorGain != ( float ) oldProcessorGain;
+        final boolean processorGainChanged = ( float ) newProcessorGain
+                                             != ( float ) oldProcessorGain;
         if ( processorGainChanged ) {
             // Reset the Processor Gain if it changed.
             _masterLevelSettings.setGain( newProcessorGain );
         }
     }
 
+    public MasterLevelSettings getMasterLevelSettings() {
+        return _masterLevelSettings;
+    }
+
+    public void setMasterLevelSettings( final MasterLevelSettings masterLevelSettings ) {
+        _masterLevelSettings = masterLevelSettings;
+
+        // Update the view to show the new Master Level Settings.
+        updateMasterLevelSettingsView();
+    }
+
     public void updateMasterLevelSettingsView() {
-        final boolean polarityReversed = _masterLevelSettings.isPolarityReversed();
-        _masterLevelSettingsControls._polarityToggleButton.setSelected( polarityReversed );
+        final boolean polarityReversed
+                = _masterLevelSettings.isPolarityReversed();
+        _masterLevelSettingsControls._polarityToggleButton.setSelected(
+                polarityReversed );
 
         final double processorGain = _masterLevelSettings.getGain();
         _masterLevelSettingsControls._gainEditor.setValue( processorGain );

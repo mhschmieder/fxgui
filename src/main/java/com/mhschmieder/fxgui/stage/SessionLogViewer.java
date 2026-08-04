@@ -36,6 +36,7 @@ import com.mhschmieder.jcommons.branding.ProductBranding;
 import com.mhschmieder.jcommons.io.LogUtilities;
 import com.mhschmieder.jcommons.util.ClientProperties;
 import com.mhschmieder.jcommons.util.SystemType;
+
 import javafx.application.Application;
 import javafx.geometry.Insets;
 import javafx.scene.Node;
@@ -48,26 +49,21 @@ import javafx.scene.layout.BorderPane;
 
 public class SessionLogViewer extends XStage {
 
-    public static final String     SESSION_LOG_VIEWER_TITLE_DEFAULT = " - Session Log Viewer";
-
+    public static final String SESSION_LOG_VIEWER_TITLE_DEFAULT
+            = " - Session Log Viewer";
+    // Declare a string to hold the filename for this Session Log File Cache.
+    private final String _sessionLogFilename;
     // Declare the main tool bar.
     public SessionLogViewerToolBar _toolBar;
-
     // Declare a text area for displaying the Session Log.
-    protected TextArea             _sessionLogTextArea;
-
-    // Declare a string to hold the filename for this Session Log File Cache.
-    private final String           _sessionLogFilename;
+    protected TextArea _sessionLogTextArea;
 
     public SessionLogViewer( final String sessionLogFilename,
                              final ProductBranding productBranding,
                              final ClientProperties pClientProperties ) {
-        this( sessionLogFilename,
-              productBranding,
-              pClientProperties,
-              true );
+        this( sessionLogFilename, productBranding, pClientProperties, true );
     }
- 
+
     public SessionLogViewer( final String sessionLogFilename,
                              final ProductBranding productBranding,
                              final ClientProperties pClientProperties,
@@ -78,19 +74,6 @@ public class SessionLogViewer extends XStage {
               productBranding,
               pClientProperties,
               allowSessionLogRestart );
-    }
-
-    public SessionLogViewer( final String title,
-                             final String windowKeyPrefix,
-                             final String sessionLogFilename,
-                             final ProductBranding productBranding,
-                             final ClientProperties pClientProperties ) {
-        this( title, 
-              windowKeyPrefix, 
-              sessionLogFilename, 
-              productBranding, 
-              pClientProperties, 
-              true );
     }
 
     public SessionLogViewer( final String title,
@@ -115,17 +98,34 @@ public class SessionLogViewer extends XStage {
     }
 
     protected final void initStage( final boolean allowSessionLogRestart ) {
-       // First have the superclass initialize its content.
-       initStage( "/icons/everaldo/EasyMobLog16.png", 840.0d, 480.0d, true );
-       
-       // NOTE: When using Log4J and some other logging mechanisms, there may
-       //  be race conditions or security violations if the user resets the log.
-       // TODO: Write forwarding methods down the hierarchy to avoid indirection.
-       if ( !allowSessionLogRestart ) {
-           _toolBar._sessionLogNewUpdateButtons._newSessionLogButton.setDisable( true );
-           _toolBar._sessionLogNewUpdateButtons._newSessionLogButton.setVisible( false );
-       }
-   }
+        // First have the superclass initialize its content.
+        initStage( "/icons/everaldo/EasyMobLog16.png", 840.0d, 480.0d, true );
+
+        // NOTE: When using Log4J and some other logging mechanisms, there may
+        //  be race conditions or security violations if the user resets the
+        //  log.
+        // TODO: Write forwarding methods down the hierarchy to avoid
+        //  indirection.
+        if ( !allowSessionLogRestart ) {
+            _toolBar._sessionLogNewUpdateButtons._newSessionLogButton.setDisable(
+                    true );
+            _toolBar._sessionLogNewUpdateButtons._newSessionLogButton.setVisible(
+                    false );
+        }
+    }
+
+    public SessionLogViewer( final String title,
+                             final String windowKeyPrefix,
+                             final String sessionLogFilename,
+                             final ProductBranding productBranding,
+                             final ClientProperties pClientProperties ) {
+        this( title,
+              windowKeyPrefix,
+              sessionLogFilename,
+              productBranding,
+              pClientProperties,
+              true );
+    }
 
     // Add the Tool Bar's event listeners.
     // TODO: Use appropriate methodology to add an action linked to both
@@ -134,8 +134,7 @@ public class SessionLogViewer extends XStage {
     @Override
     protected final void addToolBarListeners() {
         // Load the event handler for the File Export Session Log Button.
-        _toolBar._fileActionButtons._fileExportSessionLogButton
-                .setOnAction( evt -> doExportSessionLog() );
+        _toolBar._fileActionButtons._fileExportSessionLogButton.setOnAction( evt -> doExportSessionLog() );
 
         // Load the event handler for the File Page Setup Button.
         _toolBar._fileActionButtons._filePrintButton.setOnAction( evt -> doPageSetup() );
@@ -147,45 +146,50 @@ public class SessionLogViewer extends XStage {
         _toolBar._textFormattingButtons._wrapTextButton.setOnAction( evt -> doWrapTextMode() );
 
         // Load the event handler for the New Session Log Button.
-        _toolBar._sessionLogNewUpdateButtons._newSessionLogButton
-                .setOnAction( evt -> doNewSessionLog() );
+        _toolBar._sessionLogNewUpdateButtons._newSessionLogButton.setOnAction(
+                evt -> doNewSessionLog() );
 
         // Load the event handler for the Update Session Log Button.
-        _toolBar._sessionLogNewUpdateButtons._updateSessionLogButton
-                .setOnAction( evt -> doUpdateSessionLog() );
+        _toolBar._sessionLogNewUpdateButtons._updateSessionLogButton.setOnAction(
+                evt -> doUpdateSessionLog() );
 
         // Detect the ENTER key while the File Export Session Log Button has
         // focus, and use it to trigger its action (standard expected behavior).
-        _toolBar._fileActionButtons._fileExportSessionLogButton.setOnKeyReleased( keyEvent -> {
-            final KeyCombination keyCombo = new KeyCodeCombination( KeyCode.ENTER );
-            if ( keyCombo.match( keyEvent ) ) {
-                // Trigger the File Export Session Log action.
-                doExportSessionLog();
+        _toolBar._fileActionButtons._fileExportSessionLogButton.setOnKeyReleased(
+                keyEvent -> {
+                    final KeyCombination keyCombo = new KeyCodeCombination(
+                            KeyCode.ENTER );
+                    if ( keyCombo.match( keyEvent ) ) {
+                        // Trigger the File Export Session Log action.
+                        doExportSessionLog();
 
-                // Consume the ENTER key so it doesn't get processed
-                // twice.
-                keyEvent.consume();
-            }
-        } );
+                        // Consume the ENTER key so it doesn't get processed
+                        // twice.
+                        keyEvent.consume();
+                    }
+                } );
 
         // Detect the ENTER key while the File Page Setup Button has focus, and
         // use it to trigger its action (standard expected behavior).
-        _toolBar._fileActionButtons._filePageSetupButton.setOnKeyReleased( keyEvent -> {
-            final KeyCombination keyCombo = new KeyCodeCombination( KeyCode.ENTER );
-            if ( keyCombo.match( keyEvent ) ) {
-                // Trigger the File Page Setup action.
-                doPageSetup();
+        _toolBar._fileActionButtons._filePageSetupButton.setOnKeyReleased(
+                keyEvent -> {
+                    final KeyCombination keyCombo = new KeyCodeCombination(
+                            KeyCode.ENTER );
+                    if ( keyCombo.match( keyEvent ) ) {
+                        // Trigger the File Page Setup action.
+                        doPageSetup();
 
-                // Consume the ENTER key so it doesn't get processed
-                // twice.
-                keyEvent.consume();
-            }
-        } );
+                        // Consume the ENTER key so it doesn't get processed
+                        // twice.
+                        keyEvent.consume();
+                    }
+                } );
 
         // Detect the ENTER key while the File Print Button has focus, and use
         // it to trigger its action (standard expected behavior).
         _toolBar._fileActionButtons._filePrintButton.setOnKeyReleased( keyEvent -> {
-            final KeyCombination keyCombo = new KeyCodeCombination( KeyCode.ENTER );
+            final KeyCombination keyCombo
+                    = new KeyCodeCombination( KeyCode.ENTER );
             if ( keyCombo.match( keyEvent ) ) {
                 // Trigger the File Print action.
                 doPrint();
@@ -198,49 +202,86 @@ public class SessionLogViewer extends XStage {
 
         // Detect the ENTER key while the Wrap Text Toggle Button has focus, and
         // use it to trigger its action (standard expected behavior).
-        _toolBar._textFormattingButtons._wrapTextButton.setOnKeyReleased( keyEvent -> {
-            final KeyCombination keyCombo = new KeyCodeCombination( KeyCode.ENTER );
-            if ( keyCombo.match( keyEvent ) ) {
-                // Trigger the Wrap Text Toggle action.
-                doWrapTextToggle();
+        _toolBar._textFormattingButtons._wrapTextButton.setOnKeyReleased(
+                keyEvent -> {
+                    final KeyCombination keyCombo = new KeyCodeCombination(
+                            KeyCode.ENTER );
+                    if ( keyCombo.match( keyEvent ) ) {
+                        // Trigger the Wrap Text Toggle action.
+                        doWrapTextToggle();
 
-                // Consume the ENTER key so it doesn't get processed
-                // twice.
-                keyEvent.consume();
-            }
-        } );
+                        // Consume the ENTER key so it doesn't get processed
+                        // twice.
+                        keyEvent.consume();
+                    }
+                } );
 
         // Detect the ENTER key while the New Session Log Button has focus, and
         // use it to trigger its action (standard expected behavior).
-        _toolBar._sessionLogNewUpdateButtons._newSessionLogButton.setOnKeyReleased( keyEvent -> {
-            final KeyCombination keyCombo = new KeyCodeCombination( KeyCode.ENTER );
-            if ( keyCombo.match( keyEvent ) ) {
-                // Trigger the New Session Log action.
-                doNewSessionLog();
+        _toolBar._sessionLogNewUpdateButtons._newSessionLogButton.setOnKeyReleased(
+                keyEvent -> {
+                    final KeyCombination keyCombo = new KeyCodeCombination(
+                            KeyCode.ENTER );
+                    if ( keyCombo.match( keyEvent ) ) {
+                        // Trigger the New Session Log action.
+                        doNewSessionLog();
 
-                // Consume the ENTER key so it doesn't get processed
-                // twice.
-                keyEvent.consume();
-            }
-        } );
+                        // Consume the ENTER key so it doesn't get processed
+                        // twice.
+                        keyEvent.consume();
+                    }
+                } );
 
         // Detect the ENTER key while the Update Session Log Button has focus,
         // and use it to trigger its action (standard expected behavior).
-        _toolBar._sessionLogNewUpdateButtons._updateSessionLogButton.setOnKeyReleased( keyEvent -> {
-            final KeyCombination keyCombo = new KeyCodeCombination( KeyCode.ENTER );
-            if ( keyCombo.match( keyEvent ) ) {
-                // Trigger the Update Session Log action.
-                doUpdateSessionLog();
+        _toolBar._sessionLogNewUpdateButtons._updateSessionLogButton.setOnKeyReleased(
+                keyEvent -> {
+                    final KeyCombination keyCombo = new KeyCodeCombination(
+                            KeyCode.ENTER );
+                    if ( keyCombo.match( keyEvent ) ) {
+                        // Trigger the Update Session Log action.
+                        doUpdateSessionLog();
 
-                // Consume the ENTER key so it doesn't get processed
-                // twice.
-                keyEvent.consume();
-            }
-        } );
+                        // Consume the ENTER key so it doesn't get processed
+                        // twice.
+                        keyEvent.consume();
+                    }
+                } );
     }
 
     protected final void doNewSessionLog() {
         newSessionLogFileCache();
+    }
+
+    // Start a new Session Log File Cache and related settings.
+    public void newSessionLogFileCache() {
+        // Redirect the logging from scratch, to start with a clean log.
+        LogUtilities.redirectLogging( _sessionLogFilename );
+
+        // Restore the Session Log Header (important for service calls).
+        // NOTE: As we might change the main CSS stylesheet at run-time, it is
+        //  best to query it anew rather than cache and forward it to this
+        //  class.
+        String cssStylesheet = Application.getUserAgentStylesheet();
+        if ( cssStylesheet == null ) {
+            cssStylesheet = "*** UNSPECIFIED ***";
+        }
+        LogUtilities.generateSessionLogHeader( clientProperties,
+                                               _productBranding,
+                                               cssStylesheet );
+
+        // Update the Session Log File Cache to reflect the erasure.
+        updateSessionLogFileCache();
+    }
+
+    // Update the Session Log File Cache and related settings.
+    public final void updateSessionLogFileCache() {
+        // Get the current Session Log File Cache.
+        final String sessionLog = LogUtilities.loadSessionLogFromCache(
+                _sessionLogFilename );
+
+        // Copy the Session Log to the Text Area.
+        _sessionLogTextArea.setText( sessionLog );
     }
 
     protected final void doUpdateSessionLog() {
@@ -251,18 +292,27 @@ public class SessionLogViewer extends XStage {
         setWrapTextMode( _toolBar._textFormattingButtons._wrapTextButton.isSelected() );
     }
 
+    protected final void setWrapTextMode( final boolean wrapText ) {
+        // Match the Wrap Text Mode to the toggle button state.
+        _sessionLogTextArea.setWrapText( wrapText );
+    }
+
     protected final void doWrapTextToggle() {
         // Toggle the state of the Wrap Text Toggle Button.
-        _toolBar._textFormattingButtons._wrapTextButton
-                .setSelected( !_toolBar._textFormattingButtons._wrapTextButton.isSelected() );
+        _toolBar._textFormattingButtons._wrapTextButton.setSelected( !_toolBar._textFormattingButtons._wrapTextButton.isSelected() );
 
         // Now propagate that to the Wrap Text Mode setter.
         doWrapTextMode();
     }
 
+    // Add the Tool Bar for this Frame.
     @Override
-    public final String getSessionLogFilename() {
-        return _sessionLogFilename;
+    public final ToolBar loadToolBar() {
+        // Build the Tool Bar for this Frame.
+        _toolBar = new SessionLogViewerToolBar( clientProperties );
+
+        // Return the Tool Bar so the superclass can use it.
+        return _toolBar;
     }
 
     @Override
@@ -274,7 +324,8 @@ public class SessionLogViewer extends XStage {
         _sessionLogTextArea.setPrefHeight( 320d );
         _sessionLogTextArea.autosize();
 
-        ControlUtilities.setTextAreaProperties( _sessionLogTextArea, "log-viewer-text-area" );
+        ControlUtilities.setTextAreaProperties( _sessionLogTextArea,
+                                                "log-viewer-text-area" );
 
         // Make the Session Log just translucent enough to see what's behind it.
         // NOTE: Translucency throws exceptions on Linux and Windows 8.1, but
@@ -290,37 +341,9 @@ public class SessionLogViewer extends XStage {
         return contentPane;
     }
 
-    // Add the Tool Bar for this Frame.
     @Override
-    public final ToolBar loadToolBar() {
-        // Build the Tool Bar for this Frame.
-        _toolBar = new SessionLogViewerToolBar( clientProperties );
-
-        // Return the Tool Bar so the superclass can use it.
-        return _toolBar;
-    }
-
-    // Start a new Session Log File Cache and related settings.
-    public void newSessionLogFileCache() {
-        // Redirect the logging from scratch, to start with a clean log.
-        LogUtilities.redirectLogging( _sessionLogFilename );
-
-        // Restore the Session Log Header (important for service calls).
-        // NOTE: As we might change the main CSS stylesheet at run-time, it is
-        //  best to query it anew rather than cache and forward it to this class.
-        String cssStylesheet = Application.getUserAgentStylesheet();
-        if ( cssStylesheet == null ) {
-            cssStylesheet = "*** UNSPECIFIED ***";
-        }
-        LogUtilities.generateSessionLogHeader( clientProperties, _productBranding, cssStylesheet );
-
-        // Update the Session Log File Cache to reflect the erasure.
-        updateSessionLogFileCache();
-    }
-
-    protected final void setWrapTextMode( final boolean wrapText ) {
-        // Match the Wrap Text Mode to the toggle button state.
-        _sessionLogTextArea.setWrapText( wrapText );
+    public final String getSessionLogFilename() {
+        return _sessionLogFilename;
     }
 
     // NOTE: This must be overridden so we can update the text area view of the
@@ -331,14 +354,5 @@ public class SessionLogViewer extends XStage {
 
         // Update the Session Log File Cache and related settings.
         updateSessionLogFileCache();
-    }
-
-    // Update the Session Log File Cache and related settings.
-    public final void updateSessionLogFileCache() {
-        // Get the current Session Log File Cache.
-        final String sessionLog = LogUtilities.loadSessionLogFromCache( _sessionLogFilename );
-
-        // Copy the Session Log to the Text Area.
-        _sessionLogTextArea.setText( sessionLog );
     }
 }

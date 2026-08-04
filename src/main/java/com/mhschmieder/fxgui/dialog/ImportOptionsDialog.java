@@ -31,6 +31,7 @@
 package com.mhschmieder.fxgui.dialog;
 
 import com.mhschmieder.jcommons.util.ClientProperties;
+
 import javafx.scene.control.ButtonBar.ButtonData;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.DialogPane;
@@ -55,10 +56,10 @@ public abstract class ImportOptionsDialog extends XDialog {
 
     private void initDialog() {
         // Replace the standard "OK" button text with "Import".
-        _importButton = new ButtonType( "Import", ButtonData.OK_DONE ); //$NON-NLS-1$
+        _importButton = new ButtonType( "Import",
+                                        ButtonData.OK_DONE ); //$NON-NLS-1$
 
         final DialogPane dialogPane = getDialogPane();
         dialogPane.getButtonTypes().addAll( _importButton, ButtonType.CANCEL );
     }
-
 }

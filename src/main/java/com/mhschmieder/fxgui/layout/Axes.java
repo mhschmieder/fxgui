@@ -39,20 +39,20 @@ import javafx.scene.layout.Region;
 
 /**
  * Derived from <a href=
- * "http://stackoverflow.com/questions/24005247/draw-cartesian-plane-graphi-with-canvas-in-javafx/24008426#24008426"
- * >
- * jewelsea's StackOverflow answer</a>.
- *
- * @version 1.0
+ * "http://stackoverflow.com/questions/24005247/draw-cartesian-plane-graphi
+ * -with-canvas-in-javafx/24008426#24008426" > jewelsea's StackOverflow
+ * answer</a>.
  *
  * @author Mark Schmieder
+ * @version 1.0
  */
 public class Axes extends Pane {
 
     private final NumberAxis xAxis;
     private final NumberAxis yAxis;
 
-    public Axes( final Bounds dims, final double tickUnit ) {
+    public Axes( final Bounds dims,
+                 final double tickUnit ) {
         setMinSize( Region.USE_PREF_SIZE, Region.USE_PREF_SIZE );
         setPrefSize( dims.getWidth(), dims.getHeight() );
         setMaxSize( Region.USE_PREF_SIZE, Region.USE_PREF_SIZE );
@@ -68,7 +68,8 @@ public class Axes extends Pane {
         yAxis.setMinorTickVisible( false );
         yAxis.setPrefHeight( dims.getHeight() );
         yAxis.layoutXProperty()
-                .bind( Bindings.subtract( ( 0.5d * dims.getWidth() ) + 1, yAxis.widthProperty() ) );
+             .bind( Bindings.subtract( ( 0.5d * dims.getWidth() ) + 1,
+                                       yAxis.widthProperty() ) );
 
         getChildren().setAll( xAxis, yAxis );
     }

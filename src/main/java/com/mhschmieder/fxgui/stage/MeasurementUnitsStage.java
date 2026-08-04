@@ -36,6 +36,7 @@ import com.mhschmieder.fxcontrols.model.MeasurementUnitProperties;
 import com.mhschmieder.fxgui.layout.MeasurementUnitsPane;
 import com.mhschmieder.jcommons.branding.ProductBranding;
 import com.mhschmieder.jcommons.util.ClientProperties;
+
 import javafx.scene.Node;
 import javafx.scene.control.ToolBar;
 import javafx.scene.input.KeyCode;
@@ -44,11 +45,12 @@ import javafx.scene.input.KeyCombination;
 
 public final class MeasurementUnitsStage extends XStage {
 
-    public static final String     MEASUREMENT_UNITS_FRAME_TITLE_DEFAULT  = "Measurement Units"; //$NON-NLS-1$
+    public static final String MEASUREMENT_UNITS_FRAME_TITLE_DEFAULT
+            = "Measurement Units"; //$NON-NLS-1$
 
     // Default window locations and dimensions.
-    private static final int       MEASUREMENT_UNITS_FRAME_WIDTH_DEFAULT  = 320;
-    private static final int       MEASUREMENT_UNITS_FRAME_HEIGHT_DEFAULT = 280;
+    private static final int MEASUREMENT_UNITS_FRAME_WIDTH_DEFAULT = 320;
+    private static final int MEASUREMENT_UNITS_FRAME_HEIGHT_DEFAULT = 280;
 
     // Declare the actions.
     public MeasurementUnitsActions _actions;
@@ -59,7 +61,7 @@ public final class MeasurementUnitsStage extends XStage {
     // Declare the main content pane.
     public MeasurementUnitsPane _measurementUnitsPane;
 
-    @SuppressWarnings("nls")
+    @SuppressWarnings( "nls" )
     public MeasurementUnitsStage( final boolean needDistanceUnits,
                                   final boolean needAngleUnits,
                                   final boolean needWeightUnits,
@@ -85,6 +87,19 @@ public final class MeasurementUnitsStage extends XStage {
         }
     }
 
+    @SuppressWarnings( "nls" )
+    protected void initStage( final boolean needDistanceUnits,
+                              final boolean needAngleUnits,
+                              final boolean needWeightUnits,
+                              final boolean needTemperatureUnits,
+                              final boolean needPressureUnits ) {
+        // First have the superclass initialize its content.
+        initStage( "/com/led24/icons/RulerCorner16.png",
+                   MEASUREMENT_UNITS_FRAME_WIDTH_DEFAULT,
+                   MEASUREMENT_UNITS_FRAME_HEIGHT_DEFAULT,
+                   false );
+    }
+
     // Add all of the relevant action handlers.
     @Override
     protected void addActionHandlers() {
@@ -101,7 +116,8 @@ public final class MeasurementUnitsStage extends XStage {
         // Detect the ENTER key while the Reset Button has focus, and use it to
         // trigger its action (standard expected behavior).
         _toolBar._resetButton.setOnKeyReleased( keyEvent -> {
-            final KeyCombination keyCombo = new KeyCodeCombination( KeyCode.ENTER );
+            final KeyCombination keyCombo
+                    = new KeyCodeCombination( KeyCode.ENTER );
             if ( keyCombo.match( keyEvent ) ) {
                 // Trigger the Reset action.
                 doReset();
@@ -113,21 +129,14 @@ public final class MeasurementUnitsStage extends XStage {
         } );
     }
 
-    protected void doReset() {
-        reset();
-    }
+    // Add the Tool Bar for this Stage.
+    @Override
+    public ToolBar loadToolBar() {
+        // Build the Tool Bar for this Stage.
+        _toolBar = new MeasurementUnitsToolBar( clientProperties, _actions );
 
-    @SuppressWarnings("nls")
-    protected void initStage( final boolean needDistanceUnits,
-                              final boolean needAngleUnits,
-                              final boolean needWeightUnits,
-                              final boolean needTemperatureUnits,
-                              final boolean needPressureUnits ) {
-        // First have the superclass initialize its content.
-        initStage( "/com/led24/icons/RulerCorner16.png",
-                   MEASUREMENT_UNITS_FRAME_WIDTH_DEFAULT,
-                   MEASUREMENT_UNITS_FRAME_HEIGHT_DEFAULT,
-                   false );
+        // Return the Tool Bar so the superclass can use it.
+        return _toolBar;
     }
 
     // Load the relevant actions for this Stage.
@@ -144,16 +153,6 @@ public final class MeasurementUnitsStage extends XStage {
         return _measurementUnitsPane;
     }
 
-    // Add the Tool Bar for this Stage.
-    @Override
-    public ToolBar loadToolBar() {
-        // Build the Tool Bar for this Stage.
-        _toolBar = new MeasurementUnitsToolBar( clientProperties, _actions );
-
-        // Return the Tool Bar so the superclass can use it.
-        return _toolBar;
-    }
-
     // Reset all fields to the default values, regardless of state.
     // NOTE: This is done from the view vs. the model, as there may be more
     // than one component per property.
@@ -163,11 +162,14 @@ public final class MeasurementUnitsStage extends XStage {
         _measurementUnitsPane.reset();
     }
 
+    protected void doReset() {
+        reset();
+    }
+
     // Set and propagate the Measurement Units reference.
     // NOTE: This should be done only once, to avoid breaking bindings.
-    public void setMeasurementUnits(
-            final MeasurementUnitProperties pMeasurementUnitProperties ) {
+    public void setMeasurementUnits( final MeasurementUnitProperties pMeasurementUnitProperties ) {
         // Forward this reference to the Measurement Units Pane.
-        _measurementUnitsPane.setMeasurementUnits(pMeasurementUnitProperties);
+        _measurementUnitsPane.setMeasurementUnits( pMeasurementUnitProperties );
     }
 }

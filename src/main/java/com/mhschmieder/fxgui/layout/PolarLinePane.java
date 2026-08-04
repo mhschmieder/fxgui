@@ -39,24 +39,27 @@ import com.mhschmieder.jcommons.util.ClientProperties;
 import com.mhschmieder.jgraphics.input.ScrollingSensitivity;
 import com.mhschmieder.jphysics.measure.AngleUnit;
 import com.mhschmieder.jphysics.measure.DistanceUnit;
+
+import java.util.List;
+
 import javafx.collections.ObservableList;
 import javafx.geometry.Insets;
 import javafx.scene.Node;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 
-import java.util.List;
-
 public final class PolarLinePane extends VBox {
 
     public LinearObjectPropertiesPane _linearObjectPropertiesPane;
-    public PolarLinePlacementPane     _polarLinePlacementPane;
-
-    /** Layer Collection reference. */
+    public PolarLinePlacementPane _polarLinePlacementPane;
+    /**
+     * Client Properties (System Type, Locale, etc.).
+     */
+    public ClientProperties _clientProperties;
+    /**
+     * Layer Collection reference.
+     */
     private List< Layer > _layerCollection;
-
-    /** Client Properties (System Type, Locale, etc.). */
-    public ClientProperties                 _clientProperties;
 
     public PolarLinePane( final ClientProperties pClientProperties,
                           final GraphicalObjectCollection< PolarLine > polarLineCollection,
@@ -73,31 +76,15 @@ public final class PolarLinePane extends VBox {
         _layerCollection = LayerManagement.makeLayerCollection();
 
         try {
-            initPane( polarLineCollection, 
+            initPane( polarLineCollection,
                       polarLineType,
-                      projectorType, 
-                      projectionZonesType, 
+                      projectorType,
+                      projectionZonesType,
                       projectionZonesUsageContext );
         }
         catch ( final Exception ex ) {
             ex.printStackTrace();
         }
-    }
-
-    public String getNewPolarLineLabelDefault() {
-        // Forward this method to the Linear Object Properties Pane.
-        return _linearObjectPropertiesPane.getNewLinearObjectLabelDefault();
-    }
-
-    public String getUniquePolarLineLabel( final String polarLineLabelCandidate ) {
-        // Forward this method to the Linear Object Properties Pane.
-        return _linearObjectPropertiesPane
-                .getUniqueLinearObjectLabel( polarLineLabelCandidate );
-    }
-
-    public LinearObjectProperties getLinearObjectProperties() {
-        // Forward this method to the Linear Object Properties Pane.
-        return _linearObjectPropertiesPane.getLinearObjectProperties();
     }
 
     private void initPane( final GraphicalObjectCollection< PolarLine > polarLineCollection,
@@ -106,14 +93,16 @@ public final class PolarLinePane extends VBox {
                            final String projectionZonesType,
                            final String projectionZonesUsageContext ) {
         final String polarLineLabelDefault = polarLineType;
-        _linearObjectPropertiesPane = new LinearObjectPropertiesPane( _clientProperties,
-                                                                      polarLineLabelDefault,
-                                                                      polarLineCollection,
-                                                                      projectorType,
-                                                                      projectionZonesType,
-                                                                      projectionZonesUsageContext );
+        _linearObjectPropertiesPane = new LinearObjectPropertiesPane(
+                _clientProperties,
+                polarLineLabelDefault,
+                polarLineCollection,
+                projectorType,
+                projectionZonesType,
+                projectionZonesUsageContext );
 
-        _polarLinePlacementPane = new PolarLinePlacementPane( _clientProperties );
+        _polarLinePlacementPane
+                = new PolarLinePlacementPane( _clientProperties );
 
         final ObservableList< Node > layout = getChildren();
         layout.addAll( _linearObjectPropertiesPane, _polarLinePlacementPane );
@@ -125,13 +114,17 @@ public final class PolarLinePane extends VBox {
         VBox.setVgrow( _polarLinePlacementPane, Priority.ALWAYS );
 
         // If the Projector status changes in any way, update the Preview.
-        _linearObjectPropertiesPane._linearObjectPropertiesControls._useAsProjectorCheckBox
-                .selectedProperty().addListener( ( observable, oldValue, newValue ) -> {
-                    final PolarLine polarLine = new PolarLine();
-                    updatePolarLineModel( polarLine );
-                } );
-        _linearObjectPropertiesPane._linearObjectPropertiesControls._projectionZonesSelector
-                .setOnAction( evt -> {
+        _linearObjectPropertiesPane._linearObjectPropertiesControls._useAsProjectorCheckBox.selectedProperty()
+                                                                                           .addListener(
+                                                                                                   ( observable, oldValue, newValue ) -> {
+                                                                                                       final PolarLine
+                                                                                                               polarLine
+                                                                                                               = new PolarLine();
+                                                                                                       updatePolarLineModel(
+                                                                                                               polarLine );
+                                                                                                   } );
+        _linearObjectPropertiesPane._linearObjectPropertiesControls._projectionZonesSelector.setOnAction(
+                evt -> {
                     final PolarLine polarLine = new PolarLine();
                     updatePolarLineModel( polarLine );
                 } );
@@ -142,51 +135,120 @@ public final class PolarLinePane extends VBox {
         // until we move the coordinate system transform code to a utility
         // class, so that we don't prematurely apply changes and prevent
         // reversion to a previous state.
-        _polarLinePlacementPane._inclinometerPositionPane._xPositionEditor
-                .focusedProperty().addListener( ( observable, oldValue, newValue ) -> {
-                    final PolarLine polarLine = new PolarLine();
-                    updatePolarLineModel( polarLine );
-                } );
-        _polarLinePlacementPane._inclinometerPositionPane._yPositionEditor
-                .focusedProperty().addListener( ( observable, oldValue, newValue ) -> {
-                    final PolarLine polarLine = new PolarLine();
-                    updatePolarLineModel( polarLine );
-                } );
-        _polarLinePlacementPane._startPolarPositionPane._anglePane._angleEditor
-                .focusedProperty().addListener( ( observable, oldValue, newValue ) -> {
-                    final PolarLine polarLine = new PolarLine();
-                    updatePolarLineModel( polarLine );
-                } );
-        _polarLinePlacementPane._startPolarPositionPane._anglePane._angleSlider
-                .valueProperty().addListener( ( observable, oldValue, newValue ) -> {
-                    final PolarLine polarLine = new PolarLine();
-                    updatePolarLineModel( polarLine );
-                } );
+        _polarLinePlacementPane._inclinometerPositionPane._xPositionEditor.focusedProperty()
+                                                                          .addListener(
+                                                                                  ( observable, oldValue, newValue ) -> {
+                                                                                      final PolarLine
+                                                                                              polarLine
+                                                                                              = new PolarLine();
+                                                                                      updatePolarLineModel(
+                                                                                              polarLine );
+                                                                                  } );
+        _polarLinePlacementPane._inclinometerPositionPane._yPositionEditor.focusedProperty()
+                                                                          .addListener(
+                                                                                  ( observable, oldValue, newValue ) -> {
+                                                                                      final PolarLine
+                                                                                              polarLine
+                                                                                              = new PolarLine();
+                                                                                      updatePolarLineModel(
+                                                                                              polarLine );
+                                                                                  } );
+        _polarLinePlacementPane._startPolarPositionPane._anglePane._angleEditor.focusedProperty()
+                                                                               .addListener(
+                                                                                       ( observable, oldValue, newValue ) -> {
+                                                                                           final PolarLine
+                                                                                                   polarLine
+                                                                                                   = new PolarLine();
+                                                                                           updatePolarLineModel(
+                                                                                                   polarLine );
+                                                                                       } );
+        _polarLinePlacementPane._startPolarPositionPane._anglePane._angleSlider.valueProperty()
+                                                                               .addListener(
+                                                                                       ( observable, oldValue, newValue ) -> {
+                                                                                           final PolarLine
+                                                                                                   polarLine
+                                                                                                   = new PolarLine();
+                                                                                           updatePolarLineModel(
+                                                                                                   polarLine );
+                                                                                       } );
         _polarLinePlacementPane._startPolarPositionPane._distanceEditor.focusedProperty()
-                .addListener( ( observable, oldValue, newValue ) -> {
-                    final PolarLine polarLine = new PolarLine();
-                    updatePolarLineModel( polarLine );
-                } );
-        _polarLinePlacementPane._endPolarPositionPane._anglePane._angleEditor
-                .focusedProperty().addListener( ( observable, oldValue, newValue ) -> {
-                    final PolarLine polarLine = new PolarLine();
-                    updatePolarLineModel( polarLine );
-                } );
-        _polarLinePlacementPane._endPolarPositionPane._anglePane._angleSlider
-                .valueProperty().addListener( ( observable, oldValue, newValue ) -> {
-                    final PolarLine polarLine = new PolarLine();
-                    updatePolarLineModel( polarLine );
-                } );
+                                                                       .addListener(
+                                                                               ( observable, oldValue, newValue ) -> {
+                                                                                   final PolarLine
+                                                                                           polarLine
+                                                                                           = new PolarLine();
+                                                                                   updatePolarLineModel(
+                                                                                           polarLine );
+                                                                               } );
+        _polarLinePlacementPane._endPolarPositionPane._anglePane._angleEditor.focusedProperty()
+                                                                             .addListener(
+                                                                                     ( observable, oldValue, newValue ) -> {
+                                                                                         final PolarLine
+                                                                                                 polarLine
+                                                                                                 = new PolarLine();
+                                                                                         updatePolarLineModel(
+                                                                                                 polarLine );
+                                                                                     } );
+        _polarLinePlacementPane._endPolarPositionPane._anglePane._angleSlider.valueProperty()
+                                                                             .addListener(
+                                                                                     ( observable, oldValue, newValue ) -> {
+                                                                                         final PolarLine
+                                                                                                 polarLine
+                                                                                                 = new PolarLine();
+                                                                                         updatePolarLineModel(
+                                                                                                 polarLine );
+                                                                                     } );
         _polarLinePlacementPane._endPolarPositionPane._distanceEditor.focusedProperty()
-                .addListener( ( observable, oldValue, newValue ) -> {
-                    final PolarLine polarLine = new PolarLine();
-                    updatePolarLineModel( polarLine );
-                } );
+                                                                     .addListener(
+                                                                             ( observable, oldValue, newValue ) -> {
+                                                                                 final PolarLine
+                                                                                         polarLine
+                                                                                         = new PolarLine();
+                                                                                 updatePolarLineModel(
+                                                                                         polarLine );
+                                                                             } );
+    }
+
+    public void updatePolarLineModel( final PolarLine polarLine ) {
+        // Get all the Linear Object Properties.
+        final LinearObjectProperties linearObjectProperties
+                = getLinearObjectProperties();
+        polarLine.setLabel( linearObjectProperties.getLabel() );
+
+        // Cache the current Layer selection via Layer Name lookup.
+        final String layerName = linearObjectProperties.getLayerName();
+        final Layer layer = LayerManagement.getLayerByName( _layerCollection,
+                                                            layerName );
+        polarLine.setLayer( layer );
+
+        // Update the Projector values.
+        polarLine.setUseAsProjector( linearObjectProperties.isUseAsProjector() );
+        polarLine.setNumberOfProjectionZones( linearObjectProperties.getNumberOfProjectionZones() );
+
+        // Forward this method to the Polar Line Placement Pane.
+        _polarLinePlacementPane.updatePolarLineModel( polarLine );
+    }
+
+    public LinearObjectProperties getLinearObjectProperties() {
+        // Forward this method to the Linear Object Properties Pane.
+        return _linearObjectPropertiesPane.getLinearObjectProperties();
+    }
+
+    public String getNewPolarLineLabelDefault() {
+        // Forward this method to the Linear Object Properties Pane.
+        return _linearObjectPropertiesPane.getNewLinearObjectLabelDefault();
+    }
+
+    public String getUniquePolarLineLabel( final String polarLineLabelCandidate ) {
+        // Forward this method to the Linear Object Properties Pane.
+        return _linearObjectPropertiesPane.getUniqueLinearObjectLabel(
+                polarLineLabelCandidate );
     }
 
     public boolean isPolarLineLabelUnique( final String polarLineLabelCandidate ) {
         // Forward this method to the Linear Object Properties Pane.
-        return _linearObjectPropertiesPane.isLinearObjectLabelUnique( polarLineLabelCandidate );
+        return _linearObjectPropertiesPane.isLinearObjectLabelUnique(
+                polarLineLabelCandidate );
     }
 
     public void saveEdits() {
@@ -210,31 +272,11 @@ public final class PolarLinePane extends VBox {
     /**
      * Set the new Scrolling Sensitivity for all the sliders.
      *
-     * @param scrollingSensitivity
-     *            The sensitivity of the mouse scroll wheel
+     * @param scrollingSensitivity The sensitivity of the mouse scroll wheel
      */
     public void setScrollingSensitivity( final ScrollingSensitivity scrollingSensitivity ) {
         // Forward this method to the Polar Line Placement Pane.
         _polarLinePlacementPane.setScrollingSensitivity( scrollingSensitivity );
-    }
-
-    public void updatePolarLineModel( final PolarLine polarLine ) {
-        // Get all the Linear Object Properties.
-        final LinearObjectProperties linearObjectProperties = getLinearObjectProperties();
-        polarLine.setLabel( linearObjectProperties.getLabel() );
-
-        // Cache the current Layer selection via Layer Name lookup.
-        final String layerName = linearObjectProperties.getLayerName();
-        final Layer layer = LayerManagement.getLayerByName(
-                _layerCollection, layerName );
-        polarLine.setLayer( layer );
-
-        // Update the Projector values.
-        polarLine.setUseAsProjector( linearObjectProperties.isUseAsProjector() );
-        polarLine.setNumberOfProjectionZones( linearObjectProperties.getNumberOfProjectionZones() );
-
-        // Forward this method to the Polar Line Placement Pane.
-        _polarLinePlacementPane.updatePolarLineModel( polarLine );
     }
 
     public void updateLayerNameSelection( final PolarLine polarLine ) {
@@ -268,14 +310,16 @@ public final class PolarLinePane extends VBox {
     public void updateLayerNames( final boolean preserveSelectedLayerByIndex,
                                   final boolean preserveSelectedLayerByName ) {
         // Forward this method to the Linear Object Properties Pane.
-        _linearObjectPropertiesPane.updateLayerNames( preserveSelectedLayerByIndex,
-                                                   preserveSelectedLayerByName );
+        _linearObjectPropertiesPane.updateLayerNames(
+                preserveSelectedLayerByIndex,
+                preserveSelectedLayerByName );
     }
 
     public void updateLayerNames( final Layer currentLayer ) {
         final List< Layer > layerCollection = _layerCollection;
         final int currentLayerIndex = LayerManagement.getLayerIndex(
-                layerCollection, currentLayer );
+                layerCollection,
+                currentLayer );
 
         // Forward this method to the Linear Object Properties Pane.
         _linearObjectPropertiesPane.updateLayerNames( currentLayerIndex );
@@ -290,5 +334,4 @@ public final class PolarLinePane extends VBox {
         // Forward this method to the Polar Line Placement Pane.
         _polarLinePlacementPane.updatePreview( polarLineCurrent );
     }
-
 }

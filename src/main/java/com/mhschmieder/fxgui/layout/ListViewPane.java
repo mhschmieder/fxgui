@@ -33,6 +33,7 @@ package com.mhschmieder.fxgui.layout;
 import com.mhschmieder.fxcontrols.util.RegionUtilities;
 import com.mhschmieder.fxgui.util.GuiUtilities;
 import com.mhschmieder.jcommons.util.ClientProperties;
+
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -49,18 +50,16 @@ import javafx.scene.paint.Color;
 // certain LAF and constraints that are far from the defaults in JavaFX.
 public class ListViewPane extends BorderPane {
 
-    private Label              headerLabel;
-    private ListView< String > itemList;
-
-    // This is just an empty placeholder for a bottom layout element that would
-    // likely have hard constraints, maybe host buttons, and in turn would help
-    // constrain the ListView's sizing and spacing.
-    private Pane               bottomButtonPane;
-
     /**
      * Cache the Client Properties (System Type, Locale, etc.).
      */
-    public ClientProperties    clientProperties;
+    public ClientProperties clientProperties;
+    private Label headerLabel;
+    private ListView< String > itemList;
+    // This is just an empty placeholder for a bottom layout element that would
+    // likely have hard constraints, maybe host buttons, and in turn would help
+    // constrain the ListView's sizing and spacing.
+    private Pane bottomButtonPane;
 
     // TODO: Review the constructor(s) to provide the best choices in
     // populating the List View, and/or simply add methods that update the
@@ -81,19 +80,23 @@ public class ListViewPane extends BorderPane {
         }
     }
 
-    private final void initPane( final String listHeader, final String[] items ) {
+    private final void initPane( final String listHeader,
+                                 final String[] items ) {
         // Make the large stylized masthead label and place at top.
         headerLabel = GuiUtilities.getTitleLabel( listHeader );
         final HBox masthead = GuiUtilities.getTitlePane( headerLabel );
 
         // Make the scrollable List View for Delay Integration Product Types.
         itemList = new ListView<>();
-        final ObservableList< String > observableItems = FXCollections.observableArrayList( items );
+        final ObservableList< String > observableItems
+                = FXCollections.observableArrayList( items );
         itemList.setItems( observableItems );
 
         // Try to style the list to use semi-transparent forest green to
         // highlight selected items, as an initial LAF placeholder.
-        GuiUtilities.addStylesheetAsJarResource( itemList, "/css/listView.css" ); //$NON-NLS-1$
+        GuiUtilities.addStylesheetAsJarResource( itemList,
+                                                 "/css/listView.css" );
+        //$NON-NLS-1$
 
         // TODO: Make a useful bottom pane, maybe with buttons, or pass one
         // in to the constructor if this avoids having to subclass this class.
@@ -134,18 +137,19 @@ public class ListViewPane extends BorderPane {
         } );
     }
 
-    public final void setForegroundFromBackground( final Color backColor ) {
-        // Set the new Background first, so it sets context for CSS derivations.
-        final Background background = RegionUtilities.makeRegionBackground( backColor );
-        setBackground( background );
-    }
-
     // TODO: Perhaps push this to a subclass, for determining enablement
     // criteria of additional layout elements (such as action buttons) that
     // are shown below the List View, based on the current selection or active
     // highlighted list item.
     private void setButtonsEnabled( final String selectedItem ) {
         // Nothing to do at the moment; this is a placeholder example.
+    }
+
+    public final void setForegroundFromBackground( final Color backColor ) {
+        // Set the new Background first, so it sets context for CSS derivations.
+        final Background background = RegionUtilities.makeRegionBackground(
+                backColor );
+        setBackground( background );
     }
 
     // TODO: Use Generics at the class definition level for the data type
@@ -156,5 +160,4 @@ public class ListViewPane extends BorderPane {
         // Make sure to update which Phase Curve Frequencies are allowed.
         setButtonsEnabled( selectedItem );
     }
-
 }

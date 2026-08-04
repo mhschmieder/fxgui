@@ -33,6 +33,7 @@ package com.mhschmieder.fxgui.layout;
 import com.mhschmieder.fxcontrols.control.ControlFactory;
 import com.mhschmieder.fxcontrols.control.LabeledControlFactory;
 import com.mhschmieder.jcommons.util.ClientProperties;
+
 import javafx.application.Platform;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -44,12 +45,12 @@ import javafx.scene.layout.VBox;
 
 public class DitheringPane extends VBox {
 
-    public static final boolean USE_DITHERING_DEFAULT    = true;
+    public static final boolean USE_DITHERING_DEFAULT = true;
 
     // Declare JavaFX controls for Dithering related actions.
-    public CheckBox             _useDitheringCheckBox;
-    public Label                _ditheringAmountLabel;
-    public Spinner< Double >    _ditheringAmountSpinner;
+    public CheckBox _useDitheringCheckBox;
+    public Label _ditheringAmountLabel;
+    public Spinner< Double > _ditheringAmountSpinner;
 
     // Declare a cache of the current Dithering Amount in percentiles.
     protected double _splRangeDb = ControlFactory.DITHERING_AMOUNT_DEFAULT;
@@ -65,15 +66,16 @@ public class DitheringPane extends VBox {
     public final void initPane( final ClientProperties clientProperties,
                                 final boolean initialDisableDithering ) {
         // Make the JavaFX Nodes and add them to the Scene.
-        _useDitheringCheckBox = LabeledControlFactory
-                .getUseDitheringCheckBox( clientProperties );
+        _useDitheringCheckBox = LabeledControlFactory.getUseDitheringCheckBox(
+                clientProperties );
 
         _ditheringAmountLabel = LabeledControlFactory.getDitheringLabel(
                 clientProperties );
 
-        _ditheringAmountSpinner = ControlFactory
-                .getDitheringAmountSpinnerInstance(
-                        clientProperties, false );
+        _ditheringAmountSpinner
+                = ControlFactory.getDitheringAmountSpinnerInstance(
+                clientProperties,
+                false );
 
         // Disable the Dithering Amount spinner until Use Dithering is turned
         // on.
@@ -82,7 +84,8 @@ public class DitheringPane extends VBox {
 
         // Create a horizontal box to host the Dithering controls.
         final HBox hbox = new HBox();
-        hbox.getChildren().addAll( _ditheringAmountLabel, _ditheringAmountSpinner );
+        hbox.getChildren()
+            .addAll( _ditheringAmountLabel, _ditheringAmountSpinner );
         hbox.setAlignment( Pos.CENTER_LEFT );
         hbox.setPadding( new Insets( 12d ) );
         hbox.setSpacing( 12d );
@@ -102,19 +105,11 @@ public class DitheringPane extends VBox {
 
         // Load the event handler for the Use Dithering Check Box.
         _useDitheringCheckBox.selectedProperty()
-                .addListener( ( observable, oldValue, newValue ) -> {
-                    // Update the Dithering Amount value.
-                    processUseDitheringChangedNotification( newValue );
-                } );
-    }
-
-    public final double getDitheringAmount() {
-        final Double ditheringAmount = _ditheringAmountSpinner.getValue();
-        return ditheringAmount.doubleValue();
-    }
-
-    public final boolean isUseDithering() {
-        return _useDitheringCheckBox.isSelected();
+                             .addListener( ( observable, oldValue, newValue ) -> {
+                                 // Update the Dithering Amount value.
+                                 processUseDitheringChangedNotification(
+                                         newValue );
+                             } );
     }
 
     // Selectively enable or disable the manual Dithering Amount spinner, and
@@ -131,12 +126,21 @@ public class DitheringPane extends VBox {
         }
     }
 
+    protected final void setDitheringAmountEnabled( final boolean ditheringAmountEnabled ) {
+        _ditheringAmountSpinner.setDisable( !ditheringAmountEnabled );
+    }
+
+    public final double getDitheringAmount() {
+        final Double ditheringAmount = _ditheringAmountSpinner.getValue();
+        return ditheringAmount.doubleValue();
+    }
+
     protected final void setDitheringAmount( final double ditheringAmount ) {
         _ditheringAmountSpinner.getValueFactory().setValue( ditheringAmount );
     }
 
-    protected final void setDitheringAmountEnabled( final boolean ditheringAmountEnabled ) {
-        _ditheringAmountSpinner.setDisable( !ditheringAmountEnabled );
+    public final boolean isUseDithering() {
+        return _useDitheringCheckBox.isSelected();
     }
 
     protected final void setUseDithering( final boolean useDithering ) {
@@ -144,7 +148,8 @@ public class DitheringPane extends VBox {
     }
 
     // NOTE: This is the method to use when updating from Preferences.
-    public final void updateDithering( final boolean useDithering, final double ditheringAmount ) {
+    public final void updateDithering( final boolean useDithering,
+                                       final double ditheringAmount ) {
         // TODO: Review whether we need runLater() here or not.
         Platform.runLater( () -> {
             // Set to the cached Use Dithering Mode.
