@@ -60,6 +60,7 @@ import javax.swing.SwingConstants;
  */
 public final class NaturalEnvironmentInformationComponent
         extends JxDataViewComponent {
+
     // Declare strings for the static part of the settings formatting.
     public static final String AIR_ATTENUATION_LABEL_LABEL = "Air Attenuation";
     //$NON-NLS-1$

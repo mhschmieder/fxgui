@@ -88,8 +88,7 @@ public class LinearObjectPropertiesPane extends BorderPane {
 
     public LinearObjectPropertiesPane( final ClientProperties pClientProperties,
                                        final String linearObjectLabelDefault,
-                                       final GraphicalObjectCollection< ?
-                                               extends LinearObject > linearObjectCollection ) {
+                                       final GraphicalObjectCollection< ? extends LinearObject > linearObjectCollection ) {
         this( pClientProperties,
               linearObjectLabelDefault,
               linearObjectCollection,
@@ -100,8 +99,7 @@ public class LinearObjectPropertiesPane extends BorderPane {
 
     public LinearObjectPropertiesPane( final ClientProperties pClientProperties,
                                        final String linearObjectLabelDefault,
-                                       final GraphicalObjectCollection< ?
-                                               extends LinearObject > linearObjectCollection,
+                                       final GraphicalObjectCollection< ? extends LinearObject > linearObjectCollection,
                                        final String projectorType,
                                        final String projectionZonesType,
                                        final String projectionZonesUsageContext ) {
@@ -131,8 +129,7 @@ public class LinearObjectPropertiesPane extends BorderPane {
 
     private final void initPane( final ClientProperties pClientProperties,
                                  final String linearObjectLabelDefault,
-                                 final GraphicalObjectCollection< ?
-                                         extends LinearObject > linearObjectCollection,
+                                 final GraphicalObjectCollection< ? extends LinearObject > linearObjectCollection,
                                  final String projectorType,
                                  final String projectionZonesType,
                                  final String projectionZonesUsageContext ) {

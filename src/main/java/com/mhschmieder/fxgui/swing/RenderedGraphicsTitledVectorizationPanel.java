@@ -40,6 +40,7 @@ import com.mhschmieder.jgui.layout.JxTitledVectorizationPanel;
  */
 public abstract class RenderedGraphicsTitledVectorizationPanel
         extends JxTitledVectorizationPanel {
+
     /**
      *
      */

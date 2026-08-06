@@ -200,6 +200,7 @@ public class SplashScreenManager {
      * for completing the display of the startup Splash Screen.
      */
     public interface InitCompletionHandler {
+
         void complete();
     }
 }

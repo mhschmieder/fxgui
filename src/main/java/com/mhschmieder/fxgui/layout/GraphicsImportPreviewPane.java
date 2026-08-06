@@ -1080,6 +1080,7 @@ public final class GraphicsImportPreviewPane extends GridPane {
      * be useful.
      */
     public final class GeometryImportContainer extends VBox {
+
         public void forceSetNeedsLayout( final boolean needsLayout ) {
             setNeedsLayout( needsLayout );
         }
