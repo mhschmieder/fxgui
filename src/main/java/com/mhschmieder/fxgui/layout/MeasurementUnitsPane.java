@@ -113,9 +113,9 @@ public final class MeasurementUnitsPane extends VBox {
 
         // Create a grid to host the Measurement Units controls.
         final GridPane gridPane = new GridPane();
-        gridPane.setHgap( 16d );
-        gridPane.setVgap( 16d );
-        gridPane.setPadding( new Insets( 0.0d, 16d, 0.0d, 16d ) );
+        gridPane.setHgap( 16.0d );
+        gridPane.setVgap( 16.0d );
+        gridPane.setPadding( new Insets( 0.0d, 16.0d, 0.0d, 16.0d ) );
 
         int row = 0;
         gridPane.add( distanceUnitLabel, 0, row );
@@ -142,8 +142,8 @@ public final class MeasurementUnitsPane extends VBox {
         setPadding( new Insets( 16 ) );
 
         // Ensure that stacked components are all the same width.
-        distanceUnitSelector.setMinWidth( 120d );
-        distanceUnitSelector.setMaxWidth( 120d );
+        distanceUnitSelector.setMinWidth( 120.0d );
+        distanceUnitSelector.setMaxWidth( 120.0d );
 
         /*
         angleUnitSelector.minWidthProperty().bind( distanceUnitSelector
@@ -170,7 +170,7 @@ public final class MeasurementUnitsPane extends VBox {
         // Bind the data model to the respective GUI components.
         // TODO: Determine whether the listeners below are rendered redundant.
         // TODO: Re-enable this after figuring out why it wasn't part of the
-        // previous release.
+        //  previous release.
         // bindProperties();
 
         // Load the event handler for the Distance Unit Selector.
@@ -222,6 +222,7 @@ public final class MeasurementUnitsPane extends VBox {
         updateDistanceUnit( pMeasurementsUnits.getDistanceUnit() );
         // updateAngleUnit( pMeasurementsUnits.getAngleUnit() );
         updateWeightUnit( pMeasurementsUnits.getWeightUnit() );
+        updateDensityUnit( pMeasurementsUnits.getDensityUnit() );
         updateTemperatureUnit( pMeasurementsUnits.getTemperatureUnit() );
         updatePressureUnit( pMeasurementsUnits.getPressureUnit() );
     }
@@ -232,6 +233,10 @@ public final class MeasurementUnitsPane extends VBox {
 
     public void updateWeightUnit( final WeightUnit weightUnit ) {
         weightUnitSelector.setValue( weightUnit );
+    }
+
+    public void updateDensityUnit( final DensityUnit densityUnit ) {
+        densityUnitSelector.setValue( densityUnit );
     }
 
     public void updateTemperatureUnit( final TemperatureUnit temperatureUnit ) {
@@ -254,9 +259,9 @@ public final class MeasurementUnitsPane extends VBox {
         // Cache the Measurement Units reference.
         measurementUnitProperties = pMeasurementUnitProperties;
 
-        // Set all of the initial selections, as the bindings don't do this due
-        // to differences between object properties and computed string values
-        // with regards to trigger points for bindings to kick in on initial
+        // Set all the initial selections, as the bindings don't do this due to
+        // differences between object properties and computed string values
+        // regarding trigger points for bindings to kick in on initial
         // evaluation of an unchanged state.
         updateMeasurementUnits( pMeasurementUnitProperties );
 
@@ -311,6 +316,20 @@ public final class MeasurementUnitsPane extends VBox {
                               @Override
                               protected String computeValue() {
                                   return measurementUnitProperties.getWeightUnit()
+                                                                  .label();
+                              }
+                          } );
+
+        densityUnitSelector.getEditor()
+                          .textProperty()
+                          .bind( new StringBinding() {
+                              {
+                                  bind( measurementUnitProperties.densityUnitProperty() );
+                              }
+
+                              @Override
+                              protected String computeValue() {
+                                  return measurementUnitProperties.getDensityUnit()
                                                                   .label();
                               }
                           } );

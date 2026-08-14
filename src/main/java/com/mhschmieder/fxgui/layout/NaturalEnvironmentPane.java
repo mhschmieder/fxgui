@@ -52,6 +52,7 @@ public final class NaturalEnvironmentPane extends HBox {
 
     public TemperaturePane _temperaturePane;
     public HumidityPane _humidityPane;
+
     // Cache a reference to the global Natural Environment.
     public NaturalEnvironmentProperties naturalEnvironmentProperties;
     protected PressurePane _pressurePane;
