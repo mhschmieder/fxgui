@@ -35,6 +35,7 @@ import com.mhschmieder.fxcontrols.control.ControlUtilities;
 import com.mhschmieder.fxcontrols.control.XComboBox;
 import com.mhschmieder.fxcontrols.model.MeasurementUnitProperties;
 import com.mhschmieder.jcommons.util.ClientProperties;
+import com.mhschmieder.jphysics.measure.DensityUnit;
 import com.mhschmieder.jphysics.measure.DistanceUnit;
 import com.mhschmieder.jphysics.measure.PressureUnit;
 import com.mhschmieder.jphysics.measure.TemperatureUnit;
@@ -54,6 +55,7 @@ public final class MeasurementUnitsPane extends VBox {
     protected XComboBox< WeightUnit > weightUnitSelector;
     protected XComboBox< TemperatureUnit > temperatureUnitSelector;
     protected XComboBox< PressureUnit > pressureUnitSelector;
+    protected XComboBox< DensityUnit > densityUnitSelector;
 
     // Cache a reference to the global Measurement Units.
     protected MeasurementUnitProperties measurementUnitProperties;
