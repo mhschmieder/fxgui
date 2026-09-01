@@ -64,7 +64,7 @@ public final class MeasurementUnitsStage extends XStage {
     @SuppressWarnings( "nls" )
     public MeasurementUnitsStage( final boolean needDistanceUnits,
                                   final boolean needAngleUnits,
-                                  final boolean needWeightUnits,
+                                  final boolean needMassUnits,
                                   final boolean needTemperatureUnits,
                                   final boolean needPressureUnits,
                                   final ProductBranding productBranding,
@@ -78,7 +78,7 @@ public final class MeasurementUnitsStage extends XStage {
         try {
             initStage( needDistanceUnits,
                        needAngleUnits,
-                       needWeightUnits,
+                       needMassUnits,
                        needTemperatureUnits,
                        needPressureUnits );
         }
@@ -90,7 +90,7 @@ public final class MeasurementUnitsStage extends XStage {
     @SuppressWarnings( "nls" )
     protected void initStage( final boolean needDistanceUnits,
                               final boolean needAngleUnits,
-                              final boolean needWeightUnits,
+                              final boolean needMassUnits,
                               final boolean needTemperatureUnits,
                               final boolean needPressureUnits ) {
         // First have the superclass initialize its content.
@@ -98,9 +98,11 @@ public final class MeasurementUnitsStage extends XStage {
                    MEASUREMENT_UNITS_FRAME_WIDTH_DEFAULT,
                    MEASUREMENT_UNITS_FRAME_HEIGHT_DEFAULT,
                    false );
+
+        // TODO: Cache and handle the flags for which optional units to include.
     }
 
-    // Add all of the relevant action handlers.
+    // Add all the relevant action handlers.
     @Override
     protected void addActionHandlers() {
         // Load the action handler for the "Reset" action.
@@ -109,8 +111,8 @@ public final class MeasurementUnitsStage extends XStage {
 
     // Add the Tool Bar's event listeners.
     // TODO: Use appropriate methodology to add an action linked to both
-    // the toolbar buttons and their associated menu items, so that when one
-    // is disabled the other is as well. Is this already true of what we do?
+    //  the toolbar buttons and their associated menu items, so that when one
+    //  is disabled the other is as well. Is this already true of what we do?
     @Override
     protected void addToolBarListeners() {
         // Detect the ENTER key while the Reset Button has focus, and use it to
