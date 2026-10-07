@@ -34,6 +34,7 @@ import com.mhschmieder.fxcontrols.control.ControlUtilities;
 import com.mhschmieder.fxcontrols.control.TextEditor;
 import com.mhschmieder.fxcontrols.model.ProjectProperties;
 import com.mhschmieder.fxcontrols.util.RegionUtilities;
+import com.mhschmieder.fxgraphics.paint.ForegroundManager;
 import com.mhschmieder.fxgui.util.GuiUtilities;
 import com.mhschmieder.jcommons.util.ClientProperties;
 
@@ -49,13 +50,17 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 
-public final class ProjectPropertiesPane extends VBox {
+public final class ProjectPropertiesPane extends VBox implements
+                                                      ForegroundManager {
 
-    protected TextArea projectNotes;
+    private TextArea projectNotes;
+
     // Declare a local cache of the Project Properties model.
-    protected ProjectProperties projectProperties;
+    private ProjectProperties projectProperties;
+
     // Cache the Project Category for reference during label creation.
-    protected String projectCategory;
+    private String projectCategory;
+
     private Label projectNameLabel;
     private TextEditor projectNameEditor;
     private Label projectTypeLabel;
@@ -266,7 +271,7 @@ public final class ProjectPropertiesPane extends VBox {
      *
      * @param pProjectLocationLabel the custom text to use for Project Location
      */
-    public final void setProjectLocationLabel( final String pProjectLocationLabel ) {
+    public void setProjectLocationLabel( final String pProjectLocationLabel ) {
         projectLocationLabel.setText( pProjectLocationLabel );
     }
 
@@ -277,18 +282,18 @@ public final class ProjectPropertiesPane extends VBox {
      *
      * @param pProjectAuthorLabel the custom text to use for Project Author
      */
-    public final void setProjectAuthorLabel( final String pProjectAuthorLabel ) {
+    public void setProjectAuthorLabel( final String pProjectAuthorLabel ) {
         projectAuthorLabel.setText( pProjectAuthorLabel );
     }
 
-    public final ProjectProperties getProjectProperties() {
+    public ProjectProperties getProjectProperties() {
         return projectProperties;
     }
 
     // Set and bind the Project Properties reference.
     // NOTE: This should be done only once, to avoid breaking bindings.
-    // NOTE: This is probably unwise to call now that we own the data
-    //  model at construction time, but we unbind first to be safe.
+    // NOTE: This is probably unwise to call now that we own the data model at
+    // construction time, but we unbind first to be safe.
     public void setProjectProperties( final ProjectProperties pProjectProperties ) {
         // Unbind the data model to the respective GUI components.
         unbindProperties();
@@ -319,6 +324,7 @@ public final class ProjectPropertiesPane extends VBox {
                     .unbindBidirectional( projectProperties.projectNotesProperty() );
     }
 
+    @Override
     public void setForegroundFromBackground( final Color backColor ) {
         // Set the new Background first, so it sets context for CSS derivations.
         final Background background = RegionUtilities.makeRegionBackground(

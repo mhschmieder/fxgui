@@ -36,6 +36,7 @@ import com.mhschmieder.fxcontrols.control.PressureSlider;
 import com.mhschmieder.fxcontrols.model.NaturalEnvironmentProperties;
 import com.mhschmieder.fxcontrols.util.RegionUtilities;
 import com.mhschmieder.fxgraphics.paint.ColorUtilities;
+import com.mhschmieder.fxgraphics.paint.ForegroundManager;
 import com.mhschmieder.fxgui.util.GuiUtilities;
 import com.mhschmieder.jcommons.util.ClientProperties;
 import com.mhschmieder.jgraphics.input.ScrollingSensitivity;
@@ -54,7 +55,7 @@ import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 
-public final class PressurePane extends VBox {
+public final class PressurePane extends VBox implements ForegroundManager {
 
     public PressureSlider _pressureSlider;
     public PressureEditor _pressureEditor;
@@ -85,8 +86,8 @@ public final class PressurePane extends VBox {
         // Conform the associated textField (text field) to the slider
         // attributes.
         _pressureEditor = ControlFactory.makePressureEditor( clientProperties );
-        _pressureEditor.setPrefWidth( 100d );
-        _pressureEditor.setMaxWidth( 100d );
+        _pressureEditor.setPrefWidth( 100.0d );
+        _pressureEditor.setMaxWidth( 100.0d );
 
         // Cache a number converter so we can keep it up to date with the
         // Pressure Unit, which can change at any time.
@@ -106,13 +107,14 @@ public final class PressurePane extends VBox {
         setPadding( new Insets( 6.0d ) );
 
         // Make sure the Pressure Slider always gets vertical grow priority.
-        VBox.setVgrow( _pressureSlider, Priority.ALWAYS );
+        setVgrow( _pressureSlider, Priority.ALWAYS );
     }
 
     public void reset() {
         _pressureSlider.setPressurePa( NaturalEnvironmentProperties.PRESSURE_PA_DEFAULT );
     }
 
+    @Override
     public void setForegroundFromBackground( final Color backColor ) {
         // Set the new Background first, so it sets context for CSS derivations.
         final Background background = RegionUtilities.makeRegionBackground(
@@ -153,9 +155,9 @@ public final class PressurePane extends VBox {
         } );
 
         // NOTE: Sliders might switch presentation units, whereas JavaFX Bean
-        // Properties are specified with a single unchanging unit, so we have to
-        // be careful to only sync the cached Pressure property to the slider
-        // when a real magnitude change occurred vs. a Pressure Unit change.
+        //  Properties are specified with a single unchanging unit, so we have
+        //  to be careful to only sync the cached Pressure property to the slider
+        //  when a real magnitude change occurred vs. a Pressure Unit change.
         _pressureSlider.valueProperty()
                        .addListener( ( observableValue, oldValue, newValue ) -> {
                            final double storedValue = getPressurePa();
@@ -164,12 +166,10 @@ public final class PressurePane extends VBox {
                            final double epsilon = 1e-7;
 
                            // Make sure we don't set dirty flag because of
-                           // round-off
-                           // errors in slider value when changing units, but
-                           // wrap this
-                           // in a JavaFX runLater thread to ensure all FX
-                           // event code
-                           // precedes the custom selection.
+                           // round-off errors in slider value when changing
+                           // units, but wrap this in a JavaFX runLater thread
+                           // to ensure all FX event code precedes the custom
+                           // selection.
                            if ( ( FastMath.abs( storedValue - sliderValue )
                                   >= epsilon ) ) {
                                Platform.runLater( () -> setPressurePa(
@@ -228,11 +228,11 @@ public final class PressurePane extends VBox {
 
         // Forward this method to the subsidiary controls.
         // NOTE: Make sure that there is enough room for the value expressed in
-        // the new units, by setting the largest magnitude from all available
-        // units. Otherwise, as the value is bounded, it changes before min
-        // value and max values change, and therefore it becomes clamped as the
-        // not-yet-converted old value may not be within the new range, and thus
-        // it fires an event, setting the dirty flag.
+        //  the new units, by setting the largest magnitude from all available
+        //  units. Otherwise, as the value is bounded, it changes before min
+        //  value and max values change, and therefore it becomes clamped as the
+        //  not-yet-converted old value may not be within the new range, and
+        //  thus it fires an event, setting the dirty flag.
         final double pressureMaximum = 10.0d
                                        * PhysicsConstants.PRESSURE_MAXIMUM_PA;
         final double pressureMinimum = -pressureMaximum;
@@ -249,7 +249,7 @@ public final class PressurePane extends VBox {
         // In order to avoid order-dependency and initial condition Catch-22's,
         // always set the textField's value to match the paired slider's value.
         // NOTE: This doesn't fix the startup problem of the value being the
-        // minimum allowed, when the user's cached unit is the default unit.
+        //  minimum allowed, when the user's cached unit is the default unit.
         Platform.runLater( () -> _pressureEditor.setValue( _pressureSlider.getValue() ) );
     }
 }

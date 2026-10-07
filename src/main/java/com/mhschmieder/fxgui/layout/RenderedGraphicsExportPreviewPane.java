@@ -33,6 +33,7 @@ package com.mhschmieder.fxgui.layout;
 import com.mhschmieder.fxcontrols.control.TextEditor;
 import com.mhschmieder.fxcontrols.util.RegionUtilities;
 import com.mhschmieder.fxgraphics.io.RenderedGraphicsExportOptions;
+import com.mhschmieder.fxgraphics.paint.ForegroundManager;
 import com.mhschmieder.fxgui.swing.RenderedGraphicsTitledVectorizationPanel;
 import com.mhschmieder.fxgui.util.GuiUtilities;
 import com.mhschmieder.jcommons.util.ClientProperties;
@@ -52,31 +53,36 @@ import javafx.scene.paint.Color;
 /**
  * This is the main content pane for Rendered Graphics Export Preview windows.
  */
-public final class RenderedGraphicsExportPreviewPane extends BorderPane {
+public final class RenderedGraphicsExportPreviewPane extends BorderPane implements
+                                                                        ForegroundManager {
 
     // Cache the Client Properties (System Type, Locale, Client Type, etc.).
-    public ClientProperties _clientProperties;
-    private HBox _titleBox;
-    private TextEditor _titleEditor;
+    public ClientProperties clientProperties;
+
+    private HBox titleBox;
+    private TextEditor titleEditor;
+
     // Cache the Rendered Graphics Export Options.
-    private RenderedGraphicsExportOptions _renderedGraphicsExportOptions;
+    private RenderedGraphicsExportOptions renderedGraphicsExportOptions;
+
     // Cache the Swing Node wrapper for the Graphics Export Source, for
     // background fills.
-    private SwingNode _graphicsPreviewNode;
+    private SwingNode graphicsPreviewNode;
+
     // Maintain a Swing Component reference for Graphics Export actions.
     private RenderedGraphicsTitledVectorizationPanel
-            _renderedGraphicsExportSource;
+            renderedGraphicsExportSource;
 
     public RenderedGraphicsExportPreviewPane( final ClientProperties pClientProperties,
-                                              final RenderedGraphicsExportOptions renderedGraphicsExportOptions ) {
+                                              final RenderedGraphicsExportOptions pRenderedGraphicsExportOptions ) {
         // Always call the superclass constructor first!
         super();
 
-        _clientProperties = pClientProperties;
+        clientProperties = pClientProperties;
 
-        _renderedGraphicsExportOptions = renderedGraphicsExportOptions;
+        renderedGraphicsExportOptions = pRenderedGraphicsExportOptions;
 
-        _graphicsPreviewNode = new SwingNode();
+        graphicsPreviewNode = new SwingNode();
 
         try {
             initPane();
@@ -87,95 +93,96 @@ public final class RenderedGraphicsExportPreviewPane extends BorderPane {
     }
 
     private void initPane() {
-        final String title = _renderedGraphicsExportOptions.getTitle();
-        _titleEditor = new TextEditor( title, "Title for EPS Document Header",
-                //$NON-NLS-1$
-                                       true, true, _clientProperties );
-        _titleEditor.setPrefWidth( 480d );
-        _titleEditor.setMinWidth( 480d );
+        final String title = renderedGraphicsExportOptions.getTitle();
+        titleEditor = new TextEditor( title,
+                                      "Title for EPS Document Header",
+                                      true,
+                                      true,
+                                      clientProperties );
+        titleEditor.setPrefWidth( 480.0d );
+        titleEditor.setMinWidth( 480.0d );
 
-        _titleBox = GuiUtilities.getLabeledTextFieldPane( "Title",
-                                                          _titleEditor );
-        //$NON-NLS-1$
-        _titleBox.setAlignment( Pos.CENTER );
+        titleBox = GuiUtilities.getLabeledTextFieldPane( "Title", titleEditor );
+        titleBox.setAlignment( Pos.CENTER );
 
         // Set the Title Editor to the top of the layout.
-        setTop( _titleBox );
+        setTop( titleBox );
 
         // NOTE: We defer the layout of the main content pane, as it is
         // dependent upon run-time content generation.
         setPadding( new Insets( 6.0d, 6.0d, 6.0d, 6.0d ) );
 
         // Bind the Title Editor to its associated property.
-        _titleEditor.textProperty()
-                    .bindBidirectional( _renderedGraphicsExportOptions.titleProperty() );
+        titleEditor.textProperty()
+                   .bindBidirectional( renderedGraphicsExportOptions.titleProperty() );
 
         // Load the change listener for the Export Auxiliary Panel property.
-        _renderedGraphicsExportOptions.exportAuxiliaryPanelProperty()
-                                      .addListener( ( observable, oldValue,
+        renderedGraphicsExportOptions.exportAuxiliaryPanelProperty()
+                                     .addListener( ( observable, oldValue,
                                                       newValue ) -> {
                                           // Update the visibility of the
                                           // associated panel.
-                                          EventQueue.invokeLater( () -> _renderedGraphicsExportSource.setAuxiliaryPanelVisible(
+                                          EventQueue.invokeLater( () -> renderedGraphicsExportSource.setAuxiliaryPanelVisible(
                                                   newValue ) );
                                       } );
 
         // Load the change listener for the Export Information Tables property.
-        _renderedGraphicsExportOptions.exportInformationTablesProperty()
-                                      .addListener( ( observable, oldValue,
+        renderedGraphicsExportOptions.exportInformationTablesProperty()
+                                     .addListener( ( observable, oldValue,
                                                       newValue ) -> {
                                           // Update the visibility of the
                                           // associated panel.
-                                          EventQueue.invokeLater( () -> _renderedGraphicsExportSource.setInformationTablesVisible(
+                                          EventQueue.invokeLater( () -> renderedGraphicsExportSource.setInformationTablesVisible(
                                                   newValue ) );
                                       } );
 
         // Load the change listener for the Export Optional Item property.
-        _renderedGraphicsExportOptions.exportOptionalItemProperty()
-                                      .addListener( ( observable, oldValue,
+        renderedGraphicsExportOptions.exportOptionalItemProperty()
+                                     .addListener( ( observable, oldValue,
                                                       newValue ) -> {
                                           // Update the visibility of the
                                           // associated panel.
-                                          EventQueue.invokeLater( () -> _renderedGraphicsExportSource.setOptionalItemVisible(
+                                          EventQueue.invokeLater( () -> renderedGraphicsExportSource.setOptionalItemVisible(
                                                   newValue ) );
                                       } );
     }
 
     public RenderedGraphicsExportOptions getRenderedGraphicsExportOptions() {
-        return _renderedGraphicsExportOptions;
+        return renderedGraphicsExportOptions;
     }
 
-    public void setRenderedGraphicsExportOptions( final RenderedGraphicsExportOptions renderedGraphicsExportOptions ) {
+    public void setRenderedGraphicsExportOptions( final RenderedGraphicsExportOptions pRenderedGraphicsExportOptions ) {
         // Update the current export options (usually from preferences).
-        _renderedGraphicsExportOptions.setRenderedGraphicsExportOptions(
-                renderedGraphicsExportOptions );
+        renderedGraphicsExportOptions.setRenderedGraphicsExportOptions(
+                pRenderedGraphicsExportOptions );
     }
 
+    @Override
     public void setForegroundFromBackground( final Color backColor ) {
         // Set the new Background first, so it sets context for CSS derivations.
         final Background background = RegionUtilities.makeRegionBackground(
                 backColor );
         setBackground( background );
 
-        _titleBox.setBackground( background );
+        titleBox.setBackground( background );
     }
 
     /**
      * This method sets the container reference for exported graphics.
      *
-     * @param renderedGraphicsExportSource The Swing container for the layout
+     * @param pRenderedGraphicsExportSource The Swing container for the layout
      *                                     group to be exported
      */
-    public void setRenderedGraphicsExportSource( final RenderedGraphicsTitledVectorizationPanel renderedGraphicsExportSource ) {
+    public void setRenderedGraphicsExportSource( final RenderedGraphicsTitledVectorizationPanel pRenderedGraphicsExportSource ) {
         // Cache the Graphics Export Source locally, for reference by panel
         // visibility change listeners.
-        _renderedGraphicsExportSource = renderedGraphicsExportSource;
+        renderedGraphicsExportSource = pRenderedGraphicsExportSource;
 
         // Set the Swing Node wrapper for the provided Swing container.
-        _graphicsPreviewNode.setContent( _renderedGraphicsExportSource );
+        graphicsPreviewNode.setContent( renderedGraphicsExportSource );
 
         // Reset the Exported Graphics Preview Node to the Border Layout.
-        setExportedGraphicsPreviewNode( _graphicsPreviewNode );
+        setExportedGraphicsPreviewNode( graphicsPreviewNode );
     }
 
     /**
@@ -199,7 +206,7 @@ public final class RenderedGraphicsExportPreviewPane extends BorderPane {
 
     public void updateExportOptionsView() {
         // Make sure the previously selected options immediately take hold.
-        EventQueue.invokeLater( () -> _renderedGraphicsExportSource.updateExportOptionsView(
-                _renderedGraphicsExportOptions ) );
+        EventQueue.invokeLater( () -> renderedGraphicsExportSource.updateExportOptionsView(
+                renderedGraphicsExportOptions ) );
     }
 }

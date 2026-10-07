@@ -34,6 +34,7 @@ import com.mhschmieder.fxcontrols.control.ControlUtilities;
 import com.mhschmieder.fxcontrols.control.DistanceEditor;
 import com.mhschmieder.fxcontrols.util.RegionUtilities;
 import com.mhschmieder.fxgraphics.paint.ColorUtilities;
+import com.mhschmieder.fxgraphics.paint.ForegroundManager;
 import com.mhschmieder.jcommons.util.ClientProperties;
 import com.mhschmieder.jphysics.measure.DistanceUnit;
 
@@ -46,7 +47,8 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.paint.Color;
 
-public class CartesianPositionPane extends BorderPane {
+public class CartesianPositionPane extends BorderPane implements
+                                                      ForegroundManager {
 
     public DistanceEditor _xPositionEditor;
     public DistanceEditor _yPositionEditor;
@@ -136,6 +138,7 @@ public class CartesianPositionPane extends BorderPane {
         _yPositionEditor.saveEdits();
     }
 
+    @Override
     public final void setForegroundFromBackground( final Color backColor ) {
         // Set the new Background first, so it sets context for CSS derivations.
         final Background background = RegionUtilities.makeRegionBackground(

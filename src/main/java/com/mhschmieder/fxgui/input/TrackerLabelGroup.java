@@ -31,6 +31,7 @@
 package com.mhschmieder.fxgui.input;
 
 import com.mhschmieder.fxgraphics.paint.ColorUtilities;
+import com.mhschmieder.fxgraphics.paint.ForegroundManager;
 
 import javafx.scene.Group;
 import javafx.scene.chart.ValueAxis;
@@ -43,7 +44,8 @@ import javafx.scene.paint.Color;
  * The data to display is not assumed here; this is a parent class for common
  * shared behavior. There are specific subclasses for Cursor Coordinates, etc.
  */
-public abstract class TrackerLabelGroup extends Group {
+public abstract class TrackerLabelGroup extends Group implements
+                                                      ForegroundManager {
 
     /**
      * A Label to display coordinates or other data of interest at the cursor.
@@ -75,6 +77,7 @@ public abstract class TrackerLabelGroup extends Group {
         setVisible( false );
     }
 
+    @Override
     public void setForegroundFromBackground( final Color backColor ) {
         // Make sure the tracker label is visible against the new Background 
         // Color, but only change Black and White vs. other Colors.

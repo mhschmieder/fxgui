@@ -32,6 +32,7 @@ package com.mhschmieder.fxgui.layout;
 
 import com.mhschmieder.fxcontrols.model.NaturalEnvironmentProperties;
 import com.mhschmieder.fxcontrols.util.RegionUtilities;
+import com.mhschmieder.fxgraphics.paint.ForegroundManager;
 import com.mhschmieder.jcommons.util.ClientProperties;
 import com.mhschmieder.jgraphics.input.ScrollingSensitivity;
 import com.mhschmieder.jphysics.PhysicsConstants;
@@ -48,7 +49,8 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.paint.Color;
 
-public final class NaturalEnvironmentPane extends HBox {
+public final class NaturalEnvironmentPane extends HBox implements
+                                                       ForegroundManager {
 
     public TemperaturePane _temperaturePane;
     public HumidityPane _humidityPane;
@@ -81,7 +83,7 @@ public final class NaturalEnvironmentPane extends HBox {
                               _pressurePane,
                               _altitudePane );
 
-        setSpacing( 12d );
+        setSpacing( 12.0d );
         setPadding( new Insets( 10.0d ) );
 
         // Make sure the Altitude Pane always gets horizontal grow priority, so
@@ -114,11 +116,11 @@ public final class NaturalEnvironmentPane extends HBox {
                                           } );
 
         // NOTE: Sliders might switch presentation units, whereas JavaFX Bean
-        // Properties are specified with a single unchanging unit, so we have to
-        // be careful to only sync the cached pressure property to the slider
-        // when a real magnitude change occurred vs. a Pressure Unit change.
-        // Only update the Altitude selection if there is an actual magnitude
-        // change in the Pressure as well, and not just a Pressure Unit change.
+        //  Properties are specified with a single unchanging unit, so we have
+        //  to be careful to only sync the cached pressure property to the slider
+        //  when a real magnitude change occurred vs. a Pressure Unit change.
+        //  Only update the Altitude selection if there is an actual magnitude
+        //  change in the Pressure as well, and not just a Pressure Unit change.
         _pressurePane._pressureSlider.valueProperty()
                                      .addListener( ( observableValue,
                                                      oldValue, newValue ) -> {
@@ -144,18 +146,16 @@ public final class NaturalEnvironmentPane extends HBox {
                                                      sliderValue ) );
                                          }
 
-                                         // Set the appropriate altitude
-                                         // toggle button if the new
-                                         // Pressure value corresponds to one
-                                         // of their ranges.
+                                         // Set the appropriate altitude toggle
+                                         // button if the new Pressure value
+                                         // corresponds to one of their ranges.
                                          // TODO: Review this logic and
-                                         //  possibly invert the order,
-                                         // as this doesn't seem to ever set
-                                         // the altitude choice
-                                         // since it appears to only look at
-                                         // specific cutoff values
-                                         // vs. entire ranges of values
-                                         // between the altitude choices.
+                                         //  possibly invert the order, as this
+                                         //  doesn't seem to ever set the
+                                         //  altitude choice; it appears to only
+                                         //  look at specific cutoff values vs.
+                                         //  entire ranges of values between the
+                                         //  altitude choices.
                                          eps = 1e-2;
                                          if ( FastMath.abs( sliderValue
                                                             - PhysicsConstants.PRESSURE_LOW_ALTITUDE_PA )
@@ -180,8 +180,8 @@ public final class NaturalEnvironmentPane extends HBox {
 
     // Reset all fields to the default values, regardless of state.
     // NOTE: This is done from the view vs. the model, as there may be more
-    // than one component per property (e.g. the radio buttons for Altitude, as
-    // part of Atmospheric Pressure as an alternate specification of Pressure).
+    //  than one component per property (e.g. the radio buttons for Altitude, as
+    //  part of Atmospheric Pressure as an alternate specification of Pressure).
     public void reset() {
         // Forward this method to the subsidiary panes.
         _temperaturePane.reset();
@@ -190,6 +190,7 @@ public final class NaturalEnvironmentPane extends HBox {
         _altitudePane.reset();
     }
 
+    @Override
     public void setForegroundFromBackground( final Color backColor ) {
         // Set the new Background first, so it sets context for CSS derivations.
         final Background background = RegionUtilities.makeRegionBackground(

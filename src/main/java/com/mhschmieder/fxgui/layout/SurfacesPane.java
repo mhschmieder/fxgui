@@ -37,6 +37,7 @@ import com.mhschmieder.fxcontrols.util.SurfacePropertiesNameManager;
 import com.mhschmieder.fxgraphics.geometry.Region2D;
 import com.mhschmieder.fxgraphics.geometry.Surface;
 import com.mhschmieder.fxgraphics.paint.ColorUtilities;
+import com.mhschmieder.fxgraphics.paint.ForegroundManager;
 import com.mhschmieder.fxgui.util.GuiUtilities;
 import com.mhschmieder.jcommons.text.NumberFormatUtilities;
 import com.mhschmieder.jcommons.util.ClientProperties;
@@ -59,17 +60,15 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.paint.Color;
 
-public final class SurfacesPane extends BorderPane {
+public final class SurfacesPane extends BorderPane implements
+                                                   ForegroundManager {
 
     // Declare the column header names.
     public static final String COLUMN_HEADER_SURFACE_ID = "ID";
-    //$NON-NLS-1$
     public static final String COLUMN_HEADER_SURFACE_NAME = "Surface Name";
-    //$NON-NLS-1$
     public static final String COLUMN_HEADER_STATUS = "Status";
-    //$NON-NLS-1$
     public static final String COLUMN_HEADER_MATERIAL_NAME = "Material Name";
-    //$NON-NLS-1$
+
     // Declare static constant to use for symbolically referencing grid row
     // indices, to ensure no errors, and ease of extensibility.
     // TODO: Find and use an existing symbolic constant for Surface Count.
@@ -77,6 +76,7 @@ public final class SurfacesPane extends BorderPane {
     public static final int ROW_SURFACE_FIRST = ROW_HEADER + 1;
     public static final int ROW_SURFACE_LAST = ( ROW_SURFACE_FIRST + 4 ) - 1;
     public static final int ROW_LAST = ROW_SURFACE_LAST;
+
     // Declare static constant to use for symbolically referencing column
     // indices, to ensure no errors, and ease of extensibility.
     private static final int COLUMN_FIRST = 0;
@@ -87,21 +87,27 @@ public final class SurfacesPane extends BorderPane {
     private static final int COLUMN_LAST = COLUMN_MATERIAL_NAME;
     public static final int NUMBER_OF_COLUMNS = ( COLUMN_LAST - COLUMN_FIRST )
                                                 + 1;
+
     // Keep track of how many unique Column Headers there are (due to spanning).
     public static final int NUMBER_OF_COLUMN_HEADERS = NUMBER_OF_COLUMNS;
 
     // Declare the main GUI nodes that are needed beyond initialization time.
-    protected GridPane _surfaceSelectorGrid;
+    private GridPane _surfaceSelectorGrid;
+
     // Give global scope to the Surface Selector Groups so we can access the
     // controls directly without casting from Node via getChildren().
-    protected List< SurfaceSelectorControls > _surfaceSelectorGroups;
+    private List< SurfaceSelectorControls > _surfaceSelectorGroups;
+
     // Cache a reference to the Surface Properties.
-    protected ObservableList< SurfaceProperties > _surfaceProperties;
+    private ObservableList< SurfaceProperties > _surfaceProperties;
+
     // Number format cache used for locale-specific number formatting of
     // uniquefier appendices.
-    protected NumberFormat _uniquefierNumberFormat;
+    private NumberFormat _uniquefierNumberFormat;
+
     // Cache the full Client Properties (System Type, Locale, etc.).
-    protected ClientProperties _clientProperties;
+    private ClientProperties _clientProperties;
+
     private Label _surfaceSelectorTitle;
     private Label _surfaceIdLabel;
     private Label _surfaceNameLabel;
@@ -155,7 +161,7 @@ public final class SurfacesPane extends BorderPane {
         GridPane.setHalignment( _materialNameLabel, HPos.CENTER );
 
         _surfaceSelectorGrid.setPadding( new Insets( 6.0d ) );
-        _surfaceSelectorGrid.setHgap( 16d );
+        _surfaceSelectorGrid.setHgap( 16.0d );
         _surfaceSelectorGrid.setVgap( 8.0d );
 
         _surfaceSelectorGrid.add( _surfaceIdLabel,
@@ -189,7 +195,7 @@ public final class SurfacesPane extends BorderPane {
                                       surfaceRowIndex );
 
             // Make sure the Surface ID Label is centered, so that it lines up
-            // with the column label and it's clear what column it goes with.
+            // with the column label, and it's clear what column it goes with.
             GridPane.setHalignment( surfaceSelectorControls._surfaceIdLabel,
                                     HPos.CENTER );
 
@@ -365,6 +371,7 @@ public final class SurfacesPane extends BorderPane {
         }
     }
 
+    @Override
     public void setForegroundFromBackground( final Color backColor ) {
         // Set the new Background first, so it sets context for CSS derivations.
         final Background background = RegionUtilities.makeRegionBackground(

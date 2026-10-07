@@ -32,6 +32,7 @@ package com.mhschmieder.fxgui.layout;
 
 import com.mhschmieder.fxcontrols.util.RegionUtilities;
 import com.mhschmieder.fxgraphics.paint.ColorUtilities;
+import com.mhschmieder.fxgraphics.paint.ForegroundManager;
 import com.mhschmieder.fxgui.util.GuiUtilities;
 import com.mhschmieder.jcommons.util.ClientProperties;
 import com.mhschmieder.jphysics.acoustics.FrequencySignalUtilities;
@@ -45,34 +46,28 @@ import javafx.scene.layout.Background;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 
-public final class FrequencyRangeInformationPane extends VBox {
+public final class FrequencyRangeInformationPane extends VBox implements
+                                                              ForegroundManager {
 
     // Declare strings for the static part of the settings formatting.
     public static final String RELATIVE_BANDWIDTH_LABEL_LABEL
-            = "Relative Bandwidth";         //$NON-NLS-1$
+            = "Relative Bandwidth";
     public static final String CENTER_FREQUENCY_LABEL_LABEL
-            = "Center Frequency";           //$NON-NLS-1$
+            = "Center Frequency";
     public static final String START_FREQUENCY_LABEL_LABEL = "Start Frequency";
-    //$NON-NLS-1$
     public static final String STOP_FREQUENCY_LABEL_LABEL = "Stop Frequency";
-    //$NON-NLS-1$
 
     private static final String BANDWIDTH_UNITS = " octave";
-    //$NON-NLS-1$
 
     // Declare default formatted data for each label.
     private static final String RELATIVE_BANDWIDTH_LABEL_DEFAULT =
             RELATIVE_BANDWIDTH_LABEL_LABEL + " Not Available";
-    //$NON-NLS-1$
     private static final String CENTER_FREQUENCY_LABEL_DEFAULT =
             CENTER_FREQUENCY_LABEL_LABEL + " Not Available";
-    //$NON-NLS-1$
     private static final String START_FREQUENCY_LABEL_DEFAULT =
             START_FREQUENCY_LABEL_LABEL + " Not Available";
-    //$NON-NLS-1$
     private static final String STOP_FREQUENCY_LABEL_DEFAULT =
             STOP_FREQUENCY_LABEL_LABEL + " Not Available";
-    //$NON-NLS-1$
 
     public Label _relativeBandwidthLabel;
     public Label _centerFrequencyLabel;
@@ -131,6 +126,7 @@ public final class FrequencyRangeInformationPane extends VBox {
         _stopFrequencyLabel.setText( STOP_FREQUENCY_LABEL_DEFAULT );
     }
 
+    @Override
     public void setForegroundFromBackground( final Color backColor ) {
         // Set the new Background first, so it sets context for CSS derivations.
         final Background background = RegionUtilities.makeRegionBackground(
@@ -147,7 +143,6 @@ public final class FrequencyRangeInformationPane extends VBox {
 
     // Update the cached Frequency Range.
     // NOTE: This method is generally called from an acoustic response context.
-    @SuppressWarnings( "nls" )
     public void setFrequencyRange( final double startFrequency,
                                    final double stopFrequency,
                                    final String relativeBandwidth,

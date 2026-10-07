@@ -34,6 +34,7 @@ import com.mhschmieder.fxcontrols.util.RegionUtilities;
 import com.mhschmieder.fxgraphics.image.ImageUtilities;
 import com.mhschmieder.fxgraphics.image.LogoUtilities;
 import com.mhschmieder.fxgraphics.paint.ColorUtilities;
+import com.mhschmieder.fxgraphics.paint.ForegroundManager;
 
 import java.awt.image.BufferedImage;
 
@@ -50,7 +51,7 @@ import javafx.scene.paint.Color;
  * This is a container used to provide more control over Logo positioning,
  * sizing, rendering, etc.
  */
-public final class LogoPane extends HBox {
+public final class LogoPane extends HBox implements ForegroundManager {
 
     // Use Image Views to load the light and dark logos.
     private ImageView _logoLight;
@@ -121,6 +122,7 @@ public final class LogoPane extends HBox {
                : 0.0d;
     }
 
+    @Override
     public void setForegroundFromBackground( final Color backColor ) {
         // Set the new Background first, so it sets context for CSS derivations.
         final Background background = RegionUtilities.makeRegionBackground(

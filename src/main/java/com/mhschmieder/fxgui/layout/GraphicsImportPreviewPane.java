@@ -39,6 +39,7 @@ import com.mhschmieder.fxcontrols.util.RegionUtilities;
 import com.mhschmieder.fxdxfimport.DxfShapeGroup;
 import com.mhschmieder.fxdxfimport.GraphicsImportOptions;
 import com.mhschmieder.fxgraphics.geometry.DrawingLimits;
+import com.mhschmieder.fxgraphics.paint.ForegroundManager;
 import com.mhschmieder.fxgui.util.BoundsUtilities;
 import com.mhschmieder.fxgui.util.GuiUtilities;
 import com.mhschmieder.jcommons.util.ClientProperties;
@@ -83,48 +84,61 @@ import javafx.stage.Stage;
 /**
  * This is the main content pane for Graphics Import Preview windows.
  */
-public final class GraphicsImportPreviewPane extends GridPane {
+public final class GraphicsImportPreviewPane extends GridPane implements
+                                                              ForegroundManager {
 
     protected static final double DEFAULT_SCROLL_DELTA = 1.3d;
     protected static final double IMPORTED_GRAPHICS_STROKE_WIDTH_RATIO = 0.75d;
+
     public XComboBox< DistanceUnit > _distanceUnitSelector;
+
     /**
      * Current zoom which corresponds to the current Sound Field size.
      */
     public Bounds _zoomBox;
+
     /**
      * Cache the Client Properties (System Type, Locale, etc.).
      */
     public ClientProperties _clientProperties;
+
     /**
      * The x-axis displays ticks along the bottom of the Sound Field.
      */
     protected NumberAxis _xAxis;
+
     /**
      * The y-axis displays ticks along the left of the Sound Field.
      */
     protected NumberAxis _yAxis;
+
     protected double _scrollDeltaY = 0.0d;
     protected double _scrollScale = 1.0d;
+
     private GraphicsImportDrawingLimitsSourcePane _drawingLimitsSourcePane;
     private UnitlessPositionPane _minimumPane;
     private UnitlessPositionPane _maximumPane;
+
     /**
      * The Reset Button brings the Drawing Limits back to the selected source.
      */
     private Button _drawingLimitsResetButton;
+
     /**
      * Cache the application's Drawing Limits for real-time bounds queries.
      */
     private DrawingLimitsProperties _applicationDrawingLimitsProperties;
+
     /**
      * Cache the Graphics Import Options as a global singleton reference.
      */
     private GraphicsImportOptions _graphicsImportOptions;
+
     /**
      * Cache the imported geometry for later use, as this window is modeless.
      */
     private DxfShapeGroup _geometryContainer;
+
     /**
      * Wraps {@link #_geometryContainer} to receive a scale transform so that:
      * <ol>
@@ -136,25 +150,30 @@ public final class GraphicsImportPreviewPane extends GridPane {
      * </ol>
      */
     private Group _geometryGroup;
+
     /**
      * Cache the node representation of the Prospective Drawing Limits so we can
      * remove the old one before adding the new one, when something changes.
      */
     private Rectangle _drawingLimitsNode;
+
     /**
      * Wraps {@link #_geometryGroup} for bounds calculation including its
      * transform.
      */
     private Group _importedGeometryPreviewGroup;
+
     /**
      * Anchor panes make it easier to align the axes with the graphics.
      */
     private AnchorPane _importedGeometryPreviewAnchorPane;
+
     /**
      * Container for the whole graphics preview. This is removed and regenerated
      * in {@link #updateGeometryPreview}.
      */
     private StackPane _importedGeometryPreviewStackPane;
+
     /**
      * Cache the model space to screen scale factor, for zooming etc.
      */
@@ -162,6 +181,7 @@ public final class GraphicsImportPreviewPane extends GridPane {
 
     /** Cache the current Background Color as it is needed for new visuals. */
     // private Color _backColor;
+
     /**
      * Cache the listeners so that we can remove them and re-add them during
      * programmatic changes, to avoid order-dependency and side effects.
@@ -222,14 +242,14 @@ public final class GraphicsImportPreviewPane extends GridPane {
                 true,
                 DistanceUnit.defaultValue() );
         _distanceUnitSelector.setTooltip( new Tooltip(
-                "Distance Unit for Graphics Import Source" ) ); //$NON-NLS-1$
+                "Distance Unit for Graphics Import Source" ) );
 
         final HBox distanceUnitPane = GuiUtilities.getLabeledComboBoxPane(
-                "Distance Unit", //$NON-NLS-1$
+                "Distance Unit",
                 _distanceUnitSelector );
 
         final Label pleaseSelectUnitLabel = new Label(
-                "Please Select the Distance Unit Used in the Graphics File:" ); //$NON-NLS-1$
+                "Please Select the Distance Unit Used in the Graphics File:" );
         final VBox labelAndComboBox = new VBox( pleaseSelectUnitLabel,
                                                 distanceUnitPane );
 
@@ -238,7 +258,6 @@ public final class GraphicsImportPreviewPane extends GridPane {
                                                            "Measurement Units"
                                                            + " for Graphics "
                                                            + "Import" );
-        //$NON-NLS-1$
 
         _drawingLimitsSourcePane = new GraphicsImportDrawingLimitsSourcePane(
                 productName );
@@ -246,7 +265,7 @@ public final class GraphicsImportPreviewPane extends GridPane {
         final Node drawingLimitsSourceNode
                 = GuiUtilities.getTitledBorderWrappedNode(
                 _drawingLimitsSourcePane,
-                "Drawing Limits Source for Graphics Import" ); //$NON-NLS-1$
+                "Drawing Limits Source for Graphics Import" );
 
         // Stack the Measurement Units and Drawing Limits Source as they roughly
         // match the combined height of the Drawing Limits editing controls and
@@ -259,10 +278,10 @@ public final class GraphicsImportPreviewPane extends GridPane {
         // this is easier to correlate to the Graphic Preview than Origin and
         // Width/Height as they will likely adjust this to match axis marks.
         final Label minimumPaneLabel = GuiUtilities.getColumnHeader(
-                "Lower Left Corner" ); //$NON-NLS-1$
+                "Lower Left Corner" );
         _minimumPane = new UnitlessPositionPane( _clientProperties );
         final Label maximumPaneLabel = GuiUtilities.getColumnHeader(
-                "Upper Right Corner" ); //$NON-NLS-1$
+                "Upper Right Corner" );
         _maximumPane = new UnitlessPositionPane( _clientProperties );
 
         final GridPane minMaxGrid = new GridPane();
@@ -279,12 +298,12 @@ public final class GraphicsImportPreviewPane extends GridPane {
 
         // The Reset Button needs to be separate from the editing controls.
         _drawingLimitsResetButton = LabeledControlFactory.getResetButton(
-                "Drawing Limits" ); //$NON-NLS-1$
+                "Drawing Limits" );
         _drawingLimitsResetButton.setAlignment( Pos.CENTER_RIGHT );
 
         final Label resetButtonLabel = new Label(
                 "Press Reset Button to Reset Corners to Drawing Limits "
-                + "Source:" ); //$NON-NLS-1$
+                + "Source:" );
         resetButtonLabel.setAlignment( Pos.CENTER_LEFT );
 
         // Make a Grid Pane to give more control over the Reset Button.
@@ -297,7 +316,7 @@ public final class GraphicsImportPreviewPane extends GridPane {
         // Make a general help label that describes how Drawing Limits are used.
         final Label helpLabel = new Label(
                 "These Drawing Limits Will Be Used as the New Prediction "
-                + "Plane After Graphics are Imported" ); //$NON-NLS-1$
+                + "Plane After Graphics are Imported" );
         helpLabel.setAlignment( Pos.CENTER );
         final BorderPane helpPanel = new BorderPane();
         helpPanel.setCenter( helpLabel );
@@ -310,7 +329,7 @@ public final class GraphicsImportPreviewPane extends GridPane {
 
         final Node minMaxWrapper = GuiUtilities.getTitledBorderWrappedNode(
                 minMaxPane,
-                "Drawing Limits Extents for Graphics Import" ); //$NON-NLS-1$
+                "Drawing Limits Extents for Graphics Import" );
 
         // Now lay out the main content pane.
         add( parameterPane, 0, 0 );
@@ -320,12 +339,12 @@ public final class GraphicsImportPreviewPane extends GridPane {
         setVgap( 8.0d );
 
         setAlignment( Pos.CENTER );
-        setPadding( new Insets( 12d ) );
+        setPadding( new Insets( 12.0d ) );
 
         // Try to avoid the minimum and maximum layout panes from getting too
         // wide if the preview node is elongated, by giving horizontal grow
         // priority to the Distance Unit outermost layout container.
-        GridPane.setHgrow( parameterPane, Priority.SOMETIMES );
+        setHgrow( parameterPane, Priority.SOMETIMES );
 
         // Do not allow Application Drawing Limits until units have been chosen.
         _drawingLimitsSourcePane._applicationDrawingLimitsRadioButton.disableProperty()
@@ -398,7 +417,7 @@ public final class GraphicsImportPreviewPane extends GridPane {
      * Adds mouse event handlers which will make the graphical nodes follow the
      * user's mouse as they drag, as well as detecting context menu triggers.
      **/
-    protected void addMouseEventHandlers() {
+    private void addMouseEventHandlers() {
         // Add scroll-zoom handlers.
         final Node clickableNode = getGraphicsImportClickableNode();
         clickableNode.setOnScroll( this::zoom );
@@ -448,9 +467,9 @@ public final class GraphicsImportPreviewPane extends GridPane {
         // TODO: Delete this modified old one-line algorithm after finishing
         //  the new algorithm above.
         final double zoomBasis
-                = SystemType.MACOS.equals( _clientProperties.systemType )
-                  ? 1.0001d
-                  : 1.0003d;
+                = SystemType.MACOS == _clientProperties.systemType
+                  ? 1.000_1d
+                  : 1.000_3d;
         final double zoomExponent = event.getDeltaY();
         zoomFactor = FastMath.pow( zoomBasis, zoomExponent );
 
@@ -671,8 +690,8 @@ public final class GraphicsImportPreviewPane extends GridPane {
      * Discards the geometry wrapper associated with previous Graphics Import.
      * <p>
      * NOTE: This is functionally required, as well as being necessary for
-     * hinting the garbage collector to release memory vs. holding onto obsolete
-     * references. This has been proven necessary using the heap profiler.
+     *  hinting the garbage collector to release memory vs. holding onto obsolete
+     *  references. This has been proven necessary using the heap profiler.
      * <p>
      * TODO: Separate out the graphics vs. GUI layout stuff, so we can also
      *  properly reset the GUI when user choices change -- graphics should only
@@ -759,6 +778,7 @@ public final class GraphicsImportPreviewPane extends GridPane {
         }
     }
 
+    @Override
     public void setForegroundFromBackground( final Color backColor ) {
         // Cache the new Background Color as we need it for dynamic contrast
         // changes to the Chart Overlay Group as content is added.
@@ -854,11 +874,9 @@ public final class GraphicsImportPreviewPane extends GridPane {
         }
         else {
             // TODO: Add a hint for "Choose One" as in the old string-based
-            //  version
-            //  of the Distance Unit Selector before we made it enum object
-            //  based.
-            //  We now say "unitless" in the drop-list and the displayed text
-            //  field.
+            //  version of the Distance Unit Selector before we made it enum
+            //  object based. We now say "unitless" in the drop-list and the
+            //  displayed text field.
             setGraphicsImportDistanceUnit( DistanceUnit.UNITLESS );
         }
 
@@ -1010,7 +1028,7 @@ public final class GraphicsImportPreviewPane extends GridPane {
                         geometryPreviewGroupLayoutBounds.getWidth() );
             } // TODO: Switch to more of a "fuzzyEQ" strategy here.
             else if ( ( float ) geometryPreviewGroupLayoutBounds.getHeight()
-                      != 0f ) {
+                      != 0.0f ) {
                 // Scale the height to fit exactly.
                 _modelSpaceToScreenScaleFactor = anchorPaneGapVertical
                                                  / FastMath.abs(
@@ -1022,7 +1040,7 @@ public final class GraphicsImportPreviewPane extends GridPane {
 
             // Finally, apply the model space to screen space scale factor.
             // TODO: Switch to more of a "fuzzyEQ" strategy here.
-            if ( ( float ) _modelSpaceToScreenScaleFactor != 1f ) {
+            if ( ( float ) _modelSpaceToScreenScaleFactor != 1.0f ) {
                 final Scale scale = new Scale( _modelSpaceToScreenScaleFactor,
                                                _modelSpaceToScreenScaleFactor );
                 _geometryGroup.getTransforms().add( scale );
@@ -1060,12 +1078,12 @@ public final class GraphicsImportPreviewPane extends GridPane {
             //  the
             //  manual resizing and centering and then turn off the resizability
             //  flag right after sizing to fit the Imported Graphics content.
-            if ( SystemType.MACOS.equals( _clientProperties.systemType ) ) {
+            if ( SystemType.MACOS == _clientProperties.systemType ) {
                 ( ( Stage ) ( getScene().getWindow() ) ).setResizable( true );
             }
             getScene().getWindow().sizeToScene();
             getScene().getWindow().centerOnScreen();
-            if ( SystemType.MACOS.equals( _clientProperties.systemType ) ) {
+            if ( SystemType.MACOS == _clientProperties.systemType ) {
                 ( ( Stage ) ( getScene().getWindow() ) ).setResizable( false );
             }
 

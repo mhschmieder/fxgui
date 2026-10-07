@@ -33,6 +33,7 @@ package com.mhschmieder.fxgui.layout;
 import com.mhschmieder.fxcontrols.util.RegionUtilities;
 import com.mhschmieder.fxgraphics.image.ImageUtilities;
 import com.mhschmieder.fxgraphics.paint.ColorUtilities;
+import com.mhschmieder.fxgraphics.paint.ForegroundManager;
 import com.mhschmieder.fxgui.util.GuiUtilities;
 
 import javafx.geometry.Insets;
@@ -44,7 +45,8 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
 
-public final class ServerLoginStatusBar extends StackPane {
+public final class ServerLoginStatusBar extends StackPane implements
+                                                          ForegroundManager {
 
     // protected static final String LONG_LOAD_STATUS_HEADER = "Loading Stored
     // Traces... "; //$NON-NLS-1$
@@ -77,7 +79,6 @@ public final class ServerLoginStatusBar extends StackPane {
         }
     }
 
-    @SuppressWarnings( "nls" )
     private void initPane( final String loggedInMessage,
                            final String loggedOutMessage ) {
         // final String longLoadMessage = "Projects with Stored IFFT Traces May
@@ -103,8 +104,8 @@ public final class ServerLoginStatusBar extends StackPane {
         _loggedInStatusBar.getChildren()
                           .addAll( _loggedInIcon, _loggedInStatusLabel );
 
-        _loggedInStatusBar.setPadding( new Insets( 3.0d, 12d, 3.0d, 12d ) );
-        _loggedInStatusBar.setSpacing( 16d );
+        _loggedInStatusBar.setPadding( new Insets( 3.0d, 12.0d, 3.0d, 12.0d ) );
+        _loggedInStatusBar.setSpacing( 16.0d );
 
         _loggedOutStatusBar = new HBox();
         _loggedOutIcon = ImageUtilities.createIcon(
@@ -115,8 +116,8 @@ public final class ServerLoginStatusBar extends StackPane {
         _loggedOutStatusBar.getChildren()
                            .addAll( _loggedOutIcon, _loggedOutStatusLabel );
 
-        _loggedOutStatusBar.setPadding( new Insets( 3.0d, 12d, 3.0d, 12d ) );
-        _loggedOutStatusBar.setSpacing( 12d );
+        _loggedOutStatusBar.setPadding( new Insets( 3.0d, 12.0d, 3.0d, 12.0d ) );
+        _loggedOutStatusBar.setSpacing( 12.0d );
 
         // Build the Stack Pane and prepare it for view-switching.
         getChildren().addAll( _loggedInStatusBar, _loggedOutStatusBar );
@@ -128,10 +129,11 @@ public final class ServerLoginStatusBar extends StackPane {
         setAlignment( Pos.CENTER_LEFT );
 
         // Try to keep the Server Login Status Bar from getting too tall.
-        setPrefHeight( 24d );
-        setMaxHeight( 24d );
+        setPrefHeight( 24.0d );
+        setMaxHeight( 24.0d );
     }
 
+    @Override
     public void setForegroundFromBackground( final Color backColor ) {
         // Set the new Background first, so it sets context for CSS derivations.
         final Background background = RegionUtilities.makeRegionBackground(

@@ -33,6 +33,7 @@ package com.mhschmieder.fxgui.layout;
 import com.mhschmieder.fxcontrols.util.RegionUtilities;
 import com.mhschmieder.fxgraphics.image.ImageUtilities;
 import com.mhschmieder.fxgraphics.paint.ColorUtilities;
+import com.mhschmieder.fxgraphics.paint.ForegroundManager;
 import com.mhschmieder.fxgui.util.GuiUtilities;
 import com.mhschmieder.jcommons.util.ClientProperties;
 
@@ -46,16 +47,16 @@ import javafx.scene.layout.Background;
 import javafx.scene.layout.GridPane;
 import javafx.scene.paint.Color;
 
-public class SurfaceLegend extends GridPane {
+public class SurfaceLegend extends GridPane implements ForegroundManager {
 
-    private Label _surfaceLegendHeader;
+    private Label surfaceLegendHeader;
 
     // Use Image Views to load the Surface Legends.
-    private ImageView _surfaceLegendWhite;
-    private ImageView _surfaceLegendBlack;
+    private ImageView surfaceLegendWhite;
+    private ImageView surfaceLegendBlack;
 
     // Use a Label to host the active Logo Image View.
-    private Label _surfaceLegendLabel;
+    private Label surfaceLegendLabel;
 
     public SurfaceLegend( final ClientProperties pClientProperties ) {
         // Always call the superclass constructor first!
@@ -69,43 +70,43 @@ public class SurfaceLegend extends GridPane {
         }
     }
 
-    private final void initPane( final ClientProperties pClientProperties ) {
+    private void initPane( final ClientProperties pClientProperties ) {
         // Get the column header for the Surface Legend.
-        _surfaceLegendHeader
-                = GuiUtilities.getColumnHeader( "Legend" ); //$NON-NLS-1$
+        surfaceLegendHeader
+                = GuiUtilities.getColumnHeader( "Legend" );
 
         // Place the Surface Legend image in an ImageView container.
         // NOTE: Specifying width is enough to scale to a desired overall size.
         final String jarRelativeSurfaceLegendWhiteFilename
-                = "/icons/mhschmieder/SurfaceLegendWhite.png"; //$NON-NLS-1$
+                = "/icons/mhschmieder/SurfaceLegendWhite.png";
         final String jarRelativeSurfaceLegendBlackFilename
-                = "/icons/mhschmieder/SurfaceLegendBlack.png"; //$NON-NLS-1$
-        _surfaceLegendWhite = ImageUtilities.createLegend(
+                = "/icons/mhschmieder/SurfaceLegendBlack.png";
+        surfaceLegendWhite = ImageUtilities.createLegend(
                 jarRelativeSurfaceLegendWhiteFilename,
                 true,
-                -1d,
-                90d,
-                -1d );
-        _surfaceLegendBlack = ImageUtilities.createLegend(
+                -1.0d,
+                90.0d,
+                -1.0d );
+        surfaceLegendBlack = ImageUtilities.createLegend(
                 jarRelativeSurfaceLegendBlackFilename,
                 true,
-                -1d,
-                90d,
-                -1d );
+                -1.0d,
+                90.0d,
+                -1.0d );
 
         // Make a Label to host the Surface Legend Image Icon, to control sizing
         // etc.
-        _surfaceLegendLabel = new Label();
+        surfaceLegendLabel = new Label();
 
         // Make sure the Surface Legend Image doesn't get clipped, by aligning
         // to the top of the Label host.
-        _surfaceLegendLabel.setAlignment( Pos.TOP_LEFT );
+        surfaceLegendLabel.setAlignment( Pos.TOP_LEFT );
 
-        add( _surfaceLegendHeader, 0, 0 );
-        add( _surfaceLegendLabel, 0, 1 );
+        add( surfaceLegendHeader, 0, 0 );
+        add( surfaceLegendLabel, 0, 1 );
 
-        GridPane.setHalignment( _surfaceLegendHeader, HPos.CENTER );
-        GridPane.setHalignment( _surfaceLegendLabel, HPos.CENTER );
+        setHalignment( surfaceLegendHeader, HPos.CENTER );
+        setHalignment( surfaceLegendLabel, HPos.CENTER );
 
         setAlignment( Pos.CENTER );
 
@@ -115,15 +116,14 @@ public class SurfaceLegend extends GridPane {
         // Make sure the Surface Legend Icon is always on the left, with minimal
         // gaps.
         // TODO: Use ScenicView to compare setPadding() vs. setMargins().
-        setMargin( _surfaceLegendLabel, new Insets( 6.0d ) );
+        setMargin( surfaceLegendLabel, new Insets( 6.0d ) );
 
         // Try to prevent the Surface Legend from getting clipped or hidden.
         // NOTE: We give the image a chance to load before binding to it.
-        Platform.runLater( () -> {
-            minWidthProperty().bind( _surfaceLegendWhite.fitWidthProperty() );
-        } );
+        Platform.runLater( () -> minWidthProperty().bind( surfaceLegendWhite.fitWidthProperty() ) );
     }
 
+    @Override
     public final void setForegroundFromBackground( final Color backColor ) {
         // Set the new Background first, so it sets context for CSS derivations.
         final Background background = RegionUtilities.makeRegionBackground(
@@ -134,14 +134,14 @@ public class SurfaceLegend extends GridPane {
         final Color foregroundColor
                 = ColorUtilities.getForegroundFromBackground( backColor );
 
-        _surfaceLegendHeader.setTextFill( foregroundColor );
+        surfaceLegendHeader.setTextFill( foregroundColor );
 
         // Replace with white Surface Legend if switching to a dark background.
         // NOTE: We also set the label's background, for consistent insets.
         final ImageView logo = ColorUtilities.isColorDark( backColor )
-                               ? _surfaceLegendWhite
-                               : _surfaceLegendBlack;
-        _surfaceLegendLabel.setBackground( background );
-        _surfaceLegendLabel.setGraphic( logo );
+                               ? surfaceLegendWhite
+                               : surfaceLegendBlack;
+        surfaceLegendLabel.setBackground( background );
+        surfaceLegendLabel.setGraphic( logo );
     }
 }

@@ -35,6 +35,7 @@ import com.mhschmieder.fxcontrols.control.LayerPropertiesTable;
 import com.mhschmieder.fxcontrols.model.LayerProperties;
 import com.mhschmieder.fxcontrols.util.LayerPropertiesManagement;
 import com.mhschmieder.fxcontrols.util.RegionUtilities;
+import com.mhschmieder.fxgraphics.paint.ForegroundManager;
 import com.mhschmieder.fxgui.stage.XStage;
 import com.mhschmieder.jcommons.util.ClientProperties;
 import org.apache.commons.math3.util.FastMath;
@@ -48,7 +49,8 @@ import javafx.scene.layout.Background;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.paint.Color;
 
-public final class LayerManagerPane extends BorderPane {
+public final class LayerManagerPane extends BorderPane implements
+                                                       ForegroundManager {
 
     // Declare the table and controls used for the Layer Properties.
     public LayerPropertiesTable layerPropertiesTable;
@@ -196,6 +198,7 @@ public final class LayerManagerPane extends BorderPane {
         layerPropertiesTable.setEditingFocus( rowIndex, columnIndex );
     }
 
+    @Override
     public void setForegroundFromBackground( final Color backColor ) {
         // Set the new Background first, so it sets context for CSS derivations.
         final Background background = RegionUtilities.makeRegionBackground(

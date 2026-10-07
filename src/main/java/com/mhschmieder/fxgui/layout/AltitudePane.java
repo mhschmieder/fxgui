@@ -33,6 +33,7 @@ package com.mhschmieder.fxgui.layout;
 import com.mhschmieder.fxcontrols.control.ControlUtilities;
 import com.mhschmieder.fxcontrols.util.RegionUtilities;
 import com.mhschmieder.fxgraphics.paint.ColorUtilities;
+import com.mhschmieder.fxgraphics.paint.ForegroundManager;
 import com.mhschmieder.fxgui.util.GuiUtilities;
 import com.mhschmieder.jcommons.util.ClientProperties;
 import com.mhschmieder.jphysics.PhysicsConstants;
@@ -50,7 +51,8 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.paint.Color;
 
-public final class AltitudePane extends BorderPane {
+public final class AltitudePane extends BorderPane implements
+                                                   ForegroundManager {
 
     public RadioButton _lowAltitudeRadioButton;
     public RadioButton _mediumAltitudeRadioButton;
@@ -167,6 +169,7 @@ public final class AltitudePane extends BorderPane {
         }
     }
 
+    @Override
     public void setForegroundFromBackground( final Color backColor ) {
         // Set the new Background first, so it sets context for CSS derivations.
         final Background background = RegionUtilities.makeRegionBackground(

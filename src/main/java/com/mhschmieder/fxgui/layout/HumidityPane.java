@@ -36,6 +36,7 @@ import com.mhschmieder.fxcontrols.control.HumiditySlider;
 import com.mhschmieder.fxcontrols.model.NaturalEnvironmentProperties;
 import com.mhschmieder.fxcontrols.util.RegionUtilities;
 import com.mhschmieder.fxgraphics.paint.ColorUtilities;
+import com.mhschmieder.fxgraphics.paint.ForegroundManager;
 import com.mhschmieder.fxgui.util.GuiUtilities;
 import com.mhschmieder.jcommons.util.ClientProperties;
 import com.mhschmieder.jgraphics.input.ScrollingSensitivity;
@@ -50,7 +51,7 @@ import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 
-public final class HumidityPane extends VBox {
+public final class HumidityPane extends VBox implements ForegroundManager {
 
     public HumiditySlider _humiditySlider;
     public HumidityEditor _humidityEditor;
@@ -106,6 +107,7 @@ public final class HumidityPane extends VBox {
         _humiditySlider.setValue( NaturalEnvironmentProperties.HUMIDITY_RELATIVE_DEFAULT );
     }
 
+    @Override
     public void setForegroundFromBackground( final Color backColor ) {
         // Set the new Background first, so it sets context for CSS derivations.
         final Background background = RegionUtilities.makeRegionBackground(

@@ -33,6 +33,7 @@ package com.mhschmieder.fxgui.layout;
 import com.mhschmieder.fxcontrols.model.Extents2DProperties;
 import com.mhschmieder.fxcontrols.util.RegionUtilities;
 import com.mhschmieder.fxgraphics.paint.ColorUtilities;
+import com.mhschmieder.fxgraphics.paint.ForegroundManager;
 import com.mhschmieder.fxgui.util.GuiUtilities;
 import com.mhschmieder.jcommons.util.ClientProperties;
 import com.mhschmieder.jphysics.measure.DistanceUnit;
@@ -47,11 +48,13 @@ import javafx.scene.layout.Background;
 import javafx.scene.layout.GridPane;
 import javafx.scene.paint.Color;
 
-public final class Extents2DPane extends GridPane {
+public final class Extents2DPane extends GridPane implements ForegroundManager {
 
     static final double EPSILON_TOLERANCE = 1e-6;
+
     public CartesianPositionPane _minimumPane;
     public CartesianPositionPane _sizePane;
+
     // Maintain an observable reference to the global Extents.
     protected Extents2DProperties extents;
     private Label _minimumPaneLabel;
@@ -283,6 +286,7 @@ public final class Extents2DPane extends GridPane {
         extents.setHeight( sizeY );
     }
 
+    @Override
     public void setForegroundFromBackground( final Color backColor ) {
         // Set the new Background first, so it sets context for CSS derivations.
         final Background background = RegionUtilities.makeRegionBackground(

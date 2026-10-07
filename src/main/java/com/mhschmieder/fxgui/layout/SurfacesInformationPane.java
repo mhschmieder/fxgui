@@ -34,6 +34,7 @@ import com.mhschmieder.fxcontrols.model.Region2DProperties;
 import com.mhschmieder.fxcontrols.model.SurfaceProperties;
 import com.mhschmieder.fxcontrols.util.RegionUtilities;
 import com.mhschmieder.fxgraphics.paint.ColorUtilities;
+import com.mhschmieder.fxgraphics.paint.ForegroundManager;
 import com.mhschmieder.fxgui.util.GuiUtilities;
 import com.mhschmieder.jcommons.util.ClientProperties;
 
@@ -48,29 +49,25 @@ import javafx.scene.paint.Color;
 /**
  * This is an information pane for a 2D Region's Surfaces/Materials.
  */
-public final class SurfacesInformationPane extends VBox {
+public final class SurfacesInformationPane extends VBox implements
+                                                        ForegroundManager {
 
     public static final String SURFACE_LABEL_LABEL = "Surface";
-    //$NON-NLS-1$
 
     // Declare default formatted data for each label.
     private static final String SURFACE1_LABEL_DEFAULT = SURFACE_LABEL_LABEL
                                                          + " 1 = Bypassed";
-    //$NON-NLS-1$
     private static final String SURFACE2_LABEL_DEFAULT = SURFACE_LABEL_LABEL
                                                          + " 2 = Bypassed";
-    //$NON-NLS-1$
     private static final String SURFACE3_LABEL_DEFAULT = SURFACE_LABEL_LABEL
                                                          + " 3 = Bypassed";
-    //$NON-NLS-1$
     private static final String SURFACE4_LABEL_DEFAULT = SURFACE_LABEL_LABEL
                                                          + " 4 = Bypassed";
-    //$NON-NLS-1$
 
-    private Label _surface1Label;
-    private Label _surface2Label;
-    private Label _surface3Label;
-    private Label _surface4Label;
+    private Label surface1Label;
+    private Label surface2Label;
+    private Label surface3Label;
+    private Label surface4Label;
 
     // Keep a cached copy of the Region2D reference, as it is global per
     // session and can be used to update status and Surface Materials.
@@ -89,27 +86,26 @@ public final class SurfacesInformationPane extends VBox {
     }
 
     private void initPane( final ClientProperties pClientProperties ) {
-        _surface1Label = GuiUtilities.getStatusLabel( SURFACE1_LABEL_DEFAULT );
-        _surface2Label = GuiUtilities.getStatusLabel( SURFACE2_LABEL_DEFAULT );
-        _surface3Label = GuiUtilities.getStatusLabel( SURFACE3_LABEL_DEFAULT );
-        _surface4Label = GuiUtilities.getStatusLabel( SURFACE4_LABEL_DEFAULT );
+        surface1Label = GuiUtilities.getStatusLabel( SURFACE1_LABEL_DEFAULT );
+        surface2Label = GuiUtilities.getStatusLabel( SURFACE2_LABEL_DEFAULT );
+        surface3Label = GuiUtilities.getStatusLabel( SURFACE3_LABEL_DEFAULT );
+        surface4Label = GuiUtilities.getStatusLabel( SURFACE4_LABEL_DEFAULT );
 
-        getChildren().addAll( _surface1Label,
-                              _surface2Label,
-                              _surface3Label,
-                              _surface4Label );
+        getChildren().addAll( surface1Label, surface2Label, surface3Label,
+                              surface4Label );
         setAlignment( Pos.CENTER_LEFT );
 
         setPadding( new Insets( 6.0d ) );
     }
 
     public void reset() {
-        _surface1Label.setText( SURFACE1_LABEL_DEFAULT );
-        _surface2Label.setText( SURFACE2_LABEL_DEFAULT );
-        _surface3Label.setText( SURFACE3_LABEL_DEFAULT );
-        _surface4Label.setText( SURFACE4_LABEL_DEFAULT );
+        surface1Label.setText( SURFACE1_LABEL_DEFAULT );
+        surface2Label.setText( SURFACE2_LABEL_DEFAULT );
+        surface3Label.setText( SURFACE3_LABEL_DEFAULT );
+        surface4Label.setText( SURFACE4_LABEL_DEFAULT );
     }
 
+    @Override
     public void setForegroundFromBackground( final Color backColor ) {
         // Set the new Background first, so it sets context for CSS derivations.
         final Background background = RegionUtilities.makeRegionBackground(
@@ -118,10 +114,10 @@ public final class SurfacesInformationPane extends VBox {
 
         final Color foregroundColor
                 = ColorUtilities.getForegroundFromBackground( backColor );
-        _surface1Label.setTextFill( foregroundColor );
-        _surface2Label.setTextFill( foregroundColor );
-        _surface3Label.setTextFill( foregroundColor );
-        _surface4Label.setTextFill( foregroundColor );
+        surface1Label.setTextFill( foregroundColor );
+        surface2Label.setTextFill( foregroundColor );
+        surface3Label.setTextFill( foregroundColor );
+        surface4Label.setTextFill( foregroundColor );
     }
 
     // Set and propagate the Region2D reference.
@@ -153,7 +149,7 @@ public final class SurfacesInformationPane extends VBox {
                                        //$NON-NLS-1$
                                        : surface1Properties.getSurfaceMaterial()
                                                            .abbreviation();
-        final String surface1Label = "Surface "
+        final String newSurface1Label = "Surface "
                                      + surface1Properties.getSurfaceNumber()
                                      + ": " //$NON-NLS-1$ //$NON-NLS-2$
                                      + surface1Properties.getSurfaceName()
@@ -166,7 +162,7 @@ public final class SurfacesInformationPane extends VBox {
                                        //$NON-NLS-1$
                                        : surface2Properties.getSurfaceMaterial()
                                                            .abbreviation();
-        final String surface2Label = "Surface "
+        final String newSurface2Label = "Surface "
                                      + surface2Properties.getSurfaceNumber()
                                      + ": " //$NON-NLS-1$ //$NON-NLS-2$
                                      + surface2Properties.getSurfaceName()
@@ -179,7 +175,7 @@ public final class SurfacesInformationPane extends VBox {
                                        //$NON-NLS-1$
                                        : surface3Properties.getSurfaceMaterial()
                                                            .abbreviation();
-        final String surface3Label = "Surface "
+        final String newSurface3Label = "Surface "
                                      + surface3Properties.getSurfaceNumber()
                                      + ": " //$NON-NLS-1$ //$NON-NLS-2$
                                      + surface3Properties.getSurfaceName()
@@ -192,17 +188,17 @@ public final class SurfacesInformationPane extends VBox {
                                        //$NON-NLS-1$
                                        : surface4Properties.getSurfaceMaterial()
                                                            .abbreviation();
-        final String surface4Label = "Surface "
+        final String newSurface4Label = "Surface "
                                      + surface4Properties.getSurfaceNumber()
                                      + ": " //$NON-NLS-1$ //$NON-NLS-2$
                                      + surface4Properties.getSurfaceName()
                                      + " = " + sSurface4Status; //$NON-NLS-1$
 
         // Update the associated labels in the information pane.
-        _surface1Label.setText( surface1Label );
-        _surface2Label.setText( surface2Label );
-        _surface3Label.setText( surface3Label );
-        _surface4Label.setText( surface4Label );
+        surface1Label.setText( newSurface1Label );
+        surface2Label.setText( newSurface2Label );
+        surface3Label.setText( newSurface3Label );
+        surface4Label.setText( newSurface4Label );
     }
 
     public void updateView() {
@@ -213,10 +209,10 @@ public final class SurfacesInformationPane extends VBox {
         // Collect the information fields to render to a single-column table.
         final String[] information = new String[ 4 ];
         int i = 0;
-        information[ i++ ] = _surface1Label.getText();
-        information[ i++ ] = _surface2Label.getText();
-        information[ i++ ] = _surface3Label.getText();
-        information[ i++ ] = _surface4Label.getText();
+        information[ i++ ] = surface1Label.getText();
+        information[ i++ ] = surface2Label.getText();
+        information[ i++ ] = surface3Label.getText();
+        information[ i++ ] = surface4Label.getText();
         return information;
     }
 }

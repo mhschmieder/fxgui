@@ -33,6 +33,7 @@ package com.mhschmieder.fxgui.layout;
 import com.mhschmieder.fxcontrols.model.NaturalEnvironmentProperties;
 import com.mhschmieder.fxcontrols.util.RegionUtilities;
 import com.mhschmieder.fxgraphics.paint.ColorUtilities;
+import com.mhschmieder.fxgraphics.paint.ForegroundManager;
 import com.mhschmieder.fxgui.swing.NaturalEnvironmentInformationComponent;
 import com.mhschmieder.fxgui.util.GuiUtilities;
 import com.mhschmieder.jcommons.util.ClientProperties;
@@ -48,19 +49,24 @@ import javafx.scene.layout.Background;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 
-public final class NaturalEnvironmentInformationPane extends VBox {
+public final class NaturalEnvironmentInformationPane extends VBox implements
+                                                                  ForegroundManager {
 
     public Label _airAttenuationLabel;
     public Label _temperatureLabel;
     public Label _pressureLabel;
     public Label _relativeHumidityLabel;
+
     // Number format cache used for locale-specific number formatting.
-    protected NumberFormat _numberFormat;
+    private NumberFormat _numberFormat;
+
     // Percent format cache used for locale-specific percent formatting.
-    protected NumberFormat _percentFormat;
+    private NumberFormat _percentFormat;
+
     // Keep a cached copy of the Natural Environment reference, in case the
     // units are changed between predictions.
     private NaturalEnvironmentProperties _naturalEnvironmentProperties;
+
     // Keep track of what units we're using to display, for later conversion.
     private TemperatureUnit _temperatureUnit;
     private PressureUnit _pressureUnit;
@@ -114,6 +120,7 @@ public final class NaturalEnvironmentInformationPane extends VBox {
         _relativeHumidityLabel.setText( NaturalEnvironmentInformationComponent.RELATIVE_HUMIDITY_LABEL_DEFAULT );
     }
 
+    @Override
     public void setForegroundFromBackground( final Color backColor ) {
         // Set the new Background first, so it sets context for CSS derivations.
         final Background background = RegionUtilities.makeRegionBackground(
@@ -194,7 +201,6 @@ public final class NaturalEnvironmentInformationPane extends VBox {
         return relativeHumidityLabel;
     }
 
-    @SuppressWarnings( "nls" )
     public static String getTemperatureLabel( final NaturalEnvironmentProperties naturalEnvironmentProperties,
                                               final TemperatureUnit temperatureUnit,
                                               final NumberFormat numberFormat ) {

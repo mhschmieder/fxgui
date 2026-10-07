@@ -31,6 +31,7 @@
 package com.mhschmieder.fxgui.layout;
 
 import com.mhschmieder.fxcontrols.util.RegionUtilities;
+import com.mhschmieder.fxgraphics.paint.ForegroundManager;
 import com.mhschmieder.fxgui.util.GuiUtilities;
 import com.mhschmieder.jcommons.util.ClientProperties;
 
@@ -48,7 +49,7 @@ import javafx.scene.paint.Color;
 
 // This is a working example of a stylized List View layout pane that applies
 // certain LAF and constraints that are far from the defaults in JavaFX.
-public class ListViewPane extends BorderPane {
+public class ListViewPane extends BorderPane implements ForegroundManager {
 
     /**
      * Cache the Client Properties (System Type, Locale, etc.).
@@ -80,8 +81,8 @@ public class ListViewPane extends BorderPane {
         }
     }
 
-    private final void initPane( final String listHeader,
-                                 final String[] items ) {
+    private void initPane( final String listHeader,
+                           final String[] items ) {
         // Make the large stylized masthead label and place at top.
         headerLabel = GuiUtilities.getTitleLabel( listHeader );
         final HBox masthead = GuiUtilities.getTitlePane( headerLabel );
@@ -98,17 +99,17 @@ public class ListViewPane extends BorderPane {
                                                  "/css/listView.css" );
         //$NON-NLS-1$
 
-        // TODO: Make a useful bottom pane, maybe with buttons, or pass one
-        // in to the constructor if this avoids having to subclass this class.
+        // TODO: Make a useful bottom pane, maybe with buttons, or pass one in
+        //  to the constructor if this avoids having to subclass this class.
         bottomButtonPane = new Pane();
 
         setTop( masthead );
         setCenter( itemList );
         setBottom( bottomButtonPane );
 
-        setPadding( new Insets( 16d ) );
+        setPadding( new Insets( 16.0d ) );
 
-        setMargin( itemList, new Insets( 12d ) );
+        setMargin( itemList, new Insets( 12.0d ) );
 
         // Try to avoid first-time problems with selector pane's width.
         itemList.setPrefWidth( masthead.getWidth() );
@@ -121,7 +122,7 @@ public class ListViewPane extends BorderPane {
         // Check for Product Type list selection events, to enable relevant
         // Phase Curve Frequency Buttons and set the selection style.
         // NOTE: it's not clear if we can grab the list cell from here, so we
-        // may need to apply the another list selection styling via CSS.
+        //  may need to apply the another list selection styling via CSS.
         itemList.setOnMouseClicked( mouseEvent -> {
             final String item = itemList.getSelectionModel().getSelectedItem();
             if ( ( item == null ) || item.isEmpty() ) {
@@ -129,8 +130,8 @@ public class ListViewPane extends BorderPane {
             }
 
             // TODO: Potentially do some view-to-model syncing here, to cache
-            // any valid selected value. Might need to do this in a derived
-            // class that is domain specific and which passes in a reference.
+            //  any valid selected value. Might need to do this in a derived
+            //  class that is domain specific and which passes in a reference.
 
             // Make sure to update which buttons are contextually allowed.
             Platform.runLater( () -> setButtonsEnabled( item ) );
@@ -138,13 +139,14 @@ public class ListViewPane extends BorderPane {
     }
 
     // TODO: Perhaps push this to a subclass, for determining enablement
-    // criteria of additional layout elements (such as action buttons) that
-    // are shown below the List View, based on the current selection or active
-    // highlighted list item.
+    //  criteria of additional layout elements (such as action buttons) that
+    //  are shown below the List View, based on the current selection or active
+    //  highlighted list item.
     private void setButtonsEnabled( final String selectedItem ) {
         // Nothing to do at the moment; this is a placeholder example.
     }
 
+    @Override
     public final void setForegroundFromBackground( final Color backColor ) {
         // Set the new Background first, so it sets context for CSS derivations.
         final Background background = RegionUtilities.makeRegionBackground(
@@ -153,7 +155,7 @@ public class ListViewPane extends BorderPane {
     }
 
     // TODO: Use Generics at the class definition level for the data type
-    // modeled by the List, and use Generics for this method argument.
+    //  modeled by the List, and use Generics for this method argument.
     public final void updateSelectedItem( final String selectedItem ) {
         itemList.getSelectionModel().select( selectedItem );
 
