@@ -31,8 +31,8 @@
 package com.mhschmieder.fxgui.util;
 
 import com.mhschmieder.fxcontrols.model.Extents2DProperties;
+import com.mhschmieder.jphysics.measure.DistanceConversion;
 import com.mhschmieder.jphysics.measure.DistanceUnit;
-import com.mhschmieder.jphysics.measure.UnitConversion;
 
 import javafx.geometry.BoundingBox;
 import javafx.geometry.Rectangle2D;
@@ -89,19 +89,19 @@ public class BoundsUtilities {
     public static BoundingBox getBoundingBoxInDistanceUnit( final Extents2DProperties extents,
                                                             final DistanceUnit oldDistanceUnit,
                                                             final DistanceUnit newDistanceUnit ) {
-        final double x = UnitConversion.convertDistance( extents.getX(),
-                                                         oldDistanceUnit,
-                                                         newDistanceUnit );
-        final double y = UnitConversion.convertDistance( extents.getY(),
-                                                         oldDistanceUnit,
-                                                         newDistanceUnit );
-        final double width = UnitConversion.convertDistance( extents.getWidth(),
+        final double x = DistanceConversion.convertDistance( extents.getX(),
                                                              oldDistanceUnit,
                                                              newDistanceUnit );
+        final double y = DistanceConversion.convertDistance( extents.getY(),
+                                                             oldDistanceUnit,
+                                                             newDistanceUnit );
+        final double width = DistanceConversion.convertDistance( extents.getWidth(),
+                                                                 oldDistanceUnit,
+                                                                 newDistanceUnit );
         final double height
-                = UnitConversion.convertDistance( extents.getHeight(),
-                                                  oldDistanceUnit,
-                                                  newDistanceUnit );
+                = DistanceConversion.convertDistance( extents.getHeight(),
+                                                      oldDistanceUnit,
+                                                      newDistanceUnit );
 
         return new BoundingBox( x, y, width, height );
     }
@@ -132,19 +132,19 @@ public class BoundsUtilities {
     public static Rectangle2D getRectangleInDistanceUnit( final Extents2DProperties extents,
                                                           final DistanceUnit oldDistanceUnit,
                                                           final DistanceUnit newDistanceUnit ) {
-        final double x = UnitConversion.convertDistance( extents.getX(),
-                                                         oldDistanceUnit,
-                                                         newDistanceUnit );
-        final double y = UnitConversion.convertDistance( extents.getY(),
-                                                         oldDistanceUnit,
-                                                         newDistanceUnit );
-        final double width = UnitConversion.convertDistance( extents.getWidth(),
+        final double x = DistanceConversion.convertDistance( extents.getX(),
                                                              oldDistanceUnit,
                                                              newDistanceUnit );
+        final double y = DistanceConversion.convertDistance( extents.getY(),
+                                                             oldDistanceUnit,
+                                                             newDistanceUnit );
+        final double width = DistanceConversion.convertDistance( extents.getWidth(),
+                                                                 oldDistanceUnit,
+                                                                 newDistanceUnit );
         final double height
-                = UnitConversion.convertDistance( extents.getHeight(),
-                                                  oldDistanceUnit,
-                                                  newDistanceUnit );
+                = DistanceConversion.convertDistance( extents.getHeight(),
+                                                      oldDistanceUnit,
+                                                      newDistanceUnit );
 
         return new Rectangle2D( x, y, width, height );
     }
@@ -165,19 +165,19 @@ public class BoundsUtilities {
     public static Extents2DProperties getExtentsInDistanceUnit( final Extents2DProperties extents,
                                                                 final DistanceUnit oldDistanceUnit,
                                                                 final DistanceUnit newDistanceUnit ) {
-        final double x = UnitConversion.convertDistance( extents.getX(),
-                                                         oldDistanceUnit,
-                                                         newDistanceUnit );
-        final double y = UnitConversion.convertDistance( extents.getY(),
-                                                         oldDistanceUnit,
-                                                         newDistanceUnit );
-        final double width = UnitConversion.convertDistance( extents.getWidth(),
+        final double x = DistanceConversion.convertDistance( extents.getX(),
                                                              oldDistanceUnit,
                                                              newDistanceUnit );
+        final double y = DistanceConversion.convertDistance( extents.getY(),
+                                                             oldDistanceUnit,
+                                                             newDistanceUnit );
+        final double width = DistanceConversion.convertDistance( extents.getWidth(),
+                                                                 oldDistanceUnit,
+                                                                 newDistanceUnit );
         final double height
-                = UnitConversion.convertDistance( extents.getHeight(),
-                                                  oldDistanceUnit,
-                                                  newDistanceUnit );
+                = DistanceConversion.convertDistance( extents.getHeight(),
+                                                      oldDistanceUnit,
+                                                      newDistanceUnit );
 
         return new Extents2DProperties( x, y, width, height );
     }
@@ -194,19 +194,19 @@ public class BoundsUtilities {
 
     public static java.awt.geom.Rectangle2D getRectangleMetersAwt( final Extents2DProperties extents,
                                                                    final DistanceUnit distanceUnit ) {
-        final double x = UnitConversion.convertDistance( extents.getX(),
-                                                         distanceUnit,
-                                                         DistanceUnit.METERS );
-        final double y = UnitConversion.convertDistance( extents.getY(),
-                                                         distanceUnit,
-                                                         DistanceUnit.METERS );
-        final double width = UnitConversion.convertDistance( extents.getWidth(),
+        final double x = DistanceConversion.convertDistance( extents.getX(),
                                                              distanceUnit,
                                                              DistanceUnit.METERS );
+        final double y = DistanceConversion.convertDistance( extents.getY(),
+                                                             distanceUnit,
+                                                             DistanceUnit.METERS );
+        final double width = DistanceConversion.convertDistance( extents.getWidth(),
+                                                                 distanceUnit,
+                                                                 DistanceUnit.METERS );
         final double height
-                = UnitConversion.convertDistance( extents.getHeight(),
-                                                  distanceUnit,
-                                                  DistanceUnit.METERS );
+                = DistanceConversion.convertDistance( extents.getHeight(),
+                                                      distanceUnit,
+                                                      DistanceUnit.METERS );
         return new java.awt.geom.Rectangle2D.Double( x, y, width, height );
     }
 }

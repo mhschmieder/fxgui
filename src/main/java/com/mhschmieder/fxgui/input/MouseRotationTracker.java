@@ -31,8 +31,8 @@
 package com.mhschmieder.fxgui.input;
 
 import com.mhschmieder.fxgraphics.input.RotationManager;
+import com.mhschmieder.jphysics.measure.AngleConversion;
 import com.mhschmieder.jphysics.measure.AngleUnit;
-import com.mhschmieder.jphysics.measure.UnitConversion;
 import org.apache.commons.math3.util.MathUtils;
 
 import java.text.NumberFormat;
@@ -120,7 +120,7 @@ public class MouseRotationTracker extends TrackerLabelGroup {
         final double normalizedAngleRadians = MathUtils.normalizeAngle(
                 totalAngleRadians,
                 0.0d );
-        final double normalizedAngle = UnitConversion.convertAngle(
+        final double normalizedAngle = AngleConversion.convertAngle(
                 normalizedAngleRadians,
                 AngleUnit.RADIANS,
                 _angleUnit );
